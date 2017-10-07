@@ -67,13 +67,13 @@ enum flavor {
 //	of L/E (km/GeV)
 double P(flavor a, flavor b, double x) {
 	double delta = a == b ? 1.0 : 0.0;
-
 	double p = delta;
 
 	for(int i=0; i < 3; ++i) {
 		for(int j=0; j < 3; ++j) {
 			if(i > j) {
-				//Printf("%e", dm2[i*3+j]);
+				Printf("%d %d: %f", i, j, dm2[i*3+j]);
+				//Printf("%e", 4.0 * MNS[a*3 + i] * MNS[b*3 + i] * MNS[a*3 + j] * MNS[b*3 + j]);
 				p -= 4.0 * MNS[a*3 + i] * MNS[b*3 + i] * MNS[a*3 + j] * MNS[b*3 + j] 
 						 * sinsq(1.27 * dm2[i*3 + j] * x);
 			}
@@ -91,18 +91,40 @@ double plotP(double* x, double* par) {
 // main
 void nu() {
 
-	double flavor[] = { 1., 1., 1. };
+	double flavor[] = { 0., 0., 1. };
 	double mass[3];
 
-	// turn the flavor eigenstates into mass eigenstates
+	// turn the flavor eigenstate into mass eigenstate
 	dot(MNS, flavor, mass);
 	print_vec(mass);
 	
-	Printf("%e", P(f_e, f_m, 150.0));
-	TF1* e_m = new TF1("e_m", plotP, 0., 4000.);
-	e_m->SetParameter(0, f_e);
-	e_m->SetParameter(1, f_m);
-	e_m->Draw();
+	TF1* e_e = new TF1("e_e", plotP, 0., 50000., 2);
+	e_e->SetParameters(f_e, f_e);
+	TF1* e_m = new TF1("e_m", plotP, 0., 50000., 2);
+	e_m->SetParameters(f_e, f_m);
+	TF1* e_t = new TF1("e_t", plotP, 0., 50000, 2);
+	e_t->SetParameters(f_e, f_t);
+	e_e->SetNpx(1000);
+	e_e->SetMinimum(0.0);
+	e_e->SetMaximum(1.0);
+	e_t->SetNpx(10000);
+	e_m->SetNpx(10000);
+
+	//e_t->SetLineColor(4);
+	//e_m->SetLineColor(7);
+
+	P(f_e, f_e, 50.);
+	e_e->Draw();
+	//e_m->Draw("same");
+	//e_t->Draw("same");
+
+	//TCanvas* c2 = new TCanvas();
+	//TF1* t_t = new TF1("t_t", plotP, 0., 50000., 2);
+	//t_t->SetParameters(f_t, f_t);
+	//t_t->SetNpx(10000);
+	//t_t->SetMinimum(-0.5);
+	//t_t->SetMaximum(1.0);
+	//t_t->Draw();
 }
 
 
