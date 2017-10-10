@@ -1,18 +1,21 @@
 using namespace TMath;
 
 //	mass differences, in eV^2
-const double dm2_12 = 7.37e-5;
-const double dm2_23 = 2.50e-3;
-const double dm2_13 = 2.50e-3;
+const double dm2_21 = 7.37e-5;
+//	absolute value of dm^2 as given in pdg neutrino mixing paper
+const double dm2 = 2.50e-3;
+const double dm2_31 = dm2 + dm2_21 / 2.;
+const double dm2_32 = dm2 - dm2_21 / 2.;
+
 // mass difference matrix, for indexing
-const double dm2[] = { 0.0,    dm2_12, dm2_13,
-					   dm2_12, 0.0,    dm2_23,
-					   dm2_13, dm2_23, 0.0  };
+const double dm2_mat[] = { 0.0,    dm2_21, dm2_31,
+					   dm2_21, 0.0,    dm2_32,
+					   dm2_31, dm2_32, 0.0  };
 
 //	mixing angles
 const double t12 = ASin(Sqrt(0.297));
-const double t23 = ASin(Sqrt(0.569));
-const double t13 = ASin(Sqrt(0.0218));
+const double t23 = ASin(Sqrt(0.437));
+const double t13 = ASin(Sqrt(0.0214));
 
 // trigonometric functions
 const double s12 = Sin(t12);
@@ -72,10 +75,10 @@ double P(flavor a, flavor b, double x) {
 	for(int i=0; i < 3; ++i) {
 		for(int j=0; j < 3; ++j) {
 			if(i > j) {
-				Printf("%d %d: %f", i, j, dm2[i*3+j]);
+				Printf("%d %d: %f", i, j, dm2_mat[i*3+j]);
 				//Printf("%e", 4.0 * MNS[a*3 + i] * MNS[b*3 + i] * MNS[a*3 + j] * MNS[b*3 + j]);
 				p -= 4.0 * MNS[a*3 + i] * MNS[b*3 + i] * MNS[a*3 + j] * MNS[b*3 + j] 
-						 * sinsq(1.27 * dm2[i*3 + j] * x);
+						 * sinsq(1.27 * dm2_mat[i*3 + j] * x);
 			}
 		}
 	}
@@ -110,13 +113,13 @@ void nu() {
 	e_t->SetNpx(10000);
 	e_m->SetNpx(10000);
 
-	//e_t->SetLineColor(4);
-	//e_m->SetLineColor(7);
+	e_t->SetLineColor(3);
+	e_m->SetLineColor(7);
 
 	P(f_e, f_e, 50.);
 	e_e->Draw();
-	//e_m->Draw("same");
-	//e_t->Draw("same");
+	e_m->Draw("same");
+	e_t->Draw("same");
 
 	//TCanvas* c2 = new TCanvas();
 	//TF1* t_t = new TF1("t_t", plotP, 0., 50000., 2);

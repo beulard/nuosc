@@ -1,7 +1,7 @@
 // delta m32^2 (eV^2)
 const double dm2 = 2.50e-3;
 // mixing = sin^2(2 * theta23) (delta m^2 < 0)
-const double mixing = 0.98;
+const double mixing = 0.90;
  
 double sinsq(double x) {
 	return TMath::Power(TMath::Sin(x), 2);
