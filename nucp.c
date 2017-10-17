@@ -1,29 +1,8 @@
 #include "helper.h"
 #include "vector.h"
 #include "numath.h"
-#include "osc_defs_NH.h"
+#include "osc_defs_common.h"
 #include <complex>
-
-//	compute complex CP violating phases
-complex<double> id_cp = 1.i * d_cp;
-
-
-complex<double> MNS[9];
-
-//	rotation matrices that multiply (in this order) to give the MNS mixing matrix
-const complex<double> MNS_23[] = 
-{		1.,  0.,  0.,
-		0.,  c23, s23,
-		0., -s23, c23		};
-const complex<double> MNS_13[] =
-{		c13, 			   0., s13 * exp(-id_cp),
-		0., 			   1., 0.,
-		-s13 * exp(id_cp), 0., c13		};
-
-const complex<double> MNS_12[] =
-{		 c12, s12, 0.,
-		-s12, c12, 0.,
-		0.,   0.,  1.		};
 
 
 //	probability of a neutrino initially in flavor a to transition to flavor b, as a function
@@ -33,15 +12,15 @@ double P(flavor a, flavor b, double x) {
 
 	//	formula found in Zuber p.192
 	for(int i=0; i<3; ++i) {
-		p += std::pow(std::abs(MNS[a*3 + i] * std::conj(MNS[b*3 + i])), 2);
+		p += pow(abs(MNS[a*3 + i] * std::conj(MNS[b*3 + i])), 2);
 	}
 
 	for(int i=0; i<3; ++i) {
 		for(int j=0; j<3; ++j) {
 			if(j > i) {
-				p += 2. * std::real(MNS[a*3 + i] * std::conj(MNS[a*3 + j]) 
-					   			  * std::conj(MNS[b*3 + i]) * MNS[b*3 + j] 
-					    		  * std::exp(std::complex<double>(-2.i * 1.2668 * dm2_mat[i*3 + j] * x)));
+				p += 2. * real(MNS[a*3 + i] * conj(MNS[a*3 + j]) 
+					   			  * conj(MNS[b*3 + i]) * MNS[b*3 + j] 
+					    		  * exp(complex<double>(-2.i * 1.2668 * dm2_mat[i*3 + j] * x)));
 			}
 		}
 	}
@@ -81,6 +60,7 @@ void nucp(int in_f = 0) {
 		e_m->SetLineColor(4);
 		e_t->SetLineColor(8);
 	//		e_e->SetRange(0., 5000.);
+		e_e->SetTitle("#nu_{e} transition");
 		e_e->Draw();
 		e_m->Draw("same");
 		e_t->Draw("same");
@@ -103,6 +83,7 @@ void nucp(int in_f = 0) {
 		m_m->SetLineColor(4);
 		m_t->SetLineColor(8);
 
+		m_e->SetTitle("#nu_{#mu} transition");
 		m_e->Draw();
 		m_m->Draw("same");
 		m_t->Draw("same");
@@ -125,6 +106,7 @@ void nucp(int in_f = 0) {
 		t_m->SetLineColor(4);
 		t_t->SetLineColor(8);
 
+		t_e->SetTitle("#nu_{#tau} transition");
 		t_e->Draw();
 		t_m->Draw("same");
 		t_t->Draw("same");
