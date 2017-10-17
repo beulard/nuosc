@@ -1,6 +1,7 @@
 #include "osc_defs_NH.h"
 using namespace TMath;
 
+//	cf pdg neutrino mixing intro for formulas
 double acc_cp_P(double x) {
 	double J = c13 * Sin(2 * t12) * Sin(2 * t13) * Sin(2 * t23)
 				   * Sin(1.2668 * dm2_32 * x) * Sin(1.2668 * dm2_21 * x);

@@ -4,15 +4,26 @@
 #include "osc_defs_NH.h"
 #include <complex>
 
-//	calculate e^(i * d_cp) CP violation phase
-std::complex<double> phase = std::exp(std::complex<double>(1.0i * d_cp));
+//	compute complex CP violating phases
+complex<double> id_cp = 1.i * d_cp;
 
-//	complex MNS matrix
-complex<double> MNS[] = 
-{      c12 * c13, 							 s12 * c13, 			  		      s13 * phase,
-	  -s12 * c23 - c12 * s23 * s13 * phase,  c12 * c23 - s12 * s23 * s13 * phase, s23 * c13,
-	   s12 * s23 - c12 * s23 * s13 * phase, -c12 * s23 - s12 * c23 * s13 * phase, c23 * c13
-};
+
+complex<double> MNS[9];
+
+//	rotation matrices that multiply (in this order) to give the MNS mixing matrix
+const complex<double> MNS_23[] = 
+{		1.,  0.,  0.,
+		0.,  c23, s23,
+		0., -s23, c23		};
+const complex<double> MNS_13[] =
+{		c13, 			   0., s13 * exp(-id_cp),
+		0., 			   1., 0.,
+		-s13 * exp(id_cp), 0., c13		};
+
+const complex<double> MNS_12[] =
+{		 c12, s12, 0.,
+		-s12, c12, 0.,
+		0.,   0.,  1.		};
 
 
 //	probability of a neutrino initially in flavor a to transition to flavor b, as a function
@@ -44,6 +55,12 @@ double plot_P(double* x, double* par) {
 
 //	main: in_f is the flavor at t=0
 void nucp(int in_f = 0) {
+	//	calculate MNS matrix by multiplying rotations
+	complex<double> temp[9];
+	mat_mult(MNS_23, MNS_13, temp);
+	mat_mult(temp, MNS_12, MNS);
+
+
 	TCanvas* c1 = new TCanvas();
 	if(in_f == f_e) {
 		TF1* e_e = new TF1("", plot_P, 0., 35000., 2);
@@ -51,6 +68,7 @@ void nucp(int in_f = 0) {
 		TF1* e_m = new TF1("", plot_P, 0., 35000., 2);
 		e_m->SetParameters(f_e, f_m);
 		TF1* e_t = new TF1("", plot_P, 0., 35000., 2);
+			
 		e_t->SetParameters(f_e, f_t);
 		
 		e_e->SetRange(0., 35000.);
@@ -62,7 +80,7 @@ void nucp(int in_f = 0) {
 		
 		e_m->SetLineColor(4);
 		e_t->SetLineColor(8);
-
+	//		e_e->SetRange(0., 5000.);
 		e_e->Draw();
 		e_m->Draw("same");
 		e_t->Draw("same");

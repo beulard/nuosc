@@ -29,6 +29,7 @@ const double c23 = TMath::Cos(t23);
 const double c13 = TMath::Cos(t13);
 
 const double d_cp = TMath::Pi() * 1.32;
+//const double d_cp = 0.;
 
 enum flavor {
 	f_e = 0,
