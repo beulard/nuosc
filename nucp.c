@@ -38,8 +38,7 @@ void nucp(int in_f = 0) {
 	complex<double> temp[9];
 	mat_mult(MNS_23, MNS_13, temp);
 	mat_mult(temp, MNS_12, MNS);
-
-
+	
 	TCanvas* c1 = new TCanvas();
 	if(in_f == f_e) {
 		TF1* e_e = new TF1("", plot_P, 0., 35000., 2);
