@@ -14,7 +14,7 @@ const double t12 = TMath::ASin(TMath::Sqrt(0.297));
 const double t23 = TMath::ASin(TMath::Sqrt(0.437));
 const double t13 = TMath::ASin(TMath::Sqrt(0.0214));
 
-//const double d_cp = TMath::Pi() * 1.35;
-const double d_cp = 0.;
+const double d_cp = TMath::Pi() * 1.35;
+//const double d_cp = 0.;
 
 #endif

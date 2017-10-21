@@ -22,7 +22,7 @@ void dot(const double* mat, const double* vec, double* out, int dim) {
 	}
 }
 
-void mat_mult(const complex<double>* m1, const complex<double>* m2, complex<double>* out, int dim=3) {
+void mat_mult(const complex<double>* m1, const complex<double>* m2, complex<double>* out, int dim) {
 	for(int i=0; i<dim; ++i) {
 		for(int j=0; j<dim; ++j) {
 			out[i*3 + j] = 0.;
