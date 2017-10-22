@@ -16,12 +16,12 @@ const double c12 = TMath::Cos(t12);
 const double c23 = TMath::Cos(t23);
 const double c13 = TMath::Cos(t13);
 
-
-enum flavor {
+//	already defined in osc_defs.h which is read when root starts
+/*enum flavor {
 	f_e = 0,
 	f_m = 1,
 	f_t = 2
-};
+};*/
 
 //	strongly typed i * d_cp to avoid ambiguity when using exp
 const complex<double> id_cp = 1.i * d_cp;

@@ -44,7 +44,7 @@ void populate_common(hierarchy* h) {
 	h->c23 = TMath::Cos(h->t23);
 	h->c13 = TMath::Cos(h->t13);
 
-	h->id_cp = complex<double>(1.0i * h->d_cp);
+	h->id_cp = complex<double>(0.0, h->d_cp);
 
 	complex<double> MNS_23[] = 
 	{		1.,  0.,  0.,
