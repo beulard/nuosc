@@ -13,6 +13,8 @@ void nuspectrum() {
 	float e_vals[50];
 	float antie_vals[50];
 
+	Print("saucisse");
+
 	TTree* t = (TTree*)f->Get("spectrum");
 	t->Print();
 
