@@ -31,9 +31,10 @@ void populate_ih(hierarchy* h) {
 //	populates calculated values
 void populate_common(hierarchy* h) {
 	//	populate dm2 matrix
-	double dm2_mat[] = { 0.0,    h->dm2_21, h->dm2_31,
-					   h->dm2_21, 0.0,    h->dm2_32,
-					   h->dm2_31, h->dm2_32, 0.0  };
+	double dm2_mat[] = { 0.0,      -h->dm2_21, -h->dm2_31,
+			     h->dm2_21, 0.0,       -h->dm2_32,
+			     h->dm2_31, h->dm2_32,  0.0  };
+
 	memcpy(h->dm2_mat, dm2_mat, 9 * sizeof(double));
 
 	h->s12 = TMath::Sin(h->t12);

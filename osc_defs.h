@@ -24,7 +24,6 @@ struct hierarchy {
 	double t13;
 	
 	double d_cp;
-	//const double d_cp = 0.;
 
 	////	Calculated values	
 	//	mass squared differences in a matrix form

@@ -22,7 +22,7 @@ double P(double E, hierarchy* h) {
 		p += pow(abs(h->MNS[a*3 + i] * std::conj(h->MNS[b*3 + i])), 2);
 	}
 
-	Printf("%f", E);
+	//Printf("%f", E);
 	for(int i=0; i<3; ++i) {
 		for(int j=0; j<3; ++j) {
 			if(j > i) {

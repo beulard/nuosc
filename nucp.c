@@ -19,14 +19,32 @@ double P(flavor a, flavor b, double x) {
 		for(int j=0; j<3; ++j) {
 			if(j > i) {
 				p += 2. * real(MNS[a*3 + i] * conj(MNS[a*3 + j]) 
-					   			  * conj(MNS[b*3 + i]) * MNS[b*3 + j] 
-					    		  * exp(complex<double>(-2.i * 1.2668 * dm2_mat[i*3 + j] * x)));
+				  * conj(MNS[b*3 + i]) * MNS[b*3 + j] 
+				  * exp(complex<double>(-2.i * 1.2668 * dm2_mat[i*3 + j] * x)));
 			}
 		}
 	}
 
 	return p;
 }
+
+/*double P(flavor a, flavor b, double x) {
+	double p = (a == b ? 1.0 : 0.0);
+
+	for (int i=0; i<3; ++i) {
+		for (int j=0; j<3; ++j) {
+			if (j > i) {
+				complex<double> K = MNS[a*3 + i] * conj(MNS[b*3 + i]) 
+					  * conj(MNS[a*3 + j]) * MNS[b*3 + j];
+					
+				p -= 4.0 * real(K) * sinsq(1.2668 * dm2_mat[i*3 + j] * x);
+				p += 4.0 * imag(K) * TMath::Sin(1.2668 * dm2_mat[i*3 + j] * x)
+					     * TMath::Cos(1.2668 * dm2_mat[i*3 + j] * x);
+			}
+		}
+	}
+	return p;
+}*/
 
 double plot_P(double* x, double* par) {
 	return P((flavor)par[0], (flavor)par[1], x[0]);

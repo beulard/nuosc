@@ -3,9 +3,9 @@
 
 
 // mass difference matrix, for indexing
-const double dm2_mat[] = { 0.0,    dm2_21, dm2_31,
-					   dm2_21, 0.0,    dm2_32,
-					   dm2_31, dm2_32, 0.0  };
+const double dm2_mat[] = { 0.0,    -dm2_21, -dm2_31,
+			   dm2_21,  0.0,    -dm2_32,
+			   dm2_31,  dm2_32,  0.0  };
 
 // trigonometric functions
 const double s12 = TMath::Sin(t12);
