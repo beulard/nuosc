@@ -5,19 +5,32 @@ double L = 1300.;
 // propagation function
 // calculates probability of a neutrino flavor a to oscillate to flavor b,
 // given an energy E, a hierarchy h and a constant baseline
-double P(flavor a, flavor b, float E, hierarchy* h) {
+double P(flavor a, flavor b, float E, hierarchy* h, bool anti) {
 	double p = 0.;
 
 	for(int i=0; i<3; ++i) {
-		p += pow(abs(h->MNS[a*3 + i] * std::conj(h->MNS[b*3 + i])), 2);
+		p += pow(abs(h->MNS[a*3 + i] * conj(h->MNS[b*3 + i])), 2);
 	}
 
-	for(int i=0; i<3; ++i) {
-		for(int j=0; j<3; ++j) {
-			if(j > i) {
-				p += 2. * std::real(h->MNS[a*3 + i] * std::conj(h->MNS[a*3 + j]) 
-						* std::conj(h->MNS[b*3 + i]) * h->MNS[b*3 + j]
-						* std::exp(complex<double>(-2.i * 1.2668 *  h->dm2_mat[i*3 + j] * L/E)));
+	if (anti) {
+		for (int i=0; i<3; ++i) {
+			for (int j=0; j<3; ++j) {
+				if (j > i) {
+					p += 2. * real( conj(h->MNS[a*3 + i]) * h->MNS[a*3 + j]
+						  * h->MNS[b*3 + i] * conj(h->MNS[b*3 + j])
+						  * exp(complex<double>(-2.i * 1.2668 * h->dm2_mat[i*3 + j] * L/E)));
+				}
+			}
+		}
+	}
+	else {
+		for(int i=0; i<3; ++i) {
+			for(int j=0; j<3; ++j) {
+				if(j > i) {
+					p += 2. * real(h->MNS[a*3 + i] * std::conj(h->MNS[a*3 + j]) 
+							* conj(h->MNS[b*3 + i]) * h->MNS[b*3 + j]
+							* exp(complex<double>(-2.i * 1.2668 *  h->dm2_mat[i*3 + j] * L/E)));
+				}
 			}
 		}
 	}
@@ -25,7 +38,7 @@ double P(flavor a, flavor b, float E, hierarchy* h) {
 }
 
 void plot_initial(float* mu, float* antimu, float* e, float* antie) {
-	TCanvas* c1 = new TCanvas("c1", "", 700, 600);
+	TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 	// set log y axis and no statistics legend
 	c1->SetLogy();	
 	c1->SetTicks();
@@ -46,6 +59,11 @@ void plot_initial(float* mu, float* antimu, float* e, float* antie) {
 
 	
 	// plot the initial spectrum plots
+	h1->SetLineWidth(2);
+	h2->SetLineWidth(2);
+	h3->SetLineWidth(2);
+	h4->SetLineWidth(2);
+
 	h1->SetLineColor(1);
 	h1->SetMinimum(1e6);
 	h1->SetMaximum(1e10);
@@ -112,7 +130,32 @@ void plot_normalized_particles(float* mu, float* e) {
 	h1->Draw("HIST");
 	h2->SetLineColor(2);	
 	h2->Draw("SAME HIST");
+}
+
+void plot_normalized_antiparticles(float* antimu, float* antie) {
+	TH1* h1 = new TH1F("hap1", "", 50, 0., 10.);
+	TH1* h2 = new TH1F("hap2", "", 50, 0., 10.);
 	
+	// fill histograms manually with valuanties from the spectrum
+	for(int i=0; i<50; ++i) {
+		h1->Fill(i * 0.2, antimu[i]);
+		h2->Fill(i * 0.2, antie[i]);
+	}
+
+	
+	// plot thantie initial spectrum plots
+	h1->SetLineWidth(2);
+	h2->SetLineWidth(2);
+
+	h1->SetLineStyle(2);
+	h2->SetLineStyle(2);
+
+	h1->SetLineColor(4);
+	h1->SetMaximum(1.0);
+	h1->SetMinimum(3e-4);
+	h1->Draw("HIST");
+	h2->SetLineColor(6);
+	h2->Draw("SAME HIST");
 }
 
 void read_spectrum(float* mu_vals, float* antimu_vals, float* e_vals, float* antie_vals) {
@@ -163,7 +206,7 @@ void nuspectrum() {
 
 	gStyle->SetOptStat(0);
 	// plot the initial spectrum
-	//plot_initial(mu_i, antimu_i, e_i, antie_i);
+	plot_initial(mu_i, antimu_i, e_i, antie_i);
 
 	// we would like to normalize the fluxes so let's find the
 	// maximum value and divide everything by that
@@ -200,49 +243,62 @@ void nuspectrum() {
 		if (i == 0) E = 1e-12;
 
 			
-		// eg a muon neutrino will oscillate into electron neutrinos (neglecting taus)
-		// and leave a certain amount of muon neutrinos as well.
-		// electron neutrinos will do the same thing so we must add the number of 
-		// leftover muon neutrinos to the number of oscillated electron
-		// neutrinos, and then multiply this by the normalized flux to get
-		// the flux at the FD.
+		// eg a muon neutrino will oscillate into electron neutrinos AND tau neutrinos
+		// and leave a certain amount of muon neutrinos behind as well.
+		//
+		// Electron neutrinos will do the same thing so we must add the number of 
+		// leftover muon neutrinos to the number of oscillated electron neutrinos
+		// to get the final number of muon neutrinos
 		
 		// Find proportion of leftover/oscillated muon neutrinos
 		// the proportion of leftover MUON nus is
-		double leftover_mu = P(f_m, f_m, E, &nh);
-		// proportion of oscillated ELECTRON neutrinos
-		double oscillated_mu = P(f_m, f_e, E, &nh);
+		double leftover_mu = mu_i[i] * P(f_m, f_m, E, &nh, false);
+		// proportion of oscillated mu -> electron neutrinos
+		double mu_e = mu_i[i] * P(f_m, f_e, E, &nh, false);
+		// oscillated mu -> taus
+		double mu_tau = mu_i[i] * P(f_m, f_t, E, &nh, false);
 
 		// same for electron
-		double leftover_e = P(f_e, f_e, E, &nh);
-		double oscillated_e = P(f_e, f_m, E, &nh);
+		double leftover_e = e_i[i] * P(f_e, f_e, E, &nh, false);
+		double e_mu = e_i[i] * P(f_e, f_m, E, &nh, false);
+		double e_tau = e_i[i] * P(f_e, f_t, E, &nh, false);
 
-		// now we need to multiply by the normalized flux and store the values
-		mu_f[i] = mu_i[i] * (leftover_mu + oscillated_e);
-		e_f[i] = e_i[i] * (leftover_e + oscillated_mu);
-
-		// but mu and e can also oscillate into tau, even if there are no taus
-		// at the beam.
-		// the flux is the sum of probabilities weighted by the respective 
-		// initial fluxes
-		tau_f[i] = mu_i[i] * P(f_m, f_t, E, &nh) + e_i[i] * P(f_e, f_t, E, &nh);
+		// store the values
+		mu_f[i] = leftover_mu + e_mu;
+		e_f[i] = leftover_e + mu_e;
+		tau_f[i] = mu_tau + e_tau;
 	}
-	// now plot the final flux
-	TCanvas* c3 = new TCanvas("c3", "", 1100, 800);
-	//c3->Divide(1, 2);
-	c3->SetLogy();
-	c3->SetTicks();
+	// do the same for antineutrinos
+	for (int i=0; i<50; ++i) {
+		float E = 0.2 * i;
+		if (i == 0) E = 1e-12;
 
-	//TPad* p1 = (TPad*)c3->GetPad(1);
-	//p1->cd();
-	//p1->SetLogy();
-	//p1->SetTicks();
+		double leftover_antimu = antimu_i[i] * P(f_m, f_m, E, &nh, true);
+		double antimu_antie = antimu_i[i] * P(f_m, f_e, E, &nh, true);
+		double antimu_antitau = antimu_i[i] * P(f_m, f_t, E, &nh, true);
+
+		double leftover_antie = antie_i[i] * P(f_e, f_e, E, &nh, true);
+		double antie_antimu = antie_i[i] * P(f_e, f_m, E, &nh, true);
+		double antie_antitau = antie_i[i] * P(f_e, f_t, E, &nh, true);
+
+		antimu_f[i] = leftover_antimu + antie_antimu;
+		antie_f[i] = leftover_antie + antimu_antie;
+		antitau_f[i] = antimu_antitau + antie_antitau;
+	}
+	
+	// now plot the final flux
+	TCanvas* c3 = new TCanvas("c3", "", 800, 1000);
+	c3->Divide(1, 2);
+	//c3->SetLogy();
+	//c3->SetTicks();
+
+	TPad* p1 = (TPad*)c3->GetPad(1);
+	p1->cd();
+	p1->SetLogy();
+	p1->SetTicks();
+	p1->SetBottomMargin(0.01);
 	plot_normalized_particles(mu_i, e_i);
 
-	//TPad* p2 = (TPad*)c3->GetPad(2);
-	//p2->cd();
-	//p2->SetLogy();
-	//p2->SetTicks();
 	
 	TH1* hmu = new TH1F("hmu", "", 50, 0., 10.);
 	TH1* he = new TH1F("he", "", 50, 0., 10.);
@@ -265,4 +321,32 @@ void nuspectrum() {
 	htau->SetLineColor(8);
 	htau->Draw("SAME HIST");
 
+	TPad* p2 = (TPad*)c3->GetPad(2);
+	p2->cd();
+	p2->SetLogy();
+	p2->SetTicks();
+	p2->SetTopMargin(0.01);
+	plot_normalized_antiparticles(antimu_i, antie_i);
+
+	TH1* hamu = new TH1F("hamu", "", 50, 0., 10.);
+	TH1* hae = new TH1F("hamu", "", 50, 0., 10.);
+	TH1* hatau = new TH1F("hamu", "", 50, 0., 10.);
+	for (int i=0; i<50; ++i) {
+		hamu->Fill(0.2 * i, antimu_f[i]);
+		hae->Fill(0.2 * i, antie_f[i]);
+		hatau->Fill(0.2 * i, antitau_f[i]);
+	}
+
+	hamu->SetLineWidth(2);
+	hae->SetLineWidth(2);
+	hatau->SetLineWidth(2);
+
+	hamu->SetLineColor(4);
+	hamu->SetMaximum(1.0);
+	hamu->SetMinimum(3e-4);
+	hamu->Draw("HIST SAME");
+	hae->SetLineColor(6);	
+	hae->Draw("SAME HIST");
+	hatau->SetLineColor(30);
+	hatau->Draw("SAME HIST");
 }

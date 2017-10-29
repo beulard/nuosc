@@ -6,7 +6,7 @@
 
 
 //	probability of a neutrino initially in flavor a to transition to flavor b, as a function
-//	of L/E (km/GeV)
+//	of L/E (km/GeV) expression from zuber p. 192
 double P(flavor a, flavor b, double x) {
 	double p = 0.;
 
@@ -28,12 +28,13 @@ double P(flavor a, flavor b, double x) {
 	return p;
 }
 
+// alternative expression for P (zuber p. 196)
 /*double P(flavor a, flavor b, double x) {
 	double p = (a == b ? 1.0 : 0.0);
 
 	for (int i=0; i<3; ++i) {
 		for (int j=0; j<3; ++j) {
-			if (j > i) {
+			if (i > j) {
 				complex<double> K = MNS[a*3 + i] * conj(MNS[b*3 + i]) 
 					  * conj(MNS[a*3 + j]) * MNS[b*3 + j];
 					
