@@ -1,8 +1,9 @@
 #include "osc_defs.h"
 #include "TMath.h"
 #include "numath.h"
+#include "TString.h"
 
-void populate_nh(hierarchy* h) {
+void populate_nh(hierarchy* h, float d_cp) {
 	h->dm2_21 = 7.37e-5;
 	h->dm2 = 2.50e-3;
 	h->dm2_31 = h->dm2 + h->dm2_21 / 2.;
@@ -12,10 +13,14 @@ void populate_nh(hierarchy* h) {
 	h->t23 = TMath::ASin(TMath::Sqrt(0.437));
 	h->t13 = TMath::ASin(TMath::Sqrt(0.0214));
 
-	h->d_cp = TMath::Pi() * 1.35;
+	if (d_cp < 0.) {
+		h->d_cp = TMath::Pi() * 1.35;
+	} else {
+		h->d_cp = d_cp;
+	}
 }
 
-void populate_ih(hierarchy* h) {
+void populate_ih(hierarchy* h, float d_cp) {
 	h->dm2_21 = 7.37e-5;
 	h->dm2 = -2.46e-3;
 	h->dm2_31 = h->dm2 + h->dm2_21 / 2.;
@@ -25,7 +30,11 @@ void populate_ih(hierarchy* h) {
 	h->t23 = TMath::ASin(TMath::Sqrt(0.569));
 	h->t13 = TMath::ASin(TMath::Sqrt(0.0218));
 	
-	h->d_cp = TMath::Pi() * 1.32;
+	if (d_cp < 0.) {
+		h->d_cp = TMath::Pi() * 1.32;
+	} else {
+		h->d_cp = d_cp;
+	}
 }
 
 //	populates calculated values
@@ -72,11 +81,11 @@ void populate_common(hierarchy* h) {
 	memcpy(h->MNS, MNS, 9 * sizeof(complex<double>));
 }
 
-void populate(hierarchy* h, h_type t) {
+void populate(hierarchy* h, h_type t, float d_cp) {
 	if(t == NH)
-		populate_nh(h);
+		populate_nh(h, d_cp);
 	else if(t == IH)
-		populate_ih(h);
+		populate_ih(h, d_cp);
 	else
 		return;
 	populate_common(h);
