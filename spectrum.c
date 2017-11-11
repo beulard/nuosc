@@ -35,22 +35,6 @@ double P(flavor a, flavor b, float E, hierarchy* h, bool anti) {
 }
 
 
-enum spectrum_flux {
-	MU_SURVIVAL,	/* mu_signal */
-	MU_E,			/* e_signal */
-	MU_TAU,			// no tau for now
-	E_SURVIVAL,		/* part of e_antie_background */
-	E_MU,			// e->mu probability is too small
-	E_TAU,			// no tau for now
-	ANTIMU_SURVIVAL,/* antimu_background */
-	ANTIMU_ANTIE,	/* antie_signal */
-	ANTIMU_ANTITAU,	// no tau for now
-	ANTIE_SURVIVAL,	/* part of e_antie_background */
-	ANTIE_ANTIMU,	// e->mu probability is too small
-	ANTIE_ANTITAU,	// no tau for now
-	N_FLUXES
-};
-
 // Propagate neutrinos for each flavor and for each energy and get the FD flux.
 void propagate(const initial_spectrum* is, spectrum* os) {	
 	hierarchy* h = &(os->h);
@@ -59,8 +43,13 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 	memcpy(&s, is, sizeof(initial_spectrum));
 
 	// Propagated fluxes	
-
-	float fluxes[N_FLUXES][50];
+	float fluxes[N_FLUXES][50] = {0};
+	const float* norms;
+	if (h->type == NH) {
+		norms = nh_norm;
+	} else if (h->type == IH) {
+		norms = ih_norm;
+	}
 
 	for (int i=0; i<50; ++i) {
 		float E = 0.2 * i;
@@ -127,6 +116,10 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 			for (int j=0; j<50; ++j) {
 				fluxes[E_SURVIVAL][j] = e_antie_survival[j] * f[j] / (f[j] + 1.);
 				fluxes[ANTIE_SURVIVAL][j] = e_antie_survival[j] / f[j] / (1./f[j] + 1.);
+
+				// And normalize to data
+				fluxes[E_SURVIVAL][j] *= norms[E_ANTIE_BACKGROUND];
+				fluxes[ANTIE_SURVIVAL][j] *= norms[E_ANTIE_BACKGROUND];
 			}
 		} else if (i == ANTIE_SURVIVAL) {/* do nothing */} else {	
 			for (int j=0; j<50; ++j) {
@@ -140,10 +133,16 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 	}
 	// Then we multiply the fluxes by their respective normalizations
 	for (int i=0; i<50; ++i) {
-		fluxes[MU_E][i] *= e_signal;
-		fluxes[ANTIMU_ANTIE][i] *= antie_signal;
-		fluxes[MU_SURVIVAL][i] *= mu_signal;
-		fluxes[ANTIMU_SURVIVAL][i] *= antimu_background;
+		fluxes[MU_E][i] *= norms[E_SIGNAL];
+		fluxes[ANTIMU_ANTIE][i] *= norms[ANTIE_SIGNAL];
+		fluxes[MU_SURVIVAL][i] *= norms[MU_SIGNAL];
+		fluxes[ANTIMU_SURVIVAL][i] *= norms[ANTIMU_BACKGROUND];;
+
+		// Omit fluxes that weren't normalized because they are negligible
+		os->mu[i] = /*fluxes[E_MU][i]*/ + fluxes[MU_SURVIVAL][i];
+		os->e[i] = fluxes[MU_E][i] + fluxes[E_SURVIVAL][i];
+		os->antimu[i] = /*fluxes[ANTIE_ANTIMU][i]*/ + fluxes[ANTIMU_SURVIVAL][i];
+		os->antie[i] = fluxes[ANTIMU_ANTIE][i] + fluxes[ANTIE_SURVIVAL][i];
 	}
 
 }

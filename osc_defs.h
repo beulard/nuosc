@@ -8,8 +8,14 @@ enum flavor {
 	f_t = 2
 };
 
+enum h_type {
+	NH,
+	IH
+};
 
 struct hierarchy {
+	// Base hierarchy type (NH, IH)
+	h_type type;
 	////	Numerical data
 	//	mass differences, in eV^2
 	double dm2_21;
@@ -42,11 +48,6 @@ struct hierarchy {
 	complex<double> MNS_12[9];
 };
 
-
-enum h_type {
-	NH,
-	IH
-};
 
 //	helper function to populate hierarchy object
 void populate(hierarchy* h, h_type t, float d_cp = -1.);

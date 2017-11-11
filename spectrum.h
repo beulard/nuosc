@@ -5,24 +5,49 @@
 // global experiment baseline
 double L = 1300.;
 
-// Normalizations
-// Oscillated nu e's
-float e_signal = 861.;
-// Oscillated antinu e's
-float antie_signal = 13.;
-// Survival nu e + antinu e 's
-// Since these are grouped together, they need to be normalized together
-float e_antie_background = 159.;
 
-// Survival nu mu's
-float mu_signal = 10842.;
-// Survival antinu mu's
-float antimu_background = 958.;
+// Normalizations indices 
+enum {
+	// Oscillated nu e's
+	E_SIGNAL,
+	// Oscillated antinu e's
+	ANTIE_SIGNAL,
+	// Survival nu e + antinu e 's
+	// Since these are grouped together, they need to be normalized together
+	E_ANTIE_BACKGROUND,
+	// Survival nu mu's
+	MU_SIGNAL,
+	// Survival antinu mu's
+	ANTIMU_BACKGROUND,
+	N_NORMS
+};
+
+// Flux indices
+enum spectrum_flux {
+	MU_SURVIVAL,	/* mu_signal */
+	MU_E,			/* e_signal */
+	MU_TAU,			// no tau for now
+	E_SURVIVAL,		/* part of e_antie_background */
+	E_MU,			// e->mu probability is too small
+	E_TAU,			// no tau for now
+	ANTIMU_SURVIVAL,/* antimu_background */
+	ANTIMU_ANTIE,	/* antie_signal */
+	ANTIMU_ANTITAU,	// no tau for now
+	ANTIE_SURVIVAL,	/* part of e_antie_background */
+	ANTIE_ANTIMU,	// e->mu probability is too small
+	ANTIE_ANTITAU,	// no tau for now
+	N_FLUXES
+};
+
+// Normalizations from CDR, in order given by enum above
+const float nh_norm[N_NORMS] = { 861., 13., 159., 10842., 958. };
+const float ih_norm[N_NORMS] = { 495., 26., 159., 10842., 958. };
 
 
 struct spectrum {
 	hierarchy h;
 
+	float fluxes[N_FLUXES][50];
 	// predicted fluxes at the far detector
 	float mu[50];
 	float e[50];

@@ -47,9 +47,7 @@ void nuspectrum() {
 	// best fit spectra, with best fit angles, delta, normal hierarchy
 	// this will be used as our 'experimental' data when fitting with different parameters
 	spectrum best_fit_nu;
-	spectrum best_fit_antinu;
 	populate(&best_fit_nu.h, NH);
-	populate(&best_fit_antinu.h, NH);
 
 	// read data from root file
 	read_spectrum(&nu);
@@ -69,14 +67,25 @@ void nuspectrum() {
 	
 	//normalize(&nu);
 
-	
-
-	// so now we want to repeat this for the different hierarchies, and different 
-	// values of delta CP, and then calculate the chi squared between
-	// those and the original propagation with physical delta and normal h
 	propagate(&nu, &best_fit_nu);
-	propagate(&antinu, &best_fit_antinu);
 
+	// Draw propagated and normalized spectrum
+	TCanvas* c2 = new TCanvas();
+	c2->SetLogy();
+	TH1* hmu = new TH1F("hmup", "", 50, 0., 10.);
+	TH1* hamu = new TH1F("hamup", "", 50, 0., 10.);
+	TH1* he = new TH1F("hep", "", 50, 0., 10.);
+	TH1* hae = new TH1F("haep", "", 50, 0., 10.);
+	for (int i=0; i<50; ++i) {
+		hmu->Fill(0.2 * i + 1e-2, best_fit_nu.mu[i]);
+		hamu->Fill(0.2 * i + 1e-2, best_fit_nu.antimu[i]);
+		he->Fill(0.2 * i + 1e-2, best_fit_nu.e[i]);
+		hae->Fill(0.2 * i + 1e-2, best_fit_nu.antie[i]);
+	}
+	hmu->Draw("HIST");
+	he->Draw("HIST SAME");
+	hae->Draw("HIST SAME");
+	hamu->Draw("HIST SAME");
 	// For now we need to take one of our propagations as the data set, so we'll pick the one
 	// with best fit parameters.
 	// Then we'll fit that to a bunch of predictions, changing both the hierarchy and 
@@ -94,22 +103,21 @@ void nuspectrum() {
 	float d_cp[N];
 
 	float c2_nu_nh[N];
-	float c2_antinu_nh[N];
 	float c2_nu_ih[N];
-	float c2_antinu_ih[N];
 
 
+	// Here we calculate a chi squared between best fit spectrum and 
+	// explored spectrum, for a normal and inverted hierarchy propagation
+	// but wait we have different normalizations for nh and ih
 	for (int i=0; i<N; ++i) {
 		d_cp[i] = (float)i / (float)N * 2. * TMath::Pi();
 		hierarchy nh;
 		populate(&nh, NH, d_cp[i]);
 		c2_nu_nh[i] = spectrum_chisq(&nh, &nu, &best_fit_nu);
-		c2_antinu_nh[i] = spectrum_chisq(&nh, &antinu, &best_fit_antinu);
 
 		hierarchy ih;
 		populate(&ih, IH, d_cp[i]);
 		c2_nu_ih[i] = spectrum_chisq(&ih, &nu, &best_fit_nu);
-		c2_antinu_ih[i] = spectrum_chisq(&ih, &antinu, &best_fit_antinu);
 	}
 
 	// We also need the delta_cp test values, 0 and pi
@@ -127,46 +135,34 @@ void nuspectrum() {
 	float c2_nu_ih_0 = spectrum_chisq(&ih_0, &nu, &best_fit_nu);
 	float c2_nu_ih_pi = spectrum_chisq(&ih_pi, &nu, &best_fit_nu);
 
-	float c2_antinu_nh_0 = spectrum_chisq(&nh_0, &antinu, &best_fit_antinu);
-	float c2_antinu_nh_pi = spectrum_chisq(&nh_pi, &antinu, &best_fit_antinu);
-	float c2_antinu_ih_0 = spectrum_chisq(&ih_0, &antinu, &best_fit_antinu);
-	float c2_antinu_ih_pi = spectrum_chisq(&ih_pi, &antinu, &best_fit_antinu);
-
 
 	float delta_c2_cpv_nh_nu[N];
-	float delta_c2_cpv_nh_antinu[N];
 	float delta_c2_cpv_ih_nu[N];
-	float delta_c2_cpv_ih_antinu[N];
 
 	float delta_c2_mh_nu[N];
-	float delta_c2_mh_antinu[N];
 
 	for (int i=0; i<N; ++i) {
 		//Printf("%f %f", c2_nu_test_0 - c2_nu_nh[i], c2_nu_test_pi - c2_nu_nh[i]);
-		delta_c2_cpv_nh_nu[i] = abs(min(c2_nu_nh_0 - c2_nu_nh[i],
+		delta_c2_cpv_nh_nu[i] = (min(c2_nu_nh_0 - c2_nu_nh[i],
 				    		    	c2_nu_nh_pi - c2_nu_nh[i]));
-		delta_c2_cpv_ih_nu[i] = abs(min(c2_nu_ih_0 - c2_nu_ih[i],
+		
+		delta_c2_cpv_ih_nu[i] = (min(c2_nu_ih_0 - c2_nu_ih[i],
 									c2_nu_ih_pi - c2_nu_ih[i]));
-		delta_c2_cpv_nh_antinu[i] = abs(min(c2_antinu_nh_0 - c2_antinu_nh[i],
-										    c2_antinu_nh_pi - c2_antinu_nh[i]));
-		delta_c2_cpv_ih_antinu[i] = abs(min(c2_antinu_ih_0 - c2_antinu_ih[i],
-										    c2_antinu_ih_pi - c2_antinu_ih[i]));
 
 		delta_c2_mh_nu[i] = c2_nu_ih[i] - c2_nu_nh[i];
-		delta_c2_mh_antinu[i] = c2_antinu_ih[i] - c2_antinu_nh[i];
-		//Printf("%f", delta_c2_mh_antinu[i]);
+		//Printf("%f", delta_c2_mh_nu[i]);
 	}
 
 	// This canvas contains the plots for the neutrino mode: delta_CPV and delta_MH
-	TCanvas* c4 = new TCanvas("Neutrino mode", "", 1600, 1000);
-	c4->Divide(2, 2);
-	TPad* pad = (TPad*)c4->GetPad(1);
+	TCanvas* c4 = new TCanvas("Neutrino mode", "", 900, 1000);
+	c4->Divide(1, 2);
+	TPad* pad = (TPad*)c4->GetPad(2);
 	pad->cd();
-	TH1* hdc2_nh = new TH1F("normal hierarchy", "", N, 0., 2. * TMath::Pi());
-	TH1* hdc2_ih = new TH1F("inverted hierarchy", "", N, 0., 2. * TMath::Pi());
+	TH1* hdc2_nh = new TH1F("normal hierarchy", "", N, 0., 2.);
+	TH1* hdc2_ih = new TH1F("inverted hierarchy", "", N, 0., 2.);
 	for (int i=0; i<N; ++i) {
-		hdc2_nh->Fill((float)i / (float)N * 2. * TMath::Pi() + 1e-2, delta_c2_cpv_nh_nu[i]);
-		hdc2_ih->Fill((float)i / (float)N * 2. * TMath::Pi() + 1e-2, delta_c2_cpv_ih_nu[i]);
+		hdc2_nh->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_cpv_nh_nu[i]);
+		hdc2_ih->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_cpv_ih_nu[i]);
 	}
 	hdc2_nh->Draw("HIST");
 	hdc2_ih->SetLineColor(2);
@@ -175,61 +171,32 @@ void nuspectrum() {
 	pad->BuildLegend();
 	pad->SetTicks();
 	pad->SetGrid();
-	hdc2_nh->GetXaxis()->SetTitle("#delta_{CP}");
+	hdc2_nh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	hdc2_nh->GetYaxis()->SetTitle("| #Delta#chi^{2}_{CPV} |");
 	hdc2_nh->SetTitle("#nu mode");
 	///
 
-	pad = (TPad*)c4->GetPad(3);
+	pad = (TPad*)c4->GetPad(1);
 	pad->cd();
-	TH1* hdc2_mh = new TH1F("hdc2_mh", "", N, 0., 2. * TMath::Pi());
+	TH1* hdc2_mh = new TH1F("hdc2_mh", "", N, 0., 2.);
+	TH1* hdc2_cnh = new TH1F("hdc2_cnh", "", N, 0., 2.);
+	TH1* hdc2_cih = new TH1F("hdc2_cih", "", N, 0., 2.);
 	for (int i=0; i<N; ++i) {
-		hdc2_mh->Fill((float)i / (float)N * 2. * TMath::Pi() + 1e-2, delta_c2_mh_nu[i]);
+		hdc2_mh->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_mh_nu[i]);
+		hdc2_cnh->Fill((float)i / (float)N * 2. + 1e-3, c2_nu_nh[i]);
+		hdc2_cih->Fill((float)i / (float)N * 2. + 1e-3, c2_nu_ih[i]);
 	}
 	hdc2_mh->Draw("HIST");
-	// formatting
-	pad->SetTicks();
-	pad->SetGrid();
-	hdc2_mh->GetXaxis()->SetTitle("#delta_{CP}");
-	hdc2_mh->GetYaxis()->SetTitle("#Delta#chi^{2}_{MH}");
-	///
-
-	pad = (TPad*)c4->GetPad(2);
-	pad->cd();
-	TH1* hdc2_nh_antinu = new TH1F("normal hierarchy ", "", N, 0., 2. * TMath::Pi());
-	TH1* hdc2_ih_antinu = new TH1F("inverted hierarchy ", "", N, 0., 2. * TMath::Pi());
-	for (int i=0; i<N; ++i) {
-		hdc2_nh_antinu->Fill((float)i / (float)N * 2. * TMath::Pi() + 1e-2,
-			   			  	delta_c2_cpv_nh_antinu[i]);
-		hdc2_ih_antinu->Fill((float)i / (float)N * 2. * TMath::Pi() + 1e-2,
-			   				delta_c2_cpv_ih_antinu[i]);
-	}
-	hdc2_nh_antinu->Draw("HIST");
-	hdc2_ih_antinu->SetLineColor(2);
-	hdc2_ih_antinu->Draw("HIST SAME");
-	// formatting
+	hdc2_cnh->Draw("HIST SAME");
+	hdc2_cih->Draw("HIST SAME");
+	hdc2_mh->SetMinimum(0);
 	pad->BuildLegend();
-	pad->SetTicks();
-	pad->SetGrid();
-	hdc2_nh_antinu->GetXaxis()->SetTitle("#delta_{CP}");
-	hdc2_nh_antinu->GetYaxis()->SetTitle("| #Delta#chi^{2}_{CPV} |");
-	hdc2_nh_antinu->SetTitle("#bar{#nu} mode");
-	///
-
-
-	pad = (TPad*)c4->GetPad(4);
-	pad->cd();
-	TH1* hdc2_mh_antinu = new TH1F("hdc2_mh_anti", "", N, 0., 2. * TMath::Pi());
-	for (int i=0; i<N; ++i) {
-		hdc2_mh_antinu->Fill((float)i / (float)N * 2. * TMath::Pi() + 1e-2, 
-							delta_c2_mh_antinu[i]);
-	}
-	hdc2_mh_antinu->Draw("HIST");
+	hdc2_cnh->SetLineColor(2);
 	// formatting
 	pad->SetTicks();
 	pad->SetGrid();
-	hdc2_mh_antinu->GetXaxis()->SetTitle("#delta_{CP}");
-	hdc2_mh_antinu->GetYaxis()->SetTitle("#Delta#chi^{2}_{MH}");
+	hdc2_mh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	hdc2_mh->GetYaxis()->SetTitle("#Delta#chi^{2}_{MH}");
 	///
 
 
