@@ -13,7 +13,7 @@ void read_spectrum(initial_spectrum* s);
 float chisq(const float* y, const float* l, int N) {
 	float c2 = 0.;
 	for (int i=0; i<N; ++i) {
-		c2 += pow(y[i] - l[i], 2) / l[i];
+		c2 += pow(y[i] - l[i], 2) / pow(N, 1);
 	}
 	return c2;
 }
@@ -36,10 +36,6 @@ void nuspectrum() {
 	initial_spectrum nu;
 	// and in the antineutrino mode
 	initial_spectrum antinu;
-	// TODO Cleanup antinu things,
-	// let's start with simple
-	// we'll do only the neutrino mode, but we still need the hierarchy stuff
-	// and we can probably salvage some of the deltaCP exploration stuff as well
 
 
 	gStyle->SetOptStat(0);
@@ -65,27 +61,36 @@ void nuspectrum() {
 	plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
 	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
 	
-	//normalize(&nu);
-
+	// Do the best-fit oscillation
 	propagate(&nu, &best_fit_nu);
 
-	// Draw propagated and normalized spectrum
+	// Draw best-fit parameter oscillated and normalized spectra
 	TCanvas* c2 = new TCanvas();
 	c2->SetLogy();
-	TH1* hmu = new TH1F("hmup", "", 50, 0., 10.);
-	TH1* hamu = new TH1F("hamup", "", 50, 0., 10.);
-	TH1* he = new TH1F("hep", "", 50, 0., 10.);
-	TH1* hae = new TH1F("haep", "", 50, 0., 10.);
+	c2->SetGrid();
+	TH1* hmu = new TH1F("#nu_{#mu}", "", 50, 0., 10.);
+	TH1* hamu = new TH1F("#bar{#nu}_{#mu}", "", 50, 0., 10.);
+	TH1* he = new TH1F("#nu_{e}", "", 50, 0., 10.);
+	TH1* hae = new TH1F("#bar{#nu}_{e}", "", 50, 0., 10.);
 	for (int i=0; i<50; ++i) {
 		hmu->Fill(0.2 * i + 1e-2, best_fit_nu.mu[i]);
 		hamu->Fill(0.2 * i + 1e-2, best_fit_nu.antimu[i]);
 		he->Fill(0.2 * i + 1e-2, best_fit_nu.e[i]);
 		hae->Fill(0.2 * i + 1e-2, best_fit_nu.antie[i]);
 	}
+	hmu->SetLineWidth(2);
+	he->SetLineWidth(2);
+	hae->SetLineWidth(2);
+	hamu->SetLineWidth(2);
+	hmu->SetLineColor(1);
+	he->SetLineColor(2);
+	hae->SetLineColor(6);
+	hamu->SetLineColor(4);
 	hmu->Draw("HIST");
 	he->Draw("HIST SAME");
 	hae->Draw("HIST SAME");
 	hamu->Draw("HIST SAME");
+	c2->BuildLegend();
 	// For now we need to take one of our propagations as the data set, so we'll pick the one
 	// with best fit parameters.
 	// Then we'll fit that to a bunch of predictions, changing both the hierarchy and 
@@ -141,8 +146,8 @@ void nuspectrum() {
 
 	float delta_c2_mh_nu[N];
 
+	// Calculate Delta chi squared
 	for (int i=0; i<N; ++i) {
-		//Printf("%f %f", c2_nu_test_0 - c2_nu_nh[i], c2_nu_test_pi - c2_nu_nh[i]);
 		delta_c2_cpv_nh_nu[i] = (min(c2_nu_nh_0 - c2_nu_nh[i],
 				    		    	c2_nu_nh_pi - c2_nu_nh[i]));
 		
@@ -150,7 +155,6 @@ void nuspectrum() {
 									c2_nu_ih_pi - c2_nu_ih[i]));
 
 		delta_c2_mh_nu[i] = c2_nu_ih[i] - c2_nu_nh[i];
-		//Printf("%f", delta_c2_mh_nu[i]);
 	}
 
 	// This canvas contains the plots for the neutrino mode: delta_CPV and delta_MH
@@ -166,9 +170,10 @@ void nuspectrum() {
 	}
 	hdc2_nh->Draw("HIST");
 	hdc2_ih->SetLineColor(2);
-	hdc2_ih->Draw("HIST SAME");
+	// Comment this for now until we get more instructions
+	//hdc2_ih->Draw("HIST SAME");
 	// formatting
-	pad->BuildLegend();
+	//pad->BuildLegend();
 	pad->SetTicks();
 	pad->SetGrid();
 	hdc2_nh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
@@ -178,20 +183,29 @@ void nuspectrum() {
 
 	pad = (TPad*)c4->GetPad(1);
 	pad->cd();
-	TH1* hdc2_mh = new TH1F("hdc2_mh", "", N, 0., 2.);
-	TH1* hdc2_cnh = new TH1F("hdc2_cnh", "", N, 0., 2.);
-	TH1* hdc2_cih = new TH1F("hdc2_cih", "", N, 0., 2.);
+	TH1* hdc2_mh = new TH1F("#Delta #chi^{2}_{MH}", "", N, 0., 2.);
+	TH1* hdc2_cnh = new TH1F("#chi^{2} (nh)", "", N, 0., 2.);
+	TH1* hdc2_cih = new TH1F("#chi^{2} (ih)", "", N, 0., 2.);
 	for (int i=0; i<N; ++i) {
 		hdc2_mh->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_mh_nu[i]);
 		hdc2_cnh->Fill((float)i / (float)N * 2. + 1e-3, c2_nu_nh[i]);
 		hdc2_cih->Fill((float)i / (float)N * 2. + 1e-3, c2_nu_ih[i]);
 	}
 	hdc2_mh->Draw("HIST");
+	hdc2_mh->SetLineWidth(2);
+	hdc2_mh->SetLineColor(1);
+
 	hdc2_cnh->Draw("HIST SAME");
 	hdc2_cih->Draw("HIST SAME");
 	hdc2_mh->SetMinimum(0);
 	pad->BuildLegend();
-	hdc2_cnh->SetLineColor(2);
+	hdc2_cih->SetLineColor(2);
+	hdc2_cih->SetLineStyle(3);
+	hdc2_cih->SetLineWidth(2);
+
+	hdc2_cnh->SetLineStyle(3);
+	hdc2_cnh->SetLineWidth(2);
+
 	// formatting
 	pad->SetTicks();
 	pad->SetGrid();
