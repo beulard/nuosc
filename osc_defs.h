@@ -50,7 +50,7 @@ struct hierarchy {
 
 
 //	helper function to populate hierarchy object
-void populate(hierarchy* h, h_type t, float d_cp = -1.);
+void populate(hierarchy* h, h_type t, float d_cp = -1111.);
 //	does not change numerical data but calculates derived quantities (trigonometrics, MNS) 
 void populate_common(hierarchy* h);
 

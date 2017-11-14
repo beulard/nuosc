@@ -1,11 +1,11 @@
 // delta m32^2 (eV^2)
-const double dm2 = 2.50e-3;
+//const double dm2 = 2.50e-3;
 // mixing = sin^2(2 * theta23) (delta m^2 < 0)
 const double mixing = 0.90;
  
-double sinsq(double x) {
+/*double sinsq(double x) {
 	return TMath::Power(TMath::Sin(x), 2);
-}
+}*/
 
 // transition probability
 double Pt(double x, double mix, double dm2) {
@@ -24,6 +24,7 @@ void twonu() {
 	f1->SetParameter(1, dm2);
 	f2->SetParameter(1, dm2);
 
+	f2->SetNpx(10000);
 	f2->SetTitle("");
 	f2->SetMaximum(1.0);
 	f2->SetMinimum(0.0);

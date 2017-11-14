@@ -1,9 +1,10 @@
 #include "helper.h"
 #include "vector.h"
 #include "numath.h"
-#include "osc_defs_common.h"
+#include "osc_defs.h"
 #include <complex>
 
+hierarchy* h = new hierarchy;
 
 //	probability of a neutrino initially in flavor a to transition to flavor b, as a function
 //	of L/E (km/GeV) expression from zuber p. 192
@@ -12,15 +13,15 @@ double P(flavor a, flavor b, double x) {
 
 	//	formula found in Zuber p.192
 	for(int i=0; i<3; ++i) {
-		p += pow(abs(MNS[a*3 + i] * std::conj(MNS[b*3 + i])), 2);
+		p += pow(abs(h->MNS[a*3 + i] * std::conj(h->MNS[b*3 + i])), 2);
 	}
 
 	for(int i=0; i<3; ++i) {
 		for(int j=0; j<3; ++j) {
 			if(j > i) {
-				p += 2. * real(MNS[a*3 + i] * conj(MNS[a*3 + j]) 
-				  * conj(MNS[b*3 + i]) * MNS[b*3 + j] 
-				  * exp(complex<double>(-2.i * 1.2668 * dm2_mat[i*3 + j] * x)));
+				p += 2. * real(h->MNS[a*3 + i] * conj(h->MNS[a*3 + j]) 
+				  * conj(h->MNS[b*3 + i]) * h->MNS[b*3 + j] 
+				  * exp(complex<double>(-2.i * 1.2668 * h->dm2_mat[i*3 + j] * x)));
 			}
 		}
 	}
@@ -52,11 +53,18 @@ double plot_P(double* x, double* par) {
 }
 
 //	main: in_f is the flavor at t=0
-void nucp(int in_f = 0) {
-	//	calculate MNS matrix by multiplying rotations
-	complex<double> temp[9];
-	mat_mult(MNS_23, MNS_13, temp);
-	mat_mult(temp, MNS_12, MNS);
+void nucpnew(int in_f = 0) {
+	populate(h, IH);
+
+	// Test if the probability adds up to 1 at every point.
+	// It does!
+	/*int N = 35000;
+	for (int i=0; i<N; ++i) {
+		// we want L to go from 15000 to 25000
+		float L = 0 + (float)i / N * 35000.;
+		float totP = P(f_e, f_e, L) + P(f_e, f_m, L) + P(f_e, f_t, L);
+		Printf("%f", totP);
+	}*/
 	
 	TCanvas* c1 = new TCanvas();
 	if(in_f == f_e) {

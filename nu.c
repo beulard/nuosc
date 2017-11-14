@@ -2,7 +2,7 @@
 #include "helper.h"
 
 //	baseline for experiment: DUNE has L = 1300km
-const double L = 1300.0;
+//const double L = 1300.0;
 
 //	hierarchies to be used: combinations of normal and inverted 
 //	those first two are the best fit delta hierarchies

@@ -13,7 +13,7 @@ void read_spectrum(initial_spectrum* s);
 float chisq(const float* y, const float* l, int N) {
 	float c2 = 0.;
 	for (int i=0; i<N; ++i) {
-		c2 += pow(y[i] - l[i], 2) / pow(N, 1);
+		c2 += pow(y[i] - l[i], 2) / 10000;
 	}
 	return c2;
 }
@@ -22,7 +22,7 @@ float chisq(const float* y, const float* l, int N) {
 float spectrum_chisq(hierarchy* h, const initial_spectrum* is, const spectrum* data) {
 	spectrum s;
 	// assign hierarchy
-	s.h = *h;
+	s.h = h;
 	
 	// propagate spectrum 
 	propagate(is, &s);
@@ -43,7 +43,10 @@ void nuspectrum() {
 	// best fit spectra, with best fit angles, delta, normal hierarchy
 	// this will be used as our 'experimental' data when fitting with different parameters
 	spectrum best_fit_nu;
-	populate(&best_fit_nu.h, NH);
+	// Populate can now cause segfault if we forget to assign a spectrum's hierarchy to a
+	// valid object. Careful!
+	best_fit_nu.h = new hierarchy;
+	populate(best_fit_nu.h, NH, 0.);
 
 	// read data from root file
 	read_spectrum(&nu);
@@ -58,26 +61,32 @@ void nuspectrum() {
 
 	
 	// plot the initial spectrum (un-normalized)
-	plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
+	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
 	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
 	
 	// Do the best-fit oscillation
 	propagate(&nu, &best_fit_nu);
 
 	// Draw best-fit parameter oscillated and normalized spectra
-	TCanvas* c2 = new TCanvas();
+	/*TCanvas* c2 = new TCanvas();
 	c2->SetLogy();
 	c2->SetGrid();
 	TH1* hmu = new TH1F("#nu_{#mu}", "", 50, 0., 10.);
 	TH1* hamu = new TH1F("#bar{#nu}_{#mu}", "", 50, 0., 10.);
 	TH1* he = new TH1F("#nu_{e}", "", 50, 0., 10.);
 	TH1* hae = new TH1F("#bar{#nu}_{e}", "", 50, 0., 10.);
+	float norms[4] = {0};
 	for (int i=0; i<50; ++i) {
 		hmu->Fill(0.2 * i + 1e-2, best_fit_nu.mu[i]);
+		norms[0] += 0.2 * best_fit_nu.mu[i];
+		norms[1] += 0.2 * best_fit_nu.antimu[i];
+		norms[2] += 0.2 * best_fit_nu.e[i];
+		norms[3] += 0.2 * best_fit_nu.antie[i];
 		hamu->Fill(0.2 * i + 1e-2, best_fit_nu.antimu[i]);
 		he->Fill(0.2 * i + 1e-2, best_fit_nu.e[i]);
 		hae->Fill(0.2 * i + 1e-2, best_fit_nu.antie[i]);
 	}
+	//Printf("%f %f %f %f", norms[0], norms[1], norms[2], norms[3]);
 	hmu->SetLineWidth(2);
 	he->SetLineWidth(2);
 	hae->SetLineWidth(2);
@@ -86,11 +95,12 @@ void nuspectrum() {
 	he->SetLineColor(2);
 	hae->SetLineColor(6);
 	hamu->SetLineColor(4);
+	hmu->SetMinimum(1);
 	hmu->Draw("HIST");
 	he->Draw("HIST SAME");
 	hae->Draw("HIST SAME");
 	hamu->Draw("HIST SAME");
-	c2->BuildLegend();
+	c2->BuildLegend();*/
 	// For now we need to take one of our propagations as the data set, so we'll pick the one
 	// with best fit parameters.
 	// Then we'll fit that to a bunch of predictions, changing both the hierarchy and 
@@ -114,16 +124,44 @@ void nuspectrum() {
 	// Here we calculate a chi squared between best fit spectrum and 
 	// explored spectrum, for a normal and inverted hierarchy propagation
 	// but wait we have different normalizations for nh and ih
+	hierarchy nh;
+	hierarchy ih;
 	for (int i=0; i<N; ++i) {
-		d_cp[i] = (float)i / (float)N * 2. * TMath::Pi();
-		hierarchy nh;
+		memset(&nh, 0, sizeof(hierarchy));
+		memset(&ih, 0, sizeof(hierarchy));
+
+		d_cp[i] = ((float)i / (float)N * 2. - 1.) * TMath::Pi();
 		populate(&nh, NH, d_cp[i]);
 		c2_nu_nh[i] = spectrum_chisq(&nh, &nu, &best_fit_nu);
 
-		hierarchy ih;
 		populate(&ih, IH, d_cp[i]);
 		c2_nu_ih[i] = spectrum_chisq(&ih, &nu, &best_fit_nu);
 	}
+
+	// TODO investigate this 
+	// something fishy is happening
+	// why are my chi squareds skyrocketing
+	// and why do they go negative???
+	hierarchy testh;
+	populate(&testh, IH, d_cp[0]); 
+	spectrum tests;
+	tests.h = &testh;
+	propagate(&nu, &tests);
+
+	TCanvas* cc = new TCanvas();
+	TH1* test0h = new TH1F("test0h", "", 50, 0., 10.);
+	TH1* test5h = new TH1F("test5h", "", 50, 0., 10.);
+	for(int i=0; i<50; ++i) {
+		test0h->Fill(0.2 * i + 1e-3, best_fit_nu.e[i]);
+		test5h->Fill(0.2 * i + 1e-3, tests.e[i]);
+		Printf("dif %f", pow(best_fit_nu.e[i] - tests.e[i], 2));
+	}
+	cc->SetLogy();
+	test0h->SetLineWidth(2);
+	test0h->SetLineColor(2);
+	test5h->SetLineWidth(2);
+	test0h->Draw("HIST");
+	test5h->Draw("SAME HIST");
 
 	// We also need the delta_cp test values, 0 and pi
 	hierarchy nh_0;
@@ -162,11 +200,11 @@ void nuspectrum() {
 	c4->Divide(1, 2);
 	TPad* pad = (TPad*)c4->GetPad(2);
 	pad->cd();
-	TH1* hdc2_nh = new TH1F("normal hierarchy", "", N, 0., 2.);
-	TH1* hdc2_ih = new TH1F("inverted hierarchy", "", N, 0., 2.);
+	TH1* hdc2_nh = new TH1F("normal hierarchy", "", N, -1., 1.);
+	TH1* hdc2_ih = new TH1F("inverted hierarchy", "", N, -1., 1.);
 	for (int i=0; i<N; ++i) {
-		hdc2_nh->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_cpv_nh_nu[i]);
-		hdc2_ih->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_cpv_ih_nu[i]);
+		hdc2_nh->Fill((float)i / (float)N * 2. - 1. + 1e-3, delta_c2_cpv_nh_nu[i]);
+		hdc2_ih->Fill((float)i / (float)N * 2. - 1. + 1e-3, delta_c2_cpv_ih_nu[i]);
 	}
 	hdc2_nh->Draw("HIST");
 	hdc2_ih->SetLineColor(2);
@@ -183,13 +221,13 @@ void nuspectrum() {
 
 	pad = (TPad*)c4->GetPad(1);
 	pad->cd();
-	TH1* hdc2_mh = new TH1F("#Delta #chi^{2}_{MH}", "", N, 0., 2.);
-	TH1* hdc2_cnh = new TH1F("#chi^{2} (nh)", "", N, 0., 2.);
-	TH1* hdc2_cih = new TH1F("#chi^{2} (ih)", "", N, 0., 2.);
+	TH1* hdc2_mh = new TH1F("#Delta #chi^{2}_{MH}", "", N, -1., 1.);
+	TH1* hdc2_cnh = new TH1F("#chi^{2} (nh)", "", N, -1., 1.);
+	TH1* hdc2_cih = new TH1F("#chi^{2} (ih)", "", N, -1., 1.);
 	for (int i=0; i<N; ++i) {
-		hdc2_mh->Fill((float)i / (float)N * 2. + 1e-3, delta_c2_mh_nu[i]);
-		hdc2_cnh->Fill((float)i / (float)N * 2. + 1e-3, c2_nu_nh[i]);
-		hdc2_cih->Fill((float)i / (float)N * 2. + 1e-3, c2_nu_ih[i]);
+		hdc2_mh->Fill((float)i / (float)N * 2. - 1. + 1e-3, delta_c2_mh_nu[i]);
+		hdc2_cnh->Fill((float)i / (float)N * 2. - 1. + 1e-3, c2_nu_nh[i]);
+		hdc2_cih->Fill((float)i / (float)N * 2. - 1. + 1e-3, c2_nu_ih[i]);
 	}
 	hdc2_mh->Draw("HIST");
 	hdc2_mh->SetLineWidth(2);
@@ -197,7 +235,7 @@ void nuspectrum() {
 
 	hdc2_cnh->Draw("HIST SAME");
 	hdc2_cih->Draw("HIST SAME");
-	hdc2_mh->SetMinimum(0);
+	//hdc2_mh->SetMinimum(0);
 	pad->BuildLegend();
 	hdc2_cih->SetLineColor(2);
 	hdc2_cih->SetLineStyle(3);

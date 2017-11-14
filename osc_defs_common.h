@@ -1,5 +1,5 @@
 // change this line to change hierarchy everywhere
-#include "osc_defs_NH.h"
+#include "osc_defs_IH.h"
 
 
 // mass difference matrix, for indexing

@@ -14,7 +14,7 @@ void populate_nh(hierarchy* h, float d_cp) {
 	h->t13 = TMath::ASin(TMath::Sqrt(0.0214));
 
 	// Default to best fit value
-	if (d_cp < 0.) {
+	if (d_cp < -1000.) {
 		h->d_cp = TMath::Pi() * 1.35;
 	} else {
 		h->d_cp = d_cp;
@@ -32,7 +32,7 @@ void populate_ih(hierarchy* h, float d_cp) {
 	h->t13 = TMath::ASin(TMath::Sqrt(0.0218));
 	
 	// Default to best fit value
-	if (d_cp < 0.) {
+	if (d_cp < -1000.) {
 		h->d_cp = TMath::Pi() * 1.32;
 	} else {
 		h->d_cp = d_cp;

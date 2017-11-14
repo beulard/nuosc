@@ -45,7 +45,7 @@ const float ih_norm[N_NORMS] = { 495., 26., 159., 10842., 958. };
 
 
 struct spectrum {
-	hierarchy h;
+	hierarchy* h;
 
 	float fluxes[N_FLUXES][50];
 	// predicted fluxes at the far detector

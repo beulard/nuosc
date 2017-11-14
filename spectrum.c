@@ -24,7 +24,7 @@ double P(flavor a, flavor b, float E, hierarchy* h, bool anti) {
 		for(int i=0; i<3; ++i) {
 			for(int j=0; j<3; ++j) {
 				if(j > i) {
-					p += 2. * real(h->MNS[a*3 + i] * std::conj(h->MNS[a*3 + j]) 
+					p += 2. * real(h->MNS[a*3 + i] * conj(h->MNS[a*3 + j]) 
 							* conj(h->MNS[b*3 + i]) * h->MNS[b*3 + j]
 							* exp(complex<double>(-2.i * 1.2668 *  h->dm2_mat[i*3 + j] * L/E)));
 				}
@@ -34,10 +34,29 @@ double P(flavor a, flavor b, float E, hierarchy* h, bool anti) {
 	return p;
 }
 
+// Oscillation probability for nu_mu -> nu_e or antinu_mu -> antinu_e
+// including matter effects (CDR vol. 2 p.19)
+float P_me(float E, hierarchy* h, bool anti) {
+	float d_31 = 1.2669 * h->dm2_mat[2 * 3 + 0] * L / E;
+	float d_21 = 1.2669 * h->dm2_mat[1 * 3 + 0] * L / E; 
+	float a = anti ? -4.255e-4 : 4.255e-4;
+	float d_cp = anti ? -h->d_cp : h->d_cp;
+
+	float p = pow(sin(h->t23) * sin(2*h->t13) * sin(d_31 - a*L) / (d_31 - a*L) * d_31, 2) 
+			 
+			 + sin(2*h->t23) * sin(2*h->t13) * sin(2*h->t12)
+			 * sin(d_31 - a*L) / (d_31 - a*L) * d_31 
+			 * sin(a*L) / (a*L) * d_21 * cos(d_31 + d_cp)
+
+			 + pow(cos(h->t23) * sin(2*h->t12) * sin(a*L) / (a*L) * d_21, 2);
+
+	return p;
+}
+
 
 // Propagate neutrinos for each flavor and for each energy and get the FD flux.
 void propagate(const initial_spectrum* is, spectrum* os) {	
-	hierarchy* h = &(os->h);
+	hierarchy* h = os->h;
 	
 	initial_spectrum s;
 	memcpy(&s, is, sizeof(initial_spectrum));
@@ -48,7 +67,7 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 	if (h->type == NH) {
 		norms = nh_norm;
 	} else if (h->type == IH) {
-		norms = ih_norm;
+		norms = nh_norm;
 	}
 
 	for (int i=0; i<50; ++i) {
@@ -73,6 +92,10 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 		// oscillated mu -> taus
 		fluxes[MU_TAU][i] = s.mu[i] * P(f_m, f_t, E, h, false);
 
+		// Test for matter effects
+		//float N_mu_e = s.mu[i] * P_me(E, h, false);
+		//float N_anti_mu_e = s.antimu[i] * P_me(E, h, true);
+
 		// same for electron
 		fluxes[E_SURVIVAL][i] = s.e[i] * P(f_e, f_e, E, h, false);
 		fluxes[E_MU][i] = s.e[i] * P(f_e, f_m, E, h, false);
@@ -89,7 +112,6 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 	}
 
 	// Now we normalize the fluxes to their respective FD predicted values
-	// First we calculate integrals
 	float integrals[N_FLUXES] = {0};
 	for (int i=0; i<N_FLUXES; ++i) {
 		// For the nu e antinu e background, aka the survival of nu e's and antinu e's,
@@ -136,36 +158,13 @@ void propagate(const initial_spectrum* is, spectrum* os) {
 		fluxes[MU_E][i] *= norms[E_SIGNAL];
 		fluxes[ANTIMU_ANTIE][i] *= norms[ANTIE_SIGNAL];
 		fluxes[MU_SURVIVAL][i] *= norms[MU_SIGNAL];
-		fluxes[ANTIMU_SURVIVAL][i] *= norms[ANTIMU_BACKGROUND];;
+		fluxes[ANTIMU_SURVIVAL][i] *= norms[ANTIMU_BACKGROUND];
 
 		// Omit fluxes that weren't normalized because they are negligible
 		os->mu[i] = /*fluxes[E_MU][i]*/ + fluxes[MU_SURVIVAL][i];
-		os->e[i] = fluxes[MU_E][i] + fluxes[E_SURVIVAL][i];
-		os->antimu[i] = /*fluxes[ANTIE_ANTIMU][i]*/ + fluxes[ANTIMU_SURVIVAL][i];
-		os->antie[i] = fluxes[ANTIMU_ANTIE][i] + fluxes[ANTIE_SURVIVAL][i];
+		os->e[i] = fluxes[MU_E][i]/* + fluxes[E_SURVIVAL][i]*/;
+		os->antimu[i] = /*fluxes[ANTIE_ANTIMU][i] +*/ fluxes[ANTIMU_SURVIVAL][i];
+		os->antie[i] = fluxes[ANTIMU_ANTIE][i]/* + fluxes[ANTIE_SURVIVAL][i]*/;
 	}
 
-}
-
-// Normalize the flux to the CDR predicted event rate (vol.2, p.27).
-// Mode is 0 for neutrino mode, 1 for antineutrino mode
-void normalize(initial_spectrum* s) {
-	float flux_mu, flux_e, flux_antimu, flux_antie = 0;
-
-	// Compute integrals
-	for (int i=0; i<50; ++i) {
-		// 0.2 is dE
-		flux_mu += 0.2 * s->mu[i];
-		flux_e += 0.2 * s->e[i];
-		flux_antimu += 0.2 * s->antimu[i];
-		flux_antie += 0.2 * s->antie[i];
-	}
-
-	// Now the integrals of all spectra are 1
-	for (int i=0; i<50; ++i) {
-		s->mu[i] /= flux_mu;
-		s->e[i] /= flux_e;
-		s->antimu[i] /= flux_antimu;
-		s->antie[i] /= flux_antie;
-	}
 }
