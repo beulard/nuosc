@@ -132,6 +132,7 @@ void nuspectrum() {
 
 	float dc2_mean[N] = {0};
 	float dc2_cp[N] = {0};
+	float dc2_cp_ih[N] = {0};
 
 
 	// Calculate mean delta chi squared at each d_cp
@@ -143,6 +144,15 @@ void nuspectrum() {
 	nhpis.h = &nhpi;
 	oscillate(&nu, &nh0s);
 	oscillate(&nu, &nhpis);
+
+	hierarchy ih0, ihpi;
+	populate(&ih0, IH, 0.);
+	populate(&ihpi, IH, TMath::Pi());
+	spectrum ih0s, ihpis;
+	ih0s.h = &ih0;
+	ihpis.h = &ihpi;
+	oscillate(&nu, &ih0s);
+	oscillate(&nu, &ihpis);
 
 	hierarchy nh, ih;
 	spectrum nhs, ihs;
@@ -169,7 +179,9 @@ void nuspectrum() {
 		dc2_mean[i] = mean_dc2(nhs.e, ihs.e, 50);
 		//dc2_mean[i] = mean_dc2(nhs.e, bestnhs.e, 50);
 		// TODO plot  same for ih
+		// try antineutrino mode
 		dc2_cp[i] = min(mean_dc2(nhs.e, nh0s.e, 50), mean_dc2(nhs.e, nhpis.e, 50));
+		dc2_cp_ih[i] = min(mean_dc2(ihs.e, ih0s.e, 50), mean_dc2(ihs.e, ihpis.e, 50));
 		//dc2_cp[i] = mean_dc2(nhs.e, nhpis.e, 50);
 	}
 
@@ -199,10 +211,12 @@ void nuspectrum() {
 	float x[N];
 	float y[N];
 	float y2[N];
+	float y3[N];
 	for (int i=0; i<N; ++i) {
 		x[i] = d_cp[i] / TMath::Pi();
 		y[i] = sqrt(dc2_mean[i]);
 		y2[i] = sqrt(dc2_cp[i]);
+		y3[i] = sqrt(dc2_cp_ih[i]);
 	}
 
 	TCanvas* c4 = new TCanvas();
@@ -217,7 +231,9 @@ void nuspectrum() {
 
 	TCanvas* c5 = new TCanvas();
 	TGraph* gdc2_cp = new TGraph(N, x, y2);
+	TGraph* gdc2_cp_ih = new TGraph(N, x, y3);
 	gdc2_cp->Draw("");
+	gdc2_cp_ih->Draw("same");
 	gdc2_cp->SetMaximum(10);
 	gdc2_cp->SetMinimum(0);
 	gdc2_cp->GetXaxis()->SetLimits(-1, 1);
