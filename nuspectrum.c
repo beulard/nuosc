@@ -1,4 +1,5 @@
 #include "spectrum.h"
+#include "helper.h"
 
 // plotting and helper functions
 void plot_initial(float* mu, float* antimu, float* e, float* antie);
@@ -13,22 +14,17 @@ void read_spectrum(initial_spectrum* s);
 float chisq(const float* y, const float* l, int N) {
 	float c2 = 0.;
 	for (int i=0; i<N; ++i) {
-		c2 += pow(y[i] - l[i], 2) / 10000;
+		c2 += pow(y[i] - l[i], 2) / N;
 	}
 	return c2;
 }
 
-// calculates the chi squared given a hierarchy and a measured spectrum 
-float spectrum_chisq(hierarchy* h, const initial_spectrum* is, const spectrum* data) {
-	spectrum s;
-	// assign hierarchy
-	s.h = h;
-	
-	// propagate spectrum 
-	propagate(is, &s);
-	
-	// now calculate the chi-squared
-	return chisq(data->e, s.e, 50);
+float mean_dc2(const float* nh, const float* ih, int N) {
+	float r = 0.;
+	for (int i=0; i<N; ++i) {
+		r += pow(nh[i] - ih[i], 2) / ih[i];
+	}
+	return r;
 }
 
 void nuspectrum() {
@@ -46,7 +42,7 @@ void nuspectrum() {
 	// Populate can now cause segfault if we forget to assign a spectrum's hierarchy to a
 	// valid object. Careful!
 	best_fit_nu.h = new hierarchy;
-	populate(best_fit_nu.h, NH, 0.);
+	populate(best_fit_nu.h, NH, 0.5 * TMath::Pi());
 
 	// read data from root file
 	read_spectrum(&nu);
@@ -56,20 +52,42 @@ void nuspectrum() {
 		antinu.mu[i] = nu.antimu[i];
 		antinu.antimu[i] = nu.mu[i];
 		antinu.e[i] = nu.antie[i];
-		antinu.antie[i] = nu.e[i];	
+		antinu.antie[i] = nu.e[i];
 	}
 
+	// perform average and plot it to see if it converges to mid point in the high
+	// frequency region especially
+	// apparently sampling 20 points from 0 to 10 looks pretty good
+	int Nvals = 20;
+	float xx[Nvals];
+	float yy[Nvals];
+	for (int i=0; i<Nvals; ++i) {
+		// for each point we sample 20 times to get average
+		int samples = 50;
+		float avg_P = 0.;
+		for (int j=0; j<samples; ++j) {
+			float E = 1e-6 + (float)i / (float) Nvals * 10. + (float)j / (float)samples * 0.2;
+			avg_P += P(f_m, f_m, E, best_fit_nu.h, false) / samples;
+		}
+		xx[i] = 10. * (float)i / (float)Nvals + 1e-6;
+		yy[i] = avg_P;
+	}
+	Printf("t12 %f t23 %f t13 %f", best_fit_nu.h->t12, best_fit_nu.h->t23, best_fit_nu.h->t13);
+	Printf("dm21 %e dm31 %e", best_fit_nu.h->dm2_mat[1 * 3 + 0], best_fit_nu.h->dm2_mat[2 * 3 + 0]);
+	//TCanvas* c6 = new TCanvas();
+	//TGraph* gP = new TGraph(Nvals, xx, yy);
+	//gP->Draw();
 	
 	// plot the initial spectrum (un-normalized)
 	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
 	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
 	
 	// Do the best-fit oscillation
-	propagate(&nu, &best_fit_nu);
+	oscillate(&nu, &best_fit_nu);
 
 	// Draw best-fit parameter oscillated and normalized spectra
 	/*TCanvas* c2 = new TCanvas();
-	c2->SetLogy();
+	//c2->SetLogy();
 	c2->SetGrid();
 	TH1* hmu = new TH1F("#nu_{#mu}", "", 50, 0., 10.);
 	TH1* hamu = new TH1F("#bar{#nu}_{#mu}", "", 50, 0., 10.);
@@ -95,199 +113,139 @@ void nuspectrum() {
 	he->SetLineColor(2);
 	hae->SetLineColor(6);
 	hamu->SetLineColor(4);
-	hmu->SetMinimum(1);
+	hmu->SetMinimum(1e-1);
 	hmu->Draw("HIST");
-	he->Draw("HIST SAME");
-	hae->Draw("HIST SAME");
 	hamu->Draw("HIST SAME");
-	c2->BuildLegend();*/
-	// For now we need to take one of our propagations as the data set, so we'll pick the one
-	// with best fit parameters.
-	// Then we'll fit that to a bunch of predictions, changing both the hierarchy and 
-	// delta.
-	// Then we'll plot the chi-squared difference against delta_cp on two plots.
-	// one for each hierarchy.
-	//
-	// Half of the exposure is done in the neutrino mode, and the other half in
-	// antineutrino mode.
-	// We want to simultaneously fit the oscillated spectra to the experimental data.
+	c2->BuildLegend();
+		
+	//TCanvas* cccc = new TCanvas();
+	he->Draw("HIST SAME");
+
+	//TCanvas* ccccc = new TCanvas();
+	hae->Draw("HIST SAME");
+	*/
 	
 	// As discussed in the CDR, we are exploring delta_CP(true) space and calculating
 	// a chi squared for each. 
-	int N = 100;
+	const int N = 200;
 	float d_cp[N];
 
-	float c2_nu_nh[N];
-	float c2_nu_ih[N];
+	float dc2_mean[N] = {0};
+	float dc2_cp[N] = {0};
 
 
-	// Here we calculate a chi squared between best fit spectrum and 
-	// explored spectrum, for a normal and inverted hierarchy propagation
-	// but wait we have different normalizations for nh and ih
-	hierarchy nh;
-	hierarchy ih;
+	// Calculate mean delta chi squared at each d_cp
+	hierarchy nh0, nhpi;
+	populate(&nh0, NH, 0.);
+	populate(&nhpi, NH, TMath::Pi());
+	spectrum nh0s, nhpis;
+	nh0s.h = &nh0;
+	nhpis.h = &nhpi;
+	oscillate(&nu, &nh0s);
+	oscillate(&nu, &nhpis);
+
+	hierarchy nh, ih;
+	spectrum nhs, ihs;
+	populate(&ih, IH);
+	ihs.h = &ih;
+	oscillate(&nu, &ihs);
+
+	hierarchy bestnh;
+	spectrum bestnhs;
+	populate(&bestnh, NH, 0.55 * TMath::Pi());
+	bestnhs.h = &bestnh;
+	oscillate(&nu, &bestnhs);
+
 	for (int i=0; i<N; ++i) {
-		memset(&nh, 0, sizeof(hierarchy));
-		memset(&ih, 0, sizeof(hierarchy));
-
-		d_cp[i] = ((float)i / (float)N * 2. - 1.) * TMath::Pi();
+		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * TMath::Pi();
 		populate(&nh, NH, d_cp[i]);
-		c2_nu_nh[i] = spectrum_chisq(&nh, &nu, &best_fit_nu);
-
 		populate(&ih, IH, d_cp[i]);
-		c2_nu_ih[i] = spectrum_chisq(&ih, &nu, &best_fit_nu);
+
+		nhs.h = &nh;
+		ihs.h = &ih;
+		oscillate(&nu, &nhs);
+		oscillate(&nu, &ihs);
+
+		dc2_mean[i] = mean_dc2(nhs.e, ihs.e, 50);
+		//dc2_mean[i] = mean_dc2(nhs.e, bestnhs.e, 50);
+		// TODO plot  same for ih
+		dc2_cp[i] = min(mean_dc2(nhs.e, nh0s.e, 50), mean_dc2(nhs.e, nhpis.e, 50));
+		//dc2_cp[i] = mean_dc2(nhs.e, nhpis.e, 50);
 	}
 
-	// TODO investigate this 
-	// something fishy is happening
-	// why are my chi squareds skyrocketing
-	// and why do they go negative???
-	hierarchy testh;
-	populate(&testh, IH, d_cp[0]); 
+	TCanvas* c3 = new TCanvas();
+	
+	const int p = 50;
+	populate(&nh, NH, 1. * TMath::Pi());
+	populate(&ih, IH, 1. * TMath::Pi());
+	nhs.h = &nh;
+	ihs.h = &ih;
+	oscillate(&nu, &nhs);
+	oscillate(&nu, &ihs);
+
+	TH1* hnh = new TH1F("hnh", "", 50, 0., 10.);
+	TH1* hih = new TH1F("hih", "", 50, 0., 10.);
+	for (int i=0; i<50; ++i) {
+		hnh->Fill(i*0.2 + 1e-3, nhs.e[i]);
+		hih->Fill(i*0.2 + 1e-3, ihs.e[i]);
+	}
+
+	hnh->SetLineWidth(2);
+	hnh->SetLineColor(2);
+	hih->SetLineWidth(2);
+	hnh->Draw("hist");
+	hih->Draw("hist same");
+
+	float x[N];
+	float y[N];
+	float y2[N];
+	for (int i=0; i<N; ++i) {
+		x[i] = d_cp[i] / TMath::Pi();
+		y[i] = sqrt(dc2_mean[i]);
+		y2[i] = sqrt(dc2_cp[i]);
+	}
+
+	TCanvas* c4 = new TCanvas();
+	TGraph* gdc2_mean = new TGraph(N, x, y);
+	gdc2_mean->Draw();
+	gdc2_mean->SetTitle("MH sensitivity");
+	gdc2_mean->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
+	gdc2_mean->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	gdc2_mean->GetXaxis()->SetLimits(-1., 1.);
+	gdc2_mean->SetMinimum(0);
+	gdc2_mean->SetMaximum(25);
+
+	TCanvas* c5 = new TCanvas();
+	TGraph* gdc2_cp = new TGraph(N, x, y2);
+	gdc2_cp->Draw("");
+	gdc2_cp->SetMaximum(10);
+	gdc2_cp->SetMinimum(0);
+	gdc2_cp->GetXaxis()->SetLimits(-1, 1);
+
+
+	/*memset(&nh, 0, sizeof(hierarchy));
+	int dcpidx = 25;
+	populate(&nh, IH, d_cp[dcpidx]); 
+	Printf("dcp / pi = %f", d_cp[dcpidx] / TMath::Pi());
 	spectrum tests;
-	tests.h = &testh;
-	propagate(&nu, &tests);
+	tests.h = &nh;
+	oscillate(&nu, &tests);
 
 	TCanvas* cc = new TCanvas();
 	TH1* test0h = new TH1F("test0h", "", 50, 0., 10.);
 	TH1* test5h = new TH1F("test5h", "", 50, 0., 10.);
 	for(int i=0; i<50; ++i) {
 		test0h->Fill(0.2 * i + 1e-3, best_fit_nu.e[i]);
+		//Printf("test %f", tests.e[i]);
 		test5h->Fill(0.2 * i + 1e-3, tests.e[i]);
-		Printf("dif %f", pow(best_fit_nu.e[i] - tests.e[i], 2));
+		//Printf("dif %f", pow(best_fit_nu.e[i] - tests.e[i], 1));
 	}
-	cc->SetLogy();
+	//cc->SetLogy();
 	test0h->SetLineWidth(2);
 	test0h->SetLineColor(2);
 	test5h->SetLineWidth(2);
 	test0h->Draw("HIST");
 	test5h->Draw("SAME HIST");
-
-	// We also need the delta_cp test values, 0 and pi
-	hierarchy nh_0;
-	hierarchy nh_pi;
-	hierarchy ih_0;
-	hierarchy ih_pi;
-	populate(&nh_0, NH, 0.);
-	populate(&nh_pi, NH, TMath::Pi());
-	populate(&ih_0, IH, 0.);
-	populate(&ih_pi, IH, TMath::Pi());
-	
-	float c2_nu_nh_0 = spectrum_chisq(&nh_0, &nu, &best_fit_nu);
-	float c2_nu_nh_pi = spectrum_chisq(&nh_pi, &nu, &best_fit_nu);
-	float c2_nu_ih_0 = spectrum_chisq(&ih_0, &nu, &best_fit_nu);
-	float c2_nu_ih_pi = spectrum_chisq(&ih_pi, &nu, &best_fit_nu);
-
-
-	float delta_c2_cpv_nh_nu[N];
-	float delta_c2_cpv_ih_nu[N];
-
-	float delta_c2_mh_nu[N];
-
-	// Calculate Delta chi squared
-	for (int i=0; i<N; ++i) {
-		delta_c2_cpv_nh_nu[i] = (min(c2_nu_nh_0 - c2_nu_nh[i],
-				    		    	c2_nu_nh_pi - c2_nu_nh[i]));
-		
-		delta_c2_cpv_ih_nu[i] = (min(c2_nu_ih_0 - c2_nu_ih[i],
-									c2_nu_ih_pi - c2_nu_ih[i]));
-
-		delta_c2_mh_nu[i] = c2_nu_ih[i] - c2_nu_nh[i];
-	}
-
-	// This canvas contains the plots for the neutrino mode: delta_CPV and delta_MH
-	TCanvas* c4 = new TCanvas("Neutrino mode", "", 900, 1000);
-	c4->Divide(1, 2);
-	TPad* pad = (TPad*)c4->GetPad(2);
-	pad->cd();
-	TH1* hdc2_nh = new TH1F("normal hierarchy", "", N, -1., 1.);
-	TH1* hdc2_ih = new TH1F("inverted hierarchy", "", N, -1., 1.);
-	for (int i=0; i<N; ++i) {
-		hdc2_nh->Fill((float)i / (float)N * 2. - 1. + 1e-3, delta_c2_cpv_nh_nu[i]);
-		hdc2_ih->Fill((float)i / (float)N * 2. - 1. + 1e-3, delta_c2_cpv_ih_nu[i]);
-	}
-	hdc2_nh->Draw("HIST");
-	hdc2_ih->SetLineColor(2);
-	// Comment this for now until we get more instructions
-	//hdc2_ih->Draw("HIST SAME");
-	// formatting
-	//pad->BuildLegend();
-	pad->SetTicks();
-	pad->SetGrid();
-	hdc2_nh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	hdc2_nh->GetYaxis()->SetTitle("| #Delta#chi^{2}_{CPV} |");
-	hdc2_nh->SetTitle("#nu mode");
-	///
-
-	pad = (TPad*)c4->GetPad(1);
-	pad->cd();
-	TH1* hdc2_mh = new TH1F("#Delta #chi^{2}_{MH}", "", N, -1., 1.);
-	TH1* hdc2_cnh = new TH1F("#chi^{2} (nh)", "", N, -1., 1.);
-	TH1* hdc2_cih = new TH1F("#chi^{2} (ih)", "", N, -1., 1.);
-	for (int i=0; i<N; ++i) {
-		hdc2_mh->Fill((float)i / (float)N * 2. - 1. + 1e-3, delta_c2_mh_nu[i]);
-		hdc2_cnh->Fill((float)i / (float)N * 2. - 1. + 1e-3, c2_nu_nh[i]);
-		hdc2_cih->Fill((float)i / (float)N * 2. - 1. + 1e-3, c2_nu_ih[i]);
-	}
-	hdc2_mh->Draw("HIST");
-	hdc2_mh->SetLineWidth(2);
-	hdc2_mh->SetLineColor(1);
-
-	hdc2_cnh->Draw("HIST SAME");
-	hdc2_cih->Draw("HIST SAME");
-	//hdc2_mh->SetMinimum(0);
-	pad->BuildLegend();
-	hdc2_cih->SetLineColor(2);
-	hdc2_cih->SetLineStyle(3);
-	hdc2_cih->SetLineWidth(2);
-
-	hdc2_cnh->SetLineStyle(3);
-	hdc2_cnh->SetLineWidth(2);
-
-	// formatting
-	pad->SetTicks();
-	pad->SetGrid();
-	hdc2_mh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	hdc2_mh->GetYaxis()->SetTitle("#Delta#chi^{2}_{MH}");
-	///
-
-
-
-	// now plot the final flux
-	// this plot is now obsolete: just for testing purposes
-	/*
-	TCanvas* c3 = new TCanvas("c3", "", 800, 800);
-	//c3->Divide(1, 2);
-	c3->SetLogy();
-	c3->SetTicks();
-
-
-	
-	TH1* hmu = new TH1F("Predicted #nu_{#mu} + #bar{#nu}_{#mu}", "", 50, 0., 10.);
-	TH1* he = new TH1F("Predicted #nu_{e} + #bar{#nu}_{e}", "", 50, 0., 10.);
-	TH1* htau = new TH1F("Predicted #nu_{#tau} + #bar{#nu}_{#tau}", "", 50, 0., 10.);
-	for (int i=0; i<50; ++i) {
-		hmu->Fill(0.2 * i, best_fit_nu.mu[i]);
-		he->Fill(0.2 * i, best_fit_nu.e[i]);
-		htau->Fill(0.2 * i, best_fit_nu.tau[i]);
-	}
-	hmu->SetLineWidth(2);
-	he->SetLineWidth(2);
-	htau->SetLineWidth(2);
-	hmu->SetLineColor(1);
-	hmu->SetMaximum(1e4);
-	hmu->SetMinimum(8e-2);
-	hmu->Draw("HIST");
-	he->SetLineColor(2);	
-	he->Draw("SAME HIST");
-	htau->SetLineColor(8);
-	htau->Draw("SAME HIST");
-
-	// plot original spectra as well
-	plot_particles(nu.mu, nu.e);
-	plot_antiparticles(nu.antimu, nu.antie);
-
-	c3->BuildLegend(0.7, 0.7, 0.9, 0.9);
 	*/
 }
 

@@ -69,10 +69,10 @@ struct initial_spectrum {
 
 // calculates probability of a neutrino flavor a to oscillate to flavor b,
 // given an energy E, a hierarchy h and a constant baseline
-double P(flavor a, flavor b, float E, hierarchy* h, bool anti);
+double P(flavor a, flavor b, double E, hierarchy* h, bool anti);
 
-// Propagate neutrinos for each flavor and for each energy and get the FD flux.
-void propagate(const initial_spectrum* is, spectrum* s);
+// Oscillate neutrinos for each flavor and for each energy and get the FD flux.
+void oscillate(const initial_spectrum* is, spectrum* s);
 
 // Normalize the flux to the CDR predicted event rate (vol.2, p.27).
 // Mode is 0 for neutrino mode, 1 for antineutrino mode

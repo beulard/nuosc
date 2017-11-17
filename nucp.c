@@ -53,8 +53,8 @@ double plot_P(double* x, double* par) {
 }
 
 //	main: in_f is the flavor at t=0
-void nucpnew(int in_f = 0) {
-	populate(h, IH);
+void nucp(int in_h = NH, int in_f = 0) {
+	populate(h, (h_type)in_h);
 
 	// Test if the probability adds up to 1 at every point.
 	// It does!

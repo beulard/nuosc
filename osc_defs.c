@@ -4,14 +4,20 @@
 #include "TString.h"
 
 void populate_nh(hierarchy* h, float d_cp) {
-	h->dm2_21 = 7.37e-5;
-	h->dm2 = 2.50e-3;
-	h->dm2_31 = h->dm2 + h->dm2_21 / 2.;
-	h->dm2_32 = h->dm2 - h->dm2_21 / 2.;
+	//h->dm2_21 = 7.37e-5;
+	h->dm2_21 = 7.5e-5;
+	//h->dm2 = 2.50e-3;
+	//h->dm2_31 = h->dm2 + h->dm2_21 / 2.;
+	//h->dm2_32 = h->dm2 - h->dm2_21 / 2.;
+	h->dm2_31 = 2.457e-3;
+	h->dm2_32 = h->dm2_31 - h->dm2_21;
 
-	h->t12 = TMath::ASin(TMath::Sqrt(0.297));
-	h->t23 = TMath::ASin(TMath::Sqrt(0.437));
-	h->t13 = TMath::ASin(TMath::Sqrt(0.0214));
+	//h->t12 = TMath::ASin(TMath::Sqrt(0.297));
+	//h->t23 = TMath::ASin(TMath::Sqrt(0.437));
+	//h->t13 = TMath::ASin(TMath::Sqrt(0.0214));
+	h->t12 = 0.5843;
+	h->t23 = 0.738;
+	h->t13 = 0.148;
 
 	// Default to best fit value
 	if (d_cp < -1000.) {
@@ -22,14 +28,20 @@ void populate_nh(hierarchy* h, float d_cp) {
 }
 
 void populate_ih(hierarchy* h, float d_cp) {
-	h->dm2_21 = 7.37e-5;
-	h->dm2 = -2.46e-3;
-	h->dm2_31 = h->dm2 + h->dm2_21 / 2.;
-	h->dm2_32 = h->dm2 - h->dm2_21 / 2.;
+	//h->dm2_21 = 7.37e-5;
+	h->dm2_21 = 7.5e-5;
+	h->dm2_31 = -2.449e-3;
+	//h->dm2 = -2.46e-3;
+	//h->dm2_31 = h->dm2 + h->dm2_21 / 2.;
+	//h->dm2_32 = h->dm2 - h->dm2_21 / 2.;
+	h->dm2_32 = h->dm2_31 - h->dm2_21;
 
-	h->t12 = TMath::ASin(TMath::Sqrt(0.297));
-	h->t23 = TMath::ASin(TMath::Sqrt(0.569));
-	h->t13 = TMath::ASin(TMath::Sqrt(0.0218));
+	//h->t12 = TMath::ASin(TMath::Sqrt(0.297));
+	//h->t23 = TMath::ASin(TMath::Sqrt(0.569));
+	//h->t13 = TMath::ASin(TMath::Sqrt(0.0218));
+	h->t12= 0.5843;
+	h->t23 = 0.864;
+	h->t13 = 0.148;
 	
 	// Default to best fit value
 	if (d_cp < -1000.) {
