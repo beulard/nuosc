@@ -16,7 +16,7 @@ void do_dc2(const initial_spectrum* s);
 float mean_dc2(const float* test, const float* tru, int N = 50.) {
 	float r = 0.;
 	for (int i=0; i<N; ++i) {
-		r += pow(test[i] - tru[i], 2) / tru[i];
+		r += pow(test[i] - tru[i], 2) / sqrt(N);
 	}
 	return r;
 }
@@ -31,12 +31,11 @@ void nuspectrum(int anti=0) {
 	gStyle->SetOptStat(0);
 
 	// best fit spectra, with best fit angles, delta, normal hierarchy
-	// this will be used as our 'experimental' data when fitting with different parameters
-	spectrum best_fit_nu;
+	//spectrum best_fit_nu;
 	// Populate can now cause segfault if we forget to assign a spectrum's hierarchy to a
 	// valid object. Careful!
-	best_fit_nu.h = new hierarchy;
-	populate(best_fit_nu.h, NH, 0.5 * pi);
+	//best_fit_nu.h = new hierarchy;
+	//populate(best_fit_nu.h, NH, 0.5 * pi);
 
 	// read data from root file
 	read_spectrum(&nu);
@@ -49,143 +48,24 @@ void nuspectrum(int anti=0) {
 		antinu.antie[i] = nu.e[i];
 	}
 
-	/*
-	// perform average and plot it to see if it converges to mid point in the high
-	// frequency region especially
-	// apparently sampling 20 points from 0 to 10 looks pretty good
-	int Nvals = 50;
-	float xx[Nvals];
-	float yy[Nvals];
-	for (int i=0; i<Nvals; ++i) {
-		// for each point we sample 20 times to get average
-		int samples = 50;
-		float avg_P = 0.;
-		for (int j=0; j<samples; ++j) {
-			float E = 1e-6 + (float)i / (float) Nvals * 10. + (float)j / (float)samples * 0.2;
-			avg_P += P(f_m, f_m, E, best_fit_nu.h, false) / samples;
-		}
-		xx[i] = 10. * (float)i / (float)Nvals + 1e-6;
-		yy[i] = avg_P;
-	}
-	//Printf("t12 %f t23 %f t13 %f", best_fit_nu.h->t12, best_fit_nu.h->t23, best_fit_nu.h->t13);
-	//Printf("dm21 %e dm31 %e", best_fit_nu.h->dm2_mat[1 * 3 + 0], best_fit_nu.h->dm2_mat[2 * 3 + 0]);
-	*/
-	//TCanvas* c6 = new TCanvas();
-	//TGraph* gP = new TGraph(Nvals, xx, yy);
-	//gP->Draw();
 	
 	// plot the initial spectrum (un-normalized)
 	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
 	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
 	
 	// Do the best-fit oscillation
-	oscillate(&nu, &best_fit_nu);
+	//oscillate(&nu, &best_fit_nu);
 
-	// Draw best-fit parameter oscillated and normalized spectra
-	/*TCanvas* c2 = new TCanvas();
-	//c2->SetLogy();
-	c2->SetGrid();
-	TH1* hmu = new TH1F("#nu_{#mu}", "", 50, 0., 10.);
-	TH1* hamu = new TH1F("#bar{#nu}_{#mu}", "", 50, 0., 10.);
-	TH1* he = new TH1F("#nu_{e}", "", 50, 0., 10.);
-	TH1* hae = new TH1F("#bar{#nu}_{e}", "", 50, 0., 10.);
-	float norms[4] = {0};
-	for (int i=0; i<50; ++i) {
-		hmu->Fill(0.2 * i + 1e-2, best_fit_nu.mu[i]);
-		norms[0] += 0.2 * best_fit_nu.mu[i];
-		norms[1] += 0.2 * best_fit_nu.antimu[i];
-		norms[2] += 0.2 * best_fit_nu.e[i];
-		norms[3] += 0.2 * best_fit_nu.antie[i];
-		hamu->Fill(0.2 * i + 1e-2, best_fit_nu.antimu[i]);
-		he->Fill(0.2 * i + 1e-2, best_fit_nu.e[i]);
-		hae->Fill(0.2 * i + 1e-2, best_fit_nu.antie[i]);
-	}
-	//Printf("%f %f %f %f", norms[0], norms[1], norms[2], norms[3]);
-	hmu->SetLineWidth(2);
-	he->SetLineWidth(2);
-	hae->SetLineWidth(2);
-	hamu->SetLineWidth(2);
-	hmu->SetLineColor(1);
-	he->SetLineColor(2);
-	hae->SetLineColor(6);
-	hamu->SetLineColor(4);
-	hmu->SetMinimum(1e-1);
-	hmu->Draw("HIST");
-	hamu->Draw("HIST SAME");
-	c2->BuildLegend();
-		
-	//TCanvas* cccc = new TCanvas();
-	he->Draw("HIST SAME");
-
-	//TCanvas* ccccc = new TCanvas();
-	hae->Draw("HIST SAME");
-	*/
 	
-	// As discussed in the CDR, we are exploring delta_CP(true) space and calculating
-	// a chi squared for each. 
-	//const int N = 200;
-
+	// Main functions
 	if(anti)
 		do_dc2(&antinu);
 	else
 		do_dc2(&nu);
-
-
-	// Draw test spectra at given d_cp
-	/*const int p = 50;
-	populate(&nh, NH, 0. * pi);
-	populate(&ih, IH, -.5 * pi);
-	nhs.h = &nh;
-	ihs.h = &ih;
-	oscillate(&nu, &nhs);
-	oscillate(&nu, &ihs);
-
-	TCanvas* c3 = new TCanvas();
-	TH1* hnh = new TH1F("hnh", "", 50, 0., 10.);
-	TH1* hih = new TH1F("hih", "", 50, 0., 10.);
-	for (int i=0; i<50; ++i) {
-		hnh->Fill(i*0.2 + 1e-3, nhs.e[i]);
-		hih->Fill(i*0.2 + 1e-3, ihs.e[i]);
-	}
-
-	hnh->SetLineWidth(2);
-	hnh->SetLineColor(2);
-	hih->SetLineWidth(2);
-	hnh->Draw("hist");
-	hih->Draw("hist same");
-	c3->BuildLegend();
-	*/
-
-	// Test
-	/*memset(&nh, 0, sizeof(hierarchy));
-	int dcpidx = 25;
-	populate(&nh, IH, d_cp[dcpidx]); 
-	Printf("dcp / pi = %f", d_cp[dcpidx] / pi);
-	spectrum tests;
-	tests.h = &nh;
-	oscillate(&nu, &tests);
-
-	TCanvas* cc = new TCanvas();
-	TH1* test0h = new TH1F("test0h", "", 50, 0., 10.);
-	TH1* test5h = new TH1F("test5h", "", 50, 0., 10.);
-	for(int i=0; i<50; ++i) {
-		test0h->Fill(0.2 * i + 1e-3, best_fit_nu.e[i]);
-		//Printf("test %f", tests.e[i]);
-		test5h->Fill(0.2 * i + 1e-3, tests.e[i]);
-		//Printf("dif %f", pow(best_fit_nu.e[i] - tests.e[i], 1));
-	}
-	//cc->SetLogy();
-	test0h->SetLineWidth(2);
-	test0h->SetLineColor(2);
-	test5h->SetLineWidth(2);
-	test0h->Draw("HIST");
-	test5h->Draw("SAME HIST");
-	*/
 }
 
-
 void do_dc2(const initial_spectrum* s) {
-	const int N = 40;
+	const int N = 80;
 	float d_cp[N];
 
 	// Delta chi squared for the mass hierarchy assuming true normal hierarchy
@@ -215,54 +95,47 @@ void do_dc2(const initial_spectrum* s) {
 	oscillate(s, &ih0s);
 	oscillate(s, &ihpis);
 
-	hierarchy nh, ih;
-	spectrum nhs, ihs;
-	ihs.h = &ih;
-	nhs.h = &nh;
+	hierarchy nh[N], ih[N];
+	spectrum nhs[N], ihs[N];
 
-	hierarchy true_nh, true_ih;
-	spectrum true_nhs, true_ihs;
-	populate(&true_nh, NH, 0.4226 * pi);
-	populate(&true_ih, IH, -0.4526 * pi);
-	true_nhs.h = &true_nh;
-	true_ihs.h = &true_ih;
-	oscillate(s, &true_nhs);
-	oscillate(s, &true_ihs);
-	
+	// We can calculate all the spectra beforehand to save cpu when taking chisquared
 	for (int i=0; i<N; ++i) {
 		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * pi;
-		populate(&nh, NH, d_cp[i]);
-		populate(&ih, IH, d_cp[i]);
+		nhs[i].h = &nh[i];
+		ihs[i].h = &ih[i];
+		populate(&nh[i], NH, d_cp[i]);
+		populate(&ih[i], IH, d_cp[i]);
 
-		oscillate(s, &nhs);
-		oscillate(s, &ihs);
-		
+		oscillate(s, &nhs[i]);
+		oscillate(s, &ihs[i]);
+
+		Printf("%d/%d", i+1, N);
+	}
+	
+	// Loop over delta_CP values
+	for (int i=0; i<N; ++i) {
 		// for each d_cp we want to calculate the minimum corresponding delta chi squared
 		float min_dc2_n = 1e9;
 		float min_dc2_i = 1e9;
-		for (int j=0; j<N; ++j) {
-			// delta CP to be used as the true value
-			float delta = ((float)j / (float)(N-1) * 2. - 1.) * pi;
-			populate(&true_nh, NH, delta);
-			populate(&true_ih, IH, delta);
-			oscillate(s, &true_nhs);
-			oscillate(s, &true_ihs);
 
-			float dc2_n = mean_dc2(ihs.e, true_nhs.e);
-			//Printf("\t%f", dc2_n);
-			float dc2_i = mean_dc2(nhs.e, true_ihs.e);
+		// So we perform another loop over delta_CP and take the minimum chi squared we find
+		for (int j=0; j<N; ++j) {
+			float delta = ((float)j / (float)(N-1) * 2. - 1.) * pi;
+
+			// When we assume normal hierarchy, the NH spectrum is fixed in i and we
+			// search the IH with j
+			float dc2_n = mean_dc2(ihs[j].e, nhs[i].e);
+			// Vice versa
+			float dc2_i = mean_dc2(nhs[j].e, ihs[i].e);
 			min_dc2_n = min(dc2_n, min_dc2_n);
 			min_dc2_i = min(dc2_i, min_dc2_i);
 		}
-		Printf("%d/%d", i+1, N);
-		//Printf("\t%f %f", min_dc2_n, min_dc2_i);
 
 		dc2_mh_n[i] = min_dc2_n;
 		dc2_mh_i[i] = min_dc2_i;
 
-		dc2_cp[i] = min(mean_dc2(nhs.e, nh0s.e), mean_dc2(nhs.e, nhpis.e));
-		dc2_cp_ih[i] = min(mean_dc2(ihs.e, ih0s.e), mean_dc2(ihs.e, ihpis.e));
-		//dc2_cp[i] = mean_dc2(nhs.e, nhpis.e);
+		dc2_cp[i] = min(mean_dc2(nhs[i].e, nh0s.e), mean_dc2(nhs[i].e, nhpis.e));
+		dc2_cp_ih[i] = min(mean_dc2(ihs[i].e, ih0s.e), mean_dc2(ihs[i].e, ihpis.e));
 	}
 
 	
