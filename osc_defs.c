@@ -51,7 +51,7 @@ void populate_ih(hierarchy* h, float d_cp) {
 	}
 }
 
-//	populates calculated values
+//	populates only calculated values
 void populate_common(hierarchy* h) {
 	//	populate dm2 matrix
 	double dm2_mat[] = { 0.0,      -h->dm2_21, -h->dm2_31,
@@ -101,7 +101,9 @@ void populate(hierarchy* h, h_type t, float d_cp) {
 		populate_nh(h, d_cp);
 	else if(t == IH)
 		populate_ih(h, d_cp);
-	else
+	else {
+		Printf("Invalid hierarchy type");
 		return;
+	}
 	populate_common(h);
 }

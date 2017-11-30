@@ -13,10 +13,10 @@ void do_dc2(const initial_spectrum* s);
 
 // Mean delta chi-squared between a test spectrum and a "true" spectrum,
 // as given in 1210.3651 p.9
-float mean_dc2(const float* test, const float* tru, int N = 50.) {
+float mean_dc2(const float* test, const float* tru, int N = 37) {
 	float r = 0.;
 	for (int i=0; i<N; ++i) {
-		r += pow(test[i] - tru[i], 2) / sqrt(N);
+		r += pow(test[i] - tru[i], 2) / N;
 	}
 	return r;
 }
@@ -50,7 +50,7 @@ void nuspectrum(int anti=0) {
 
 	
 	// plot the initial spectrum (un-normalized)
-	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
+	plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
 	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
 	
 	// Do the best-fit oscillation
@@ -65,7 +65,7 @@ void nuspectrum(int anti=0) {
 }
 
 void do_dc2(const initial_spectrum* s) {
-	const int N = 80;
+	const int N = 61;
 	float d_cp[N];
 
 	// Delta chi squared for the mass hierarchy assuming true normal hierarchy
@@ -85,6 +85,7 @@ void do_dc2(const initial_spectrum* s) {
 	nhpis.h = &nhpi;
 	oscillate(s, &nh0s);
 	oscillate(s, &nhpis);
+	
 
 	hierarchy ih0, ihpi;
 	populate(&ih0, IH, 0.);
@@ -111,6 +112,20 @@ void do_dc2(const initial_spectrum* s) {
 
 		Printf("%d/%d", i+1, N);
 	}
+
+	TCanvas* ccc = new TCanvas();
+	//ccc->SetLogy();
+	TH1* he = new TH1F("he", "", Nbins, 0.6, 8.);
+	TH1* hmu = new TH1F("hmu", "", Nbins, 0.6, 8.);
+	for (int i=0; i<Nbins; ++i) {
+		he->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nhs[N/2].e[i]);
+		hmu->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ihs[N/2].e[i]);
+	}
+	hmu->SetMaximum(80);
+	hmu->Draw("hist");
+	he->Draw("hist same");
+	he->SetLineWidth(2);
+	hmu->SetLineColor(2);
 	
 	// Loop over delta_CP values
 	for (int i=0; i<N; ++i) {
@@ -130,6 +145,9 @@ void do_dc2(const initial_spectrum* s) {
 			min_dc2_n = min(dc2_n, min_dc2_n);
 			min_dc2_i = min(dc2_i, min_dc2_i);
 		}
+
+		//dc2_mh_n[i] = mean_dc2(&nhs[i].e[3], &ihs[i].e[3], 47);
+		//dc2_mh_i[i] = mean_dc2(&ihs[i].e[3], &ihs[i].e[3], 47);
 
 		dc2_mh_n[i] = min_dc2_n;
 		dc2_mh_i[i] = min_dc2_i;

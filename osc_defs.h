@@ -20,7 +20,7 @@ struct hierarchy {
 	//	mass differences, in eV^2
 	double dm2_21;
 	//	absolute value of dm^2 as given in pdg neutrino mixing paper
-	double dm2;
+	//double dm2;
 	double dm2_31;
 	double dm2_32;
 	

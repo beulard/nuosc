@@ -3,7 +3,9 @@
 #include "osc_defs.h"
 
 // global experiment baseline
-double L = 1300.;
+const double L = 1300.;
+const int Nbins = 37;
+const int firstbin = 3;
 
 
 // Normalizations indices 
@@ -47,17 +49,17 @@ const float ih_norm[N_NORMS] = { 495., 26., 159., 10842., 958. };
 struct spectrum {
 	hierarchy* h;
 
-	float fluxes[N_FLUXES][50];
+	float fluxes[N_FLUXES][Nbins];
 	// predicted fluxes at the far detector
-	float mu[50];
-	float e[50];
+	float mu[Nbins];
+	float e[Nbins];
 	// tau muons can also appear at the FD
-	float tau[50];
+	float tau[Nbins];
 
 	// now we want to keep the antiparticles spectra
-	float antimu[50];
-	float antie[50];
-	float antitau[50];
+	float antimu[Nbins];
+	float antie[Nbins];
+	float antitau[Nbins];
 };
 
 struct initial_spectrum {
