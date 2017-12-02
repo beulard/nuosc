@@ -3,12 +3,12 @@
 #include "osc_defs.h"
 
 // global experiment baseline
-const double L = 1300.;
+const double L = 700.;
 const int Nbins = 37;
 const int firstbin = 3;
 
 
-// Normalizations indices 
+// Event rates indices
 enum {
 	// Oscillated nu e's
 	E_SIGNAL,
@@ -21,45 +21,36 @@ enum {
 	MU_SIGNAL,
 	// Survival antinu mu's
 	ANTIMU_BACKGROUND,
-	N_NORMS
+	N_RATES
 };
 
 // Flux indices
-enum spectrum_flux {
-	MU_SURVIVAL,	/* mu_signal */
-	MU_E,			/* e_signal */
-	MU_TAU,			// no tau for now
-	E_SURVIVAL,		/* part of e_antie_background */
-	E_MU,			// e->mu probability is too small
-	E_TAU,			// no tau for now
-	ANTIMU_SURVIVAL,/* antimu_background */
-	ANTIMU_ANTIE,	/* antie_signal */
-	ANTIMU_ANTITAU,	// no tau for now
-	ANTIE_SURVIVAL,	/* part of e_antie_background */
-	ANTIE_ANTIMU,	// e->mu probability is too small
-	ANTIE_ANTITAU,	// no tau for now
-	N_FLUXES
-};
+//enum spectrum_flux {
+//	MU_SURVIVAL,	/* mu_signal */
+//	MU_E,			/* e_signal */
+//	MU_TAU,			// no tau for now
+//	E_SURVIVAL,		/* part of e_antie_background */
+//	E_MU,			// e->mu probability is too small
+//	E_TAU,			// no tau for now
+//	ANTIMU_SURVIVAL,/* antimu_background */
+//	ANTIMU_ANTIE,	/* antie_signal */
+//	ANTIMU_ANTITAU,	// no tau for now
+//	ANTIE_SURVIVAL,	/* part of e_antie_background */
+//	ANTIE_ANTIMU,	// e->mu probability is too small
+//	ANTIE_ANTITAU,	// no tau for now
+//	N_FLUXES
+//};
 
 // Normalizations from CDR, in order given by enum above
-const float nh_norm[N_NORMS] = { 861., 13., 159., 10842., 958. };
-const float ih_norm[N_NORMS] = { 495., 26., 159., 10842., 958. };
+// TODO we also need the antineutrino mode normalizations
+const double norms[2][N_RATES] = { { 861., 13., 159., 10842., 958. },
+								   { 495., 26., 159., 10842., 958. } };
 
 
 struct spectrum {
 	hierarchy* h;
 
-	float fluxes[N_FLUXES][Nbins];
-	// predicted fluxes at the far detector
-	float mu[Nbins];
-	float e[Nbins];
-	// tau muons can also appear at the FD
-	float tau[Nbins];
-
-	// now we want to keep the antiparticles spectra
-	float antimu[Nbins];
-	float antie[Nbins];
-	float antitau[Nbins];
+	double events[N_RATES][Nbins];
 };
 
 struct initial_spectrum {
@@ -74,10 +65,8 @@ struct initial_spectrum {
 double P(flavor a, flavor b, double E, hierarchy* h, bool anti);
 
 // Oscillate neutrinos for each flavor and for each energy and get the FD flux.
-void oscillate(const initial_spectrum* is, spectrum* s);
+void oscillate(const initial_spectrum* is, spectrum* s, 
+				bool normal=true, bool antimode=false);
 
-// Normalize the flux to the CDR predicted event rate (vol.2, p.27).
-// Mode is 0 for neutrino mode, 1 for antineutrino mode
-void normalize(initial_spectrum* s);
 
 #endif

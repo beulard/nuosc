@@ -33,6 +33,7 @@ void nu() {
 		populate(&nh[i], NH);
 		//	set delta to a multiple of 90 degrees and recalculate MNS
 		nh[i].d_cp = TMath::Pi() / 2. * (i - 1);
+		//nh[0].d_cp = -0.8 * pi;
 		populate_common(&nh[i]);
 	}
 	
@@ -104,10 +105,10 @@ void plot_P(bool anti) {
 		f[i]->SetNpx(10000);
 		f[i]->GetXaxis()->SetTitle("E (GeV)");
 
-		f[i]->SetLineWidth(2);
+		f[i]->SetLineWidth(0);
 
-		f[i]->SetLineColor(cols[i]);
-		//f[i]->SetFillStyle(1001);
+		f[i]->SetFillColor(cols[i]);
+		f[i]->SetFillStyle(1001);
 	}
 	// need to change order in drawing depending on anti or not
 	if (anti) {

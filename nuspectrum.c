@@ -13,29 +13,21 @@ void do_dc2(const initial_spectrum* s);
 
 // Mean delta chi-squared between a test spectrum and a "true" spectrum,
 // as given in 1210.3651 p.9
-float mean_dc2(const float* test, const float* tru, int N = 37) {
+float mean_dc2(const double* test, const double* tru, int N = 37) {
 	float r = 0.;
 	for (int i=0; i<N; ++i) {
-		r += pow(test[i] - tru[i], 2) / N;
+		r += pow(test[i] - tru[i], 2) / tru[i];
 	}
 	return r;
 }
 
 void nuspectrum(int anti=0) {
+	gStyle->SetOptStat(0);
+
 	// initial spectrum in the LBNF's neutrino mode
 	initial_spectrum nu;
 	// and in the antineutrino mode
 	initial_spectrum antinu;
-
-
-	gStyle->SetOptStat(0);
-
-	// best fit spectra, with best fit angles, delta, normal hierarchy
-	//spectrum best_fit_nu;
-	// Populate can now cause segfault if we forget to assign a spectrum's hierarchy to a
-	// valid object. Careful!
-	//best_fit_nu.h = new hierarchy;
-	//populate(best_fit_nu.h, NH, 0.5 * pi);
 
 	// read data from root file
 	read_spectrum(&nu);
@@ -50,7 +42,7 @@ void nuspectrum(int anti=0) {
 
 	
 	// plot the initial spectrum (un-normalized)
-	plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
+	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
 	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
 	
 	// Do the best-fit oscillation
@@ -113,25 +105,29 @@ void do_dc2(const initial_spectrum* s) {
 		Printf("%d/%d", i+1, N);
 	}
 
+	 // To plot a test spectrum
 	TCanvas* ccc = new TCanvas();
 	//ccc->SetLogy();
-	TH1* he = new TH1F("he", "", Nbins, 0.6, 8.);
-	TH1* hmu = new TH1F("hmu", "", Nbins, 0.6, 8.);
+	TH1* hnh = new TH1F("hnh", "", Nbins, 0.6, 8.);
+	TH1* hih = new TH1F("hih", "", Nbins, 0.6, 8.);
+	int index = (int)((.5 / 2. + .5) * N);
+
+	Printf("%f", d_cp[index] / pi);
 	for (int i=0; i<Nbins; ++i) {
-		he->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nhs[N/2].e[i]);
-		hmu->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ihs[N/2].e[i]);
+		hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nhs[index].events[E_SIGNAL][i]);
+		hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ihs[index].events[E_SIGNAL][i]);
 	}
-	hmu->SetMaximum(80);
-	hmu->Draw("hist");
-	he->Draw("hist same");
-	he->SetLineWidth(2);
-	hmu->SetLineColor(2);
+	hnh->Draw("hist");
+	hnh->SetMaximum(110);
+	hih->Draw("hist same");
+	hnh->SetLineWidth(2);
+	hih->SetLineColor(2);
 	
 	// Loop over delta_CP values
 	for (int i=0; i<N; ++i) {
 		// for each d_cp we want to calculate the minimum corresponding delta chi squared
-		float min_dc2_n = 1e9;
-		float min_dc2_i = 1e9;
+		float min_dc2_n = 1e28;
+		float min_dc2_i = 1e28;
 
 		// So we perform another loop over delta_CP and take the minimum chi squared we find
 		for (int j=0; j<N; ++j) {
@@ -139,23 +135,23 @@ void do_dc2(const initial_spectrum* s) {
 
 			// When we assume normal hierarchy, the NH spectrum is fixed in i and we
 			// search the IH with j
-			float dc2_n = mean_dc2(ihs[j].e, nhs[i].e);
+			float dc2_n = mean_dc2(ihs[j].events[E_SIGNAL], nhs[i].events[E_SIGNAL]);
 			// Vice versa
-			float dc2_i = mean_dc2(nhs[j].e, ihs[i].e);
+			float dc2_i = mean_dc2(nhs[j].events[E_SIGNAL], ihs[i].events[E_SIGNAL]);
+
 			min_dc2_n = min(dc2_n, min_dc2_n);
 			min_dc2_i = min(dc2_i, min_dc2_i);
-		}
 
-		//dc2_mh_n[i] = mean_dc2(&nhs[i].e[3], &ihs[i].e[3], 47);
-		//dc2_mh_i[i] = mean_dc2(&ihs[i].e[3], &ihs[i].e[3], 47);
+		}
 
 		dc2_mh_n[i] = min_dc2_n;
 		dc2_mh_i[i] = min_dc2_i;
 
-		dc2_cp[i] = min(mean_dc2(nhs[i].e, nh0s.e), mean_dc2(nhs[i].e, nhpis.e));
-		dc2_cp_ih[i] = min(mean_dc2(ihs[i].e, ih0s.e), mean_dc2(ihs[i].e, ihpis.e));
+		dc2_cp[i] = min(mean_dc2(nhs[i].events[E_SIGNAL], nh0s.events[E_SIGNAL]),
+			   			mean_dc2(nhs[i].events[E_SIGNAL], nhpis.events[E_SIGNAL]));
+		dc2_cp_ih[i] = min(mean_dc2(ihs[i].events[E_SIGNAL], ih0s.events[E_SIGNAL]), 
+						   mean_dc2(ihs[i].events[E_SIGNAL], ihpis.events[E_SIGNAL]));
 	}
-
 	
 	plot_dc2(d_cp, dc2_mh_n, dc2_mh_i, dc2_cp, dc2_cp_ih, N);
 }
@@ -188,8 +184,8 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 	gdc2_mnh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_mnh->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mnh->SetMinimum(0);
-	//gdc2_mnh->SetMaximum(25);
-	//gdc2_mnh->SetMaximum(25);
+	gdc2_mnh->SetMaximum(25);
+	gdc2_mih->SetMaximum(25);
  	p = (TPad*)c4->GetPad(2);	
 	p->cd();
 	gdc2_mih->SetTitle("");
@@ -290,82 +286,5 @@ void plot_initial(float* mu, float* antimu, float* e, float* antie) {
 	gPad->SetGrid();
 	gPad->BuildLegend();
 
-}
-
-void plot_normalized(float* mu, float* antimu, float* e, float* antie) {
-	
-	TH1* h1 = new TH1F("h5", "", 50, 0., 10.);
-	TH1* h2 = new TH1F("h6", "", 50, 0., 10.);
-	TH1* h3 = new TH1F("h7", "", 50, 0., 10.);
-	TH1* h4 = new TH1F("h8", "", 50, 0., 10.);
-	
-	// fill histograms manually with values from the spectrum
-	for(int i=0; i<50; ++i) {
-		h1->Fill(i * 0.2, mu[i]);
-		h2->Fill(i * 0.2, antimu[i]);
-		h3->Fill(i * 0.2, e[i]);
-		h4->Fill(i * 0.2, antie[i]);
-	}
-
-	
-	// plot the initial spectrum plots
-	h1->SetLineColor(1);
-	h1->SetMaximum(1.0);
-	h1->SetMinimum(3e-3);
-	h1->Draw("HIST");
-	h2->SetLineColor(4);	
-	h2->Draw("SAME HIST");
-	h3->SetLineColor(2);
-	h3->Draw("SAME HIST");
-	h4->SetLineColor(6);
-	h4->Draw("SAME HIST");
-}
-
-void plot_particles(float* mu, float* e) {
-	TH1* h1 = new TH1F("Initial #nu_{#mu}", "", 50, 0., 10.);
-	TH1* h2 = new TH1F("Initial #nu_{e}", "", 50, 0., 10.);
-	
-	// fill histograms manually with values from the spectrum
-	for(int i=0; i<50; ++i) {
-		h1->Fill(i * 0.2, mu[i]);
-		h2->Fill(i * 0.2, e[i]);
-	}
-
-	
-	// plot the initial spectrum plots
-	h1->SetLineWidth(2);
-	h2->SetLineWidth(2);
-
-	h1->SetLineStyle(2);
-	h2->SetLineStyle(2);
-
-	h1->SetLineColor(1);
-	h1->Draw("HIST SAME");
-	h2->SetLineColor(2);	
-	h2->Draw("SAME HIST");
-}
-
-void plot_antiparticles(float* antimu, float* antie) {
-	TH1* h1 = new TH1F("Initial #bar{#nu}_{#mu}", "", 50, 0., 10.);
-	TH1* h2 = new TH1F("Initial #bar{#nu}_{e}", "", 50, 0., 10.);
-	
-	// fill histograms manually with valuanties from the spectrum
-	for(int i=0; i<50; ++i) {
-		h1->Fill(i * 0.2, antimu[i]);
-		h2->Fill(i * 0.2, antie[i]);
-	}
-
-	
-	// plot thantie initial spectrum plots
-	h1->SetLineWidth(2);
-	h2->SetLineWidth(2);
-
-	h1->SetLineStyle(2);
-	h2->SetLineStyle(2);
-
-	h1->SetLineColor(4);
-	h1->Draw("SAME HIST");
-	h2->SetLineColor(6);
-	h2->Draw("SAME HIST");
 }
 
