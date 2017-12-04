@@ -1,22 +1,119 @@
 \documentclass[10pt, a4paper]{article}
+
+% for braket notation
+\usepackage{physics}
+
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\mi}{\mathrm{i}}
+
+\renewcommand\refname{Bibliography}
+
+
 \title{Project}
 \author{Matthias Dubouchet}
 \date{}
 
+
 \begin{document}
 \maketitle
-\section{Two neutrino oscillations}
-In the case of two neutrino flavors, there can only be one mixing angle
-(analogous to a rotation in a plane). Get formulas from ZUBER.
+
+\subsection{Neutrino oscillation formalism} 
+Let us consider a general neutrino state as a superposition of $n$ orthogonal
+eigenstates \cite{zuber}. We have two obvious eigenbases: the flavour (weak) eigenstates
+$\ket{\nu_{\alpha}}$ and the mass eigenstates $\ket{\nu_i}$. Flavour
+eigenstates interact with matter through the weak interaction,
+and hence are the states we observe in nature.
+Eigenstates are orthogonal within each basis and the two bases are related by a
+unitary rotation $U$: 
+\begin{align*}
+\bra{\nu_\alpha}\ket{\nu_\beta} = \delta_{\alpha \beta}, \quad
+\bra{\nu_i}\ket{\nu_j} = \delta_{ij}  \quad
+\ket{\nu_\alpha} = \sum_i U_{\alpha i} \ket{\nu_i}\\
+\ket{\nu_i} = \sum_i (U^\dagger)_{i \alpha} \ket{\nu_\alpha} = \sum_i
+	U^*_{\alpha i} \ket{\nu_\alpha}, U^\dagger U = 1.
+\end{align*}
+Mass eigenstates are stationary states and evolve in time as $\ket{\nu_i(x,
+t)} = \me^{-\mi E_i t} \ket{\nu_i(x, 0)}$, where $\ket{\nu_i(x, 0)} = \me^{\mi p
+x} \ket{\nu_i}$ for a plane wave neutrino produced at $x=0$.
+Hence a neutrino produced as a flavour eigenstate $\alpha$ would show the
+following time dependence:
+\begin{align*}
+\ket{\nu(x, t)} &= \sum_i U_{\alpha i} \ket{\nu_i(x, t)} \\
+		&= \sum_i U_{\alpha i} \me^{-\mi E_i t} \me^{\mi p x} \ket{\nu_i}\\
+		&= \sum_{i, \beta} U_{\alpha i} U^*_{\beta i} \me^{\mi p x}
+				\me^{-\mi E_i t} \ket{\nu_\beta},
+\end{align*}
+hence the transition amplitude to a flavour $\beta$ is 
+\begin{align}
+A(\alpha \rightarrow \beta) = \bra{\nu_\beta}\ket{\nu(x, t)} \nonumber
+			= \sum_i U^*_{\beta i} U_{\alpha i} \me^{\mi p x}
+			\me^{-\mi E_i t}.
+\end{align}
 
 
-\section{Three neutrino oscillations}
 
-\section{CP violating phase}
+Thanks to their small masses (regardless of which eigenstate),
+neutrinos are highly relativistic particles so we can perform a binomial
+approximation of their energy:
+$$ E_i = \sqrt{m_i^2 + p_i^2} \simeq p_i + \frac{m_i^2}{2 p_i} \simeq E +
+\frac{m_i^2}{2E},$$
+where we have defined $E \approx p$ as the neutrino energy at the source. Using
+this,
+$$A(\alpha \rightarrow \beta) = \sum_i
+U^*_{\beta i} U_{\alpha i} \exp(-\mi \frac{m_i^2 L}{2E}),$$
+where $L = x \simeq c t$ is the distance from the source to the detector, using the
+fact that neutrinos travel close to the speed of light.
+The transition probability is then
+\begin{align}
+	\label{eq:nuprob}
+	P(\alpha \rightarrow \beta) &= |A(\alpha \rightarrow \beta)|^2 \nonumber\\
+	&= \sum_i \sum_j U_{\alpha i} U^*_{\beta i} U^*_{\alpha j} U_{\beta j}
+	\exp(-\mi \frac{\Delta m_{ij}^2}{2} \frac{L}{E}),
+\end{align}
+with $\Delta m^2_{ij} = m^2_i - m^2_j$.
+The analysis is similar when considering antineutrinos except that $U$ must be
+replaced by $U^*$ everywhere and vice-versa.
 
-\section{Sensitivities}
 
-\subsection{Delta chi squared}
+
+\subsection{Two neutrino oscillations} 
+The case for two neutrino eigenstates is the simplest to consider. The
+unitary nature of the mixing matrix $U$ and the arbitrariness of the complex phases
+of quantum states reduces the number of observable mixing parameters to one.
+The relationship between flavour and mass eigenstates can be written as 
+\begin{equation}
+	\begin{bmatrix} \nu_e \\ \nu_\mu \end{bmatrix} =
+	\begin{bmatrix} \cos\theta & \sin\theta \\
+								 -\sin\theta & \cos\theta \end{bmatrix}
+	\begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix},
+\end{equation}
+and the transition probability follows from equation \ref{eq:nuprob}:
+	$$P(\nu_e \rightarrow \nu_\mu) = P(\nu_mu \rightarrow \nu_e) = \sin^2 2\theta
+	\sin^2 \frac{\Delta m^2}{4} \frac{L}{E}.$$
+
+\subsection{Three neutrino oscillations}
+When we consider three eigenstates, the number of parameters jumps to four:
+three CP-preserving mixing angles and a CP-violating phase $\delta_{CP}$. The
+mixing matrix was introduced by Maki, Nakagawa and Sakata in 1962~\cite{MNS}.
+Analogously to the two neutrino case, it can be presented as a rotation matrix,
+with the mixing angles $\theta_{ij}$ acting as Euler angles and the
+CP-violating phase 
+% why does the phase appear where it does specifically? read  Chau, Keung paper
+$$
+U_{\mathrm{MNS}} = 
+\begin{bmatrix} 1 & 0 & 0 \\ 0 & c_{23} & s_{23} \\ 0 & -s_{23} & c_{23} \end{bmatrix}
+\begin{bmatrix} c_{13} & 0 & s_{13} \me^{-\mi \delta_{CP}} \\ 0 & 1 & 0 \\
+								-s_{13} \me^{\mi \delta_{CP}} & 0 & c_{13} \end{bmatrix} 
+\begin{bmatrix} c_{12} & s_{12} & 0 \\ -s_{12} & c_{12} & 0 \\ 0 & 0 & 1 \end{bmatrix}
+,$$
+where $c_{ij} = \cos(\theta_{ij})$ and $s_{ij} = \sin(\theta_{ij})$.
+
+\subsection{CP violating phase}
+
+\subsection{Sensitivities}
+
+
+\subsubsection{Delta chi squared} 
 Let's work under the assumption that the true mass hierarchy (the one chosen by
 nature) is the \emph{normal} one. When we oscillate our initial spectrum over
 the baseline and obtain a prediction for the far detector spectrum, we are,
@@ -27,24 +124,29 @@ changing $\delta_{CP}$ over its allowed range $[-\pi,\pi)$. For each of these
 spectra, we are thus making two assumptions: one is the true mass hierarchy,
 and the other is the true CP violating phase.
 
-Now we ask: if our assumptions are wrong and either the true mass hierarchy
-is inverted, or the phase is not what we think, or both: how accurately can
-we rule out our initial assumptions? To answer this, we repeat the oscillation
+Now we ask: if our assumptions are wrong and either the true mass hierarchy is
+inverted, or the phase is not what we think, or both: how accurately can we
+rule out our initial assumptions? To answer this, we repeat the oscillation
 with inverted hierarchy parameters, and again, we explore every value of
 $\delta_{CP}$. A good way to define the agreement between two sets of data (or
-in this case, predictions) is
-the $\chi^2$ statistic. We calculate a $\chi^2$ between our \emph{assumed true}
-spectrum and each of the \emph{inverted hierarchy} spectra. The smaller the
-$\chi^2$, the better the fit, hence the minimum $\chi^2$, for a given assumed
-$\delta_{CP}$, represents the best possible agreement with the opposite
-hierarchy. This particular statistic is called the mean $\Delta\chi^2$
-($\overline{\Delta\chi^2}$), and since it tells us how ``badly'' our experiment
-might differentiate between different values of a parameter,  it is a good
-measure of the \emph{sensitivity} of the experiment to this underlying parameter.
-We call the quantity $\sqrt{\overline{\Delta\chi^2}}$ the sensitivity.
+in this case, predictions) is the $\chi^2$ statistic. We calculate a $\chi^2$
+between our \emph{assumed true} spectrum and each of the \emph{inverted
+hierarchy} spectra. The smaller the $\chi^2$, the better the fit, hence the
+minimum $\chi^2$, for a given assumed $\delta_{CP}$, represents the best
+possible agreement with the opposite hierarchy. This particular statistic is
+called the mean $\Delta\chi^2$ ($\overline{\Delta\chi^2}$), and since it tells
+us how ``badly'' our experiment might differentiate between different values of
+a parameter,  it is a good measure of the \emph{sensitivity} of the experiment
+to this underlying parameter.  We call the quantity
+$\sqrt{\overline{\Delta\chi^2}}$ the sensitivity.
 
 
-\section{References}
-Kai Zuber, Neutrino Physics
+\begin{thebibliography}{20} 
+	\bibitem{zuber} Kai Zuber, \textit{Neutrino
+		Oscillations}, 2004
+	\bibitem{MNS} Maki, Nakagawa, Sakata, \textit{Remarks on the Unified Model of
+		Elementary Particles}, 1962
+	
+\end{thebibliography}
 
 \end{document}

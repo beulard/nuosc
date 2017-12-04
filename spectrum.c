@@ -106,7 +106,6 @@ void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antim
 			// recalculate everything. We don't want to modify the original hierarchy though.
 			hierarchy h;
 			memcpy(&h, os->h, sizeof(hierarchy));
-			//populate_common(&h);
 			//h.dm2_31 *= C;
 			//h.t12 = 0.5 * asin(sin(2. * h.t12) / C);
 			//populate_common(&h);
