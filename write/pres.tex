@@ -1,0 +1,203 @@
+\documentclass{beamer}
+\usetheme{metropolis}
+\usepackage{physics}
+\usepackage{ragged2e}
+\usepackage[absolute,overlay]{textpos}
+
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\mi}{\mathrm{i}}
+
+\title{Final year project presentation\\Neutrino
+oscillations and \\experimental sensitivity}
+\author{Matthias Dubouchet\\Dr. Lisa Falk}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\begin{frame}{Outline}
+
+\end{frame}
+
+
+\begin{frame}{Neutrinos}
+
+\begin{columns}
+
+	\column[T]{0.5\textwidth}
+Properties
+		\begin{itemize}
+		\item Fermion
+		\item Very light
+		\item Interacts via weak force, gravity
+		\item ...
+		\end{itemize}
+	\column[T]{0.5\textwidth}
+Oscillations
+		\begin{itemize}
+			\item Theorised by Bruno Pontecorvo (1957)
+				\item Confirmed by the SNO and SuperK experiments
+				\item 2015 Nobel prize
+		\end{itemize}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Neutrinos}
+
+// dirac equation, chiral representation, left handedness, majorana
+
+\end{frame}
+
+
+
+\begin{frame}{Oscillation formalism}
+
+	Three neutrino eigenstates/generations:\\
+	\begin{itemize}
+		\item Flavor eigenbasis $\ket{\nu_e}, \ket{\nu_\mu}, \ket{\nu_\tau}$\\
+		\item Mass eigenbasis ~~$\ket{\nu_1}, \ket{\nu_2}, \ket{\nu_3}$
+	\end{itemize}
+
+	Related by:
+	$$
+	\begin{bmatrix} \nu_e \\ \nu_\mu \\ \nu_\tau \end{bmatrix} =
+	\begin{bmatrix} U_{e 1} & U_{e 2} & U_{e 3} \\ U_{\mu 1} & U_{\mu 2} & U_{\mu 3}
+	\\ U_{\tau 1} & U_{\tau 2} & U_{\tau 3} \end{bmatrix}
+	\begin{bmatrix} \nu_1 \\ \nu_2 \\ \nu_3 \end{bmatrix}
+	$$
+	...
+	// plot eigenbases as 3d bases rotated by rotation $U$
+\end{frame}
+
+\begin{frame}{Oscillation formalism}
+	// mass eigenstate propagation
+	// transition probability?
+
+
+\end{frame}
+
+\begin{frame}{Simple version: two neutrinos}
+	\begin{textblock*}{0.6\textwidth}(0.6\textwidth,1.1cm)
+	\includegraphics[width=0.6\textwidth,angle=-90]{twonu4.pdf}
+	\end{textblock*}
+	
+	\begin{textblock*}{0.4\textwidth}(1cm, 2.1cm)
+		$$
+	\begin{bmatrix} \nu_e \\ \nu_\mu \end{bmatrix} =
+	\begin{bmatrix} \cos\theta & \sin\theta \\
+								 -\sin\theta & \cos\theta \end{bmatrix}
+		\begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix}
+	$$
+	\end{textblock*}
+
+	\vspace{2.5cm}
+	$$
+		P(\nu_\mu \rightarrow \nu_\tau) = \sin^2(2 \theta) \sin^2\bigg(\frac{\Delta
+		m^2 L}{4 E}\bigg)
+	$$
+\end{frame}
+
+\begin{frame}{Three neutrino case}
+
+	\begin{textblock*}{\textwidth}(1cm, 2cm)
+	// More parameters: $\delta_{CP}$, more angles, more mass differences
+	// introduce mass hierarchy, draw mass levels
+	\end{textblock*}
+	 
+	\begin{textblock*}{\textwidth}(0.5cm,3cm)
+		
+		$$
+		\begin{bmatrix} \nu_e \\ \nu_\mu \\ \nu_\tau \end{bmatrix} = 
+		\begin{bmatrix} 1 & 0 & 0 \\ 0 & c_{23} & s_{23} \\ 0 & -s_{23} & c_{23} \end{bmatrix}
+		\begin{bmatrix} c_{13} & 0 & s_{13} \me^{-\mi \delta_{CP}} \\ 0 & 1 & 0 \\
+										-s_{13} \me^{\mi \delta_{CP}} & 0 & c_{13} \end{bmatrix} 
+		\begin{bmatrix} c_{12} & s_{12} & 0 \\ -s_{12} & c_{12} & 0 \\ 0 & 0 & 1 \end{bmatrix}
+		\begin{bmatrix} \nu_1 \\ \nu_2 \\ \nu_3 \end{bmatrix}
+		$$
+	\end{textblock*}
+	\begin{textblock*}{0.5\textwidth}(0.1\textwidth,6.3cm)
+		$$
+			P(\nu_\alpha \rightarrow \nu_\beta) \propto \sum_{i j} \exp(-i
+			\frac{\Delta m^2_{i j} L}{2 E}) \qquad \qquad \Delta m^2_{ij} = m^2_i - m^2_j
+		$$
+	\end{textblock*}
+	
+	\pause
+	\begin{textblock*}{0.5\textwidth}(0.4\textwidth,1.1cm)
+		\includegraphics<+->[width=0.95\textwidth,angle=-90]{threenu.pdf}
+	\end{textblock*}
+
+\end{frame}
+
+
+
+\begin{frame}{The importance of parameters}
+
+	// maybe plot side by side of two spectra with different $d cp$ / MH
+	\begin{textblock*}{0.5\textwidth}(0.05\textwidth,3.1cm)
+		\includegraphics[width=0.75\textwidth,angle=-90]{parameters.pdf}
+	\end{textblock*}
+
+\end{frame}
+
+
+\begin{frame}{Matter effects}
+
+	// forward scattering in matter
+	// effective mass
+	// impact on transition probability
+	// comparison plot ?
+	\begin{textblock*}{0.65\textwidth}(0.05\textwidth,5.1cm)
+		\includegraphics[width=0.95\textwidth]{matter.pdf}
+	\end{textblock*}
+
+\end{frame}
+
+
+\begin{frame}{Sensitivity}
+
+	// can we know whether a future experiment will yield useful results?
+	// introduce statistical method, $\overline{\Delta \chi^2}$
+
+\end{frame}
+
+
+\begin{frame}{Sensitivity}
+
+	// preliminary plots are ok
+	// interpretation of plots
+
+\end{frame}
+
+
+\begin{frame}{Results so far}
+
+	\begin{textblock*}{\textwidth}(1cm, 1.3cm)
+		Sensitivity to the mass hierarchy\vspace{-0.25cm}
+	\includegraphics[width=0.3\textwidth,angle=-90]{sens.pdf}
+	\end{textblock*}
+	\begin{textblock*}{\textwidth}(1cm, 5.5cm)
+		Sensitivity to the CP violating phase\vspace{-0.25cm}
+	\includegraphics[width=0.3\textwidth,angle=-90]{sens_cp.pdf}
+	\end{textblock*}
+
+\end{frame}
+
+
+\begin{frame}{What's next}
+
+	// 
+
+\end{frame}
+
+
+\begin{frame}{Summary}
+
+\end{frame}
+
+
+
+\end{document}

@@ -24,22 +24,6 @@ enum {
 	N_RATES
 };
 
-// Flux indices
-//enum spectrum_flux {
-//	MU_SURVIVAL,	/* mu_signal */
-//	MU_E,			/* e_signal */
-//	MU_TAU,			// no tau for now
-//	E_SURVIVAL,		/* part of e_antie_background */
-//	E_MU,			// e->mu probability is too small
-//	E_TAU,			// no tau for now
-//	ANTIMU_SURVIVAL,/* antimu_background */
-//	ANTIMU_ANTIE,	/* antie_signal */
-//	ANTIMU_ANTITAU,	// no tau for now
-//	ANTIE_SURVIVAL,	/* part of e_antie_background */
-//	ANTIE_ANTIMU,	// e->mu probability is too small
-//	ANTIE_ANTITAU,	// no tau for now
-//	N_FLUXES
-//};
 
 // Normalizations from CDR, in order given by enum above
 // TODO we also need the antineutrino mode normalizations

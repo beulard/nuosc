@@ -67,12 +67,13 @@ void nucp(int in_h = NH, int in_f = 0) {
 	}*/
 	
 	TCanvas* c1 = new TCanvas();
+	c1->SetFillColor(ci[CI_BACKGROUND]);
 	if(in_f == f_e) {
-		TF1* e_e = new TF1("", plot_P, 0., 35000., 2);
+		TF1* e_e = new TF1("#nu_{e} survival", plot_P, 0., 35000., 2);
 		e_e->SetParameters(f_e, f_e);
-		TF1* e_m = new TF1("", plot_P, 0., 35000., 2);
+		TF1* e_m = new TF1("#nu_{#mu} appearance", plot_P, 0., 35000., 2);
 		e_m->SetParameters(f_e, f_m);
-		TF1* e_t = new TF1("", plot_P, 0., 35000., 2);
+		TF1* e_t = new TF1("#nu_{#tau} appearance", plot_P, 0., 35000., 2);
 			
 		e_t->SetParameters(f_e, f_t);
 		
@@ -83,13 +84,14 @@ void nucp(int in_h = NH, int in_f = 0) {
 		e_m->SetNpx(10000);
 		e_t->SetNpx(10000);
 		
-		e_m->SetLineColor(4);
-		e_t->SetLineColor(8);
+		e_e->SetLineColor(ci[CI_E]);
+		e_m->SetLineColor(ci[CI_MU]);
+		e_t->SetLineColor(ci[CI_TAU]);
 	//		e_e->SetRange(0., 5000.);
-		e_e->SetTitle("#nu_{e} transition");
 		e_e->Draw();
 		e_m->Draw("same");
 		e_t->Draw("same");
+		c1->BuildLegend();
 	}
 	if(in_f == f_m) {
 		TF1* m_e = new TF1("", plot_P, 0., 35000., 2);
@@ -106,8 +108,9 @@ void nucp(int in_h = NH, int in_f = 0) {
 		m_m->SetNpx(10000);
 		m_t->SetNpx(10000);
 		
-		m_m->SetLineColor(4);
-		m_t->SetLineColor(8);
+		m_e->SetLineColor(ci[CI_E]);
+		m_m->SetLineColor(ci[CI_MU]);
+		m_t->SetLineColor(ci[CI_TAU]);
 
 		m_e->SetTitle("#nu_{#mu} transition");
 		m_e->Draw();
@@ -129,8 +132,9 @@ void nucp(int in_h = NH, int in_f = 0) {
 		t_m->SetNpx(10000);
 		t_t->SetNpx(10000);
 		
-		t_m->SetLineColor(4);
-		t_t->SetLineColor(8);
+		t_e->SetLineColor(ci[CI_E]);
+		t_m->SetLineColor(ci[CI_MU]);
+		t_t->SetLineColor(ci[CI_TAU]);
 
 		t_e->SetTitle("#nu_{#tau} transition");
 		t_e->Draw();

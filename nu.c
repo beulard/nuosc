@@ -19,7 +19,11 @@ double plot_P_ihd(double* x, double* par) {
 }
 
 double plot_P_nh(double* x, double* par) {
-	return P_me(f_m, f_e, x[0], &nh[(int)par[0]], (bool)par[1]);
+	double p = P_me(f_m, f_e, x[0], &nh[(int)par[0]], (bool)par[1]);
+	// Fix plots overflowing out of their frame/axes
+	if (p > 0.2)
+		p = 0.2;
+	return p;
 }
 
 double plot_P_ih(double* x, double* par) {
@@ -64,7 +68,8 @@ void nu() {
 	srand(time(NULL));
 	int r = rand();
 	snprintf(name, 64, "c%d", r);
-	TCanvas* c1 = new TCanvas(name, "", 1200, 500);
+	TCanvas* c1 = new TCanvas(name, "", 1400, 500);
+	c1->SetFillColor(ci[CI_BACKGROUND]);
 
 	c1->Divide(2, 1);
 	c1->GetPad(1)->SetLogx();
@@ -90,7 +95,8 @@ void nu() {
 
 void plot_P(bool anti) {
 	TF1* f[3];
-	Color_t cols[3] = { 4, 2, 3 };
+	//Color_t cols[3] = { 4, 2, 3 };
+	int cols[3] = { ci[CI_1], ci[CI_2], ci[CI_3] };
 
 	for(int i=0; i<3; ++i) {
 		char title[64];
@@ -102,8 +108,12 @@ void plot_P(bool anti) {
 		f[i]->SetTitle("");
 		f[i]->SetMaximum(.2);
 		f[i]->SetMinimum(0.0);
-		f[i]->SetNpx(10000);
+		f[i]->SetNpx(20000);
 		f[i]->GetXaxis()->SetTitle("E (GeV)");
+		if (anti)
+			f[i]->GetYaxis()->SetTitle("P(#bar{#nu_{#mu}} #rightarrow #bar{#nu_{e}})");
+		else 
+			f[i]->GetYaxis()->SetTitle("P(#nu_{#mu} #rightarrow #nu_{e})");
 
 		f[i]->SetLineWidth(0);
 

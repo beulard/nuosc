@@ -39,7 +39,6 @@ void nuspectrum(int anti=0) {
 		antinu.e[i] = nu.antie[i];
 		antinu.antie[i] = nu.e[i];
 	}
-
 	
 	// plot the initial spectrum (un-normalized)
 	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
@@ -47,6 +46,11 @@ void nuspectrum(int anti=0) {
 	
 	// Do the best-fit oscillation
 	//oscillate(&nu, &best_fit_nu);
+	
+
+	// TODO
+	// Gaussian smearing on the reconstructed energy
+	// and try the CDR transition probability
 
 	
 	// Main functions
@@ -110,7 +114,7 @@ void do_dc2(const initial_spectrum* s) {
 	//ccc->SetLogy();
 	TH1* hnh = new TH1F("hnh", "", Nbins, 0.6, 8.);
 	TH1* hih = new TH1F("hih", "", Nbins, 0.6, 8.);
-	int index = (int)((.5 / 2. + .5) * N);
+	int index = (int)((.0 / 2. + .5) * N);
 
 	Printf("%f", d_cp[index] / pi);
 	for (int i=0; i<Nbins; ++i) {
@@ -172,23 +176,33 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 
 
 	TCanvas* c4 = new TCanvas("c4", "", 1000, 400);
+	c4->SetFillColor(ci[CI_BACKGROUND]);
 	c4->Divide(2, 1);
+	
 	TPad* p = (TPad*)c4->GetPad(1);
 	p->cd();
 	TGraph* gdc2_mnh = new TGraph(N, x, ymnh);
 	TGraph* gdc2_mih = new TGraph(N, x, ymih);
 	gdc2_mnh->Draw();
-	gdc2_mnh->SetTitle("");
+	gdc2_mnh->SetTitle("True normal hierarchy");
+	gdc2_mih->SetTitle("True inverted hierarchy");
 	c4->SetTitle("MH sensitivity");
-	gdc2_mnh->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
+	gdc2_mnh->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{MH}}}");
 	gdc2_mnh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	gdc2_mih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{MH}}}");
+	gdc2_mih->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_mnh->GetXaxis()->SetLimits(-1., 1.);
+	gdc2_mnh->SetLineColor(ci[CI_NH]);
+	gdc2_mih->SetLineColor(ci[CI_IH]);
+	gdc2_mnh->SetMarkerColor(ci[CI_NH]);
+	gdc2_mih->SetMarkerColor(ci[CI_IH]);
 	gdc2_mnh->SetMinimum(0);
 	gdc2_mnh->SetMaximum(25);
 	gdc2_mih->SetMaximum(25);
+	gdc2_mnh->SetLineWidth(2);
+	gdc2_mih->SetLineWidth(2);
  	p = (TPad*)c4->GetPad(2);	
 	p->cd();
-	gdc2_mih->SetTitle("");
 	gdc2_mih->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mih->SetMinimum(0);
 	//gdc2_mih->SetMaximum(25);
@@ -197,21 +211,35 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 
 	// Draw delta_CP mean delta chi squared
 	TCanvas* c5 = new TCanvas("c5", "", 1000, 400);
+	c5->SetFillColor(ci[CI_BACKGROUND]);
 	c5->Divide(2, 1);
 	c5->cd(1);
 	TGraph* gdc2_cp = new TGraph(N, x, ydnh);
 	//gdc2_cp->Draw();
-	gdc2_cp->Draw("");
+	gdc2_cp->Draw();
+	gdc2_cp->SetTitle("True normal hierarchy");
 	//gdc2_cp->SetMaximum(10);
 	//gdc2_cp->SetMinimum(0);
 	gdc2_cp->GetXaxis()->SetLimits(-1, 1);
+	gdc2_cp->SetLineColor(ci[CI_NH]);
+	gdc2_cp->SetLineWidth(2);
+	gdc2_cp->SetMarkerColor(ci[CI_NH]);
+	gdc2_cp->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	gdc2_cp->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{CP}}}");
 	
 	c5->cd(2);
 	TGraph* gdc2_cp_ih = new TGraph(N, x, ydih);
 	//gdc2_cp->Draw();
 	gdc2_cp_ih->Draw("");
+	gdc2_cp_ih->SetTitle("True inverted hierarchy");
+	gdc2_cp_ih->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	gdc2_cp_ih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{CP}}}");
+	//gdc2_cp->SetMaximum(10);
 	//gdc2_cp->SetMaximum(10);
 	//gdc2_cp->SetMinimum(0);
+	gdc2_cp_ih->SetLineColor(ci[CI_IH]);
+	gdc2_cp_ih->SetLineWidth(2);
+	gdc2_cp_ih->SetMarkerColor(ci[CI_IH]);
 	gdc2_cp_ih->GetXaxis()->SetLimits(-1, 1);
 }
 

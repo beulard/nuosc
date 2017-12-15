@@ -60,6 +60,23 @@ double P_me(flavor fa, flavor fb, double E, hierarchy* h, bool anti) {
 	return p;
 }
 
+// CDR transition probability
+double P_me2(flavor fa, flavor fb, double E, hierarchy* h, bool anti) {
+	double aL = 1.93e-4 * Ne * L;
+	aL = anti ? -aL : aL;
+
+	double d_cp = anti ? -h->d_cp : h->d_cp;
+	double D31 = 1.269 * h->dm2_31 * L / E;
+	double D21 = 1.269 * h->dm2_21 * L / E;
+
+	double p = sinsq(h->t23) * sinsq(2*h->t13) * sinsq(D31 - aL) / pow(D31 - aL, 2) * pow(D31, 2)
+
+		+ sin(2*h->t23) * sin(2 * h->t13) * sin(2*h->t12) * sin(D31 - aL) / (D31 - aL) * D31 * sin(aL) / aL * D21 * cos(D31 + d_cp)
+
+		+ cossq(h->t23) * sinsq(2*h->t12) * sinsq(aL) / pow(aL, 2) * pow(D21, 2);
+	return p;
+}
+
 // Store the integrals of the fluxes in the 'integrals' array (size N_RATES)
 void get_integrals(spectrum* s, double* integrals) {
 	for (int i=0; i<N_RATES; ++i) {
@@ -76,6 +93,15 @@ void normalize(spectrum* s, const double* integrals) {
 			s->events[i][j] *= norms[s->h->type][i] / integrals[i];
 		}
 	}
+}
+
+// Gaussian smear the energy bins of a spectrum
+void smear(spectrum* s) {
+	TRandom r;
+	for (int i=0; i<Nbins; ++i) {
+		
+	}
+	
 }
 
 // Oscillate neutrinos for each flavor and for each energy and get the FD flux.
@@ -146,11 +172,46 @@ void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antim
 			s_0[k].h = &h_0[k];
 			oscillate(is, &s_0[k], false);
 
+
 			get_integrals(&s_0[k], integrals_0[k]);
 		}
 	}
 
+	// If the normal flag is set, we normalize the spectrum to the d_cp=0 one and
+	// then smear it
 	if (normal) {
 		normalize(os, integrals_0[os->h->type]);
+	
+
+		// Add gaussian smearing to the oscillated spectra reconstructed energy
+		static int seed = 0;
+		TRandom ra(time(NULL) + seed);
+		seed++;
+		// So we need to create a new spectrum to put the displaced energies events
+		// Reconstructed spectrum
+		spectrum recon = {0};
+		// For each event, we displace the energy by a random number from a gaussian 
+		// distribution
+		for (int i=0; i<Nbins; ++i) {
+			Printf("%d", (int)(os->events[E_SIGNAL][i]));
+			double E = 0.2 * (firstbin + i) + 0.1;
+			Printf("%f", E);
+			for (int j=0; j<ceil(os->events[E_SIGNAL][i]); ++j) {
+				double Erec = ra.Uniform(0.6 + 1e-3 + E / 10, E + 1);
+				//Printf("%f", Erec);
+				// Find the bin corresponding to the reconstructed energy
+				int bin = (int)((Erec - 0.6) / 7.4 * Nbins + 1e-3);
+				if (bin >= Nbins)
+					bin = i;
+				if (bin < 0)
+					bin = i;
+				Printf("%d %d %f %f", i, bin, E, Erec);
+				// We want to move this event to the bin we picked
+				recon.events[E_SIGNAL][bin] += ra.Gaus(1., 0.01);
+			}
+			if (recon.events[E_SIGNAL][i] < 1.)
+				recon.events[E_SIGNAL][i] = 0.5;
+		}
+		//memcpy(os->events, recon.events, Nbins * N_RATES * sizeof(double));
 	}
 }
