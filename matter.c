@@ -9,8 +9,8 @@
 void matter() {
 	// We have to pick a hierarchy that effectively shows the difference.
 	hierarchy h;
-	double d_cp = -pi/2.;
-	populate(&h, NH, d_cp);
+	//double d_cp = -pi/2.;
+	populate(&h, NH);
 
 	// number of samples
 	const int N = 100000;
@@ -26,7 +26,7 @@ void matter() {
 		y_me[i] = P_me(f_m, f_e, x[i], &h, false);
 	}
 
-	TCanvas* c = new TCanvas();
+	TCanvas* c = new TCanvas("c1", "c1", 700, 500);
 	c->SetFillColor(ci[CI_BACKGROUND]);
 	c->SetLogx();
 	TGraph* gp = new TGraph(N, x, y);
@@ -35,14 +35,16 @@ void matter() {
 	gp->SetTitle("Vacuum");
 	gpme->SetTitle("Earth mantle");
 	gp->GetXaxis()->SetLimits(1e-1, 10);
-	gp->SetLineWidth(2);
-	gpme->SetLineWidth(2);
-	gp->SetLineColor(ci[CI_NH]);
-	gpme->SetLineColor(ci[CI_IH]);
+	gp->SetLineWidth(3);
+	gpme->SetLineWidth(3);
+	gp->SetLineColor(ci[CI_4]);
+	gpme->SetLineColor(ci[CI_3]);
 
+	gp->GetXaxis()->SetTitle("E (GeV)");
+	gp->GetYaxis()->SetTitle("P(#nu_{#mu} #rightarrow #nu_{e})");
 
-	gpme->SetMarkerColor(ci[CI_IH]);
-	gp->SetMarkerColor(ci[CI_NH]);
+	gp->SetMarkerColor(ci[CI_4]);
+	gpme->SetMarkerColor(ci[CI_3]);
 	gp->Draw("");
 	gpme->Draw("same");
 

@@ -68,28 +68,31 @@ void nu() {
 	srand(time(NULL));
 	int r = rand();
 	snprintf(name, 64, "c%d", r);
-	TCanvas* c1 = new TCanvas(name, "", 1400, 500);
+	TCanvas* c1 = new TCanvas(name, "", 800, 500);
 	c1->SetFillColor(ci[CI_BACKGROUND]);
 
-	c1->Divide(2, 1);
-	c1->GetPad(1)->SetLogx();
-	c1->GetPad(2)->SetLogx();
-	//c1->GetPad(1)->SetTickx(2);
+	//c1->Divide(2, 1);
+	//c1->GetPad(1)->SetLogx();
+	//c1->GetPad(2)->SetLogx();
+	c1->SetLogx();
 	
 
 
-	c1->cd(1);
+	//c1->cd(1);
 	plot_P(false);
 
 
-	c1->cd(2);
-	plot_P(true);
+	//c1->cd(2);
+	//plot_P(true);
 
 
-	c1->GetPad(1)->BuildLegend();
-	c1->GetPad(2)->BuildLegend();
-	c1->GetPad(1)->SetTicks();
-	c1->GetPad(2)->SetTicks();
+	//c1->GetPad(1)->BuildLegend();
+	//c1->GetPad(2)->BuildLegend();
+	//c1->GetPad(1)->SetTicks();
+	//c1->GetPad(2)->SetTicks();
+	
+	c1->BuildLegend();
+	c1->SetTicks();
 
 }
 
@@ -100,7 +103,7 @@ void plot_P(bool anti) {
 
 	for(int i=0; i<3; ++i) {
 		char title[64];
-		snprintf(title, 64, "#delta_{CP} = %d deg", (i-1) * 90);
+		snprintf(title, 64, "#delta_{CP} = %d%c", (i-1) * 90, 176);
 		f[i] = new TF1(title, plot_P_nh, 0.1, 10., 2);
 		f[i]->SetParameter(0, (double)i);
 		f[i]->SetParameter(1, (double)anti);

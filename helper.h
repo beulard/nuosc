@@ -15,6 +15,7 @@ enum color_index {
 	CI_1,
 	CI_2,
 	CI_3,
+	CI_4,
 	CI_N
 };
 

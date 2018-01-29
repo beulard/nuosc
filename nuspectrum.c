@@ -187,9 +187,9 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 	gdc2_mnh->SetTitle("True normal hierarchy");
 	gdc2_mih->SetTitle("True inverted hierarchy");
 	c4->SetTitle("MH sensitivity");
-	gdc2_mnh->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{MH}}}");
+	gdc2_mnh->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	gdc2_mnh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	gdc2_mih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{MH}}}");
+	gdc2_mih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	gdc2_mih->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_mnh->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mnh->SetLineColor(ci[CI_NH]);
@@ -199,8 +199,8 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 	gdc2_mnh->SetMinimum(0);
 	gdc2_mnh->SetMaximum(25);
 	gdc2_mih->SetMaximum(25);
-	gdc2_mnh->SetLineWidth(2);
-	gdc2_mih->SetLineWidth(2);
+	gdc2_mnh->SetLineWidth(3);
+	gdc2_mih->SetLineWidth(3);
  	p = (TPad*)c4->GetPad(2);	
 	p->cd();
 	gdc2_mih->GetXaxis()->SetLimits(-1., 1.);
@@ -222,10 +222,10 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 	//gdc2_cp->SetMinimum(0);
 	gdc2_cp->GetXaxis()->SetLimits(-1, 1);
 	gdc2_cp->SetLineColor(ci[CI_NH]);
-	gdc2_cp->SetLineWidth(2);
+	gdc2_cp->SetLineWidth(3);
 	gdc2_cp->SetMarkerColor(ci[CI_NH]);
 	gdc2_cp->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	gdc2_cp->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{CP}}}");
+	gdc2_cp->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	
 	c5->cd(2);
 	TGraph* gdc2_cp_ih = new TGraph(N, x, ydih);
@@ -233,12 +233,12 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 	gdc2_cp_ih->Draw("");
 	gdc2_cp_ih->SetTitle("True inverted hierarchy");
 	gdc2_cp_ih->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	gdc2_cp_ih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}_{CP}}}");
+	gdc2_cp_ih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	//gdc2_cp->SetMaximum(10);
 	//gdc2_cp->SetMaximum(10);
 	//gdc2_cp->SetMinimum(0);
 	gdc2_cp_ih->SetLineColor(ci[CI_IH]);
-	gdc2_cp_ih->SetLineWidth(2);
+	gdc2_cp_ih->SetLineWidth(3);
 	gdc2_cp_ih->SetMarkerColor(ci[CI_IH]);
 	gdc2_cp_ih->GetXaxis()->SetLimits(-1, 1);
 }
