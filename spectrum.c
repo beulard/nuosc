@@ -190,28 +190,86 @@ void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antim
 		// So we need to create a new spectrum to put the displaced energies events
 		// Reconstructed spectrum
 		spectrum recon = {0};
-		// For each event, we displace the energy by a random number from a gaussian 
-		// distribution
-		for (int i=0; i<Nbins; ++i) {
-			Printf("%d", (int)(os->events[E_SIGNAL][i]));
-			double E = 0.2 * (firstbin + i) + 0.1;
-			Printf("%f", E);
-			for (int j=0; j<ceil(os->events[E_SIGNAL][i]); ++j) {
-				double Erec = ra.Uniform(0.6 + 1e-3 + E / 10, E + 1);
-				//Printf("%f", Erec);
-				// Find the bin corresponding to the reconstructed energy
-				int bin = (int)((Erec - 0.6) / 7.4 * Nbins + 1e-3);
-				if (bin >= Nbins)
-					bin = i;
-				if (bin < 0)
-					bin = i;
-				Printf("%d %d %f %f", i, bin, E, Erec);
-				// We want to move this event to the bin we picked
-				recon.events[E_SIGNAL][bin] += ra.Gaus(1., 0.01);
+
+		// Total number of reconstructed spectra
+		const int N_rec_total = 10000;
+
+		// Because we cannot allocate more than 2000 spectra, we need to repeat 'N_passes' times
+		const int N_passes = 1 + (N_rec_total-1) / 2000;
+		// Maximum number of spectra per pass
+		const int N_rec_max = 2000;
+		// Number of reconstructed spectra in the last pass
+		const int N_rec_last = N_rec_total % 2000;
+		//Printf("%d %d", N_passes, N_rec_last);
+		//
+		// TODO instead of smoothing a spectrum
+		// repeat the sensitivity plot for every reconstructed spectrum
+		// and take the mean as the center and evaluate the standard deviation
+		// and plot that as a band around the mean
+		//
+		// TODO try to plot sensitivity for 'extreme' values for the mixing
+		// angle (which? check out CDR) and plot a band around the sensitivity
+		// at the best fit
+
+		// Final spectrum, with averaged values from all reconstructed spectra
+		spectrum s_f = {0};
+
+		for (int pass=0; pass<N_passes; ++pass) {
+			const bool last_pass = (pass == N_passes-1);
+			const int N_rec = last_pass ? N_rec_last : N_rec_max;
+			//Printf("\tpass %d, N=%d", pass, N_rec);
+
+			spectrum s_rec[N_rec];
+			memset(s_rec, 0, N_rec * sizeof(spectrum));
+	
+			for (int n=0; n<N_rec; ++n) {
+				// For each event, we displace the energy by a random number from a gaussian 
+				// distribution
+				for (int i=0; i<Nbins; ++i) {
+					// True value of the energy (center of each bin)
+					double E = 0.2 * (firstbin + i) + 0.1;
+					//Printf("%f", E);
+					for (int j=0; j<ceil(os->events[E_SIGNAL][i]); ++j) {
+						// Can play around with the sigma on the gaussian for different results
+						//double Erec = ra.Gaus(E, 0.9 * (E - 0.7));
+						double E_rec = ra.Uniform(0.1 * E, E + 1.5);
+						// After picking E_rec from a uniform distribution,
+						// we take it slightly closer to the true value
+						// as indicated by the DUNE simulations
+						// This increases the overall sensitivity 
+						// by a small amount the more we move E_rec but it also
+						// makes the spectrum more similar to those of DUNE.
+						E_rec += (E - E_rec) / 2.5;
+	
+						// Find the bin corresponding to the reconstructed energy
+						int bin = round((E_rec - 0.7) / 7.4 * Nbins + 1e-3);
+
+						// If our reconstructed energy was out of bounds, 
+						// we just assign the same bin.
+						// This gives the true energy a slightly better chance at being found
+						if (bin >= Nbins)
+							bin = i;
+						if (bin < 0)
+							bin = i;
+						
+	
+						// We want to move this event to the bin we picked
+						s_rec[n].events[E_SIGNAL][bin] += 1;
+					}
+					// Avoid zero events for stability (crashes in delta chi^2 calculation)
+					if (s_rec[n].events[E_SIGNAL][i] < .1)
+						s_rec[n].events[E_SIGNAL][i] = 0.1;
+				}
 			}
-			if (recon.events[E_SIGNAL][i] < 1.)
-				recon.events[E_SIGNAL][i] = 0.5;
+			// Now we want to average over all spectra to create a smoother one
+			for (int n=0; n<N_rec; ++n) {
+				for (int i=0; i<Nbins; ++i) {
+					s_f.events[E_SIGNAL][i] += s_rec[n].events[E_SIGNAL][i] / (double)N_rec_total;
+				}
+			}
 		}
-		//memcpy(os->events, recon.events, Nbins * N_RATES * sizeof(double));
+
+		// After obtaining final spectrum, copy it over to output
+		memcpy(os->events, s_f.events, Nbins * N_RATES * sizeof(double));
 	}
 }

@@ -94,6 +94,15 @@ void do_dc2(const initial_spectrum* s) {
 
 	hierarchy nh[N], ih[N];
 	spectrum nhs[N], ihs[N];
+	
+	// Question
+	// Which part of the code do we want to repeat
+	// Do we repeat the oscillation to obtain better reconstructed spectra?
+	// For the MH we are comparing oscillated spectra between each other
+	// For the d_CP sens we are comparing spectra with one d_cp=0 and one
+	// d_cp=pi spectrum... This points towards us repeating the oscillation
+	// part and averaging the spectra to obtain a smoother one and then applying the 
+	// sensitivity stuff...
 
 	// We can calculate all the spectra beforehand to save cpu when taking chisquared
 	for (int i=0; i<N; ++i) {
@@ -116,7 +125,7 @@ void do_dc2(const initial_spectrum* s) {
 	TH1* hih = new TH1F("hih", "", Nbins, 0.6, 8.);
 	int index = (int)((.0 / 2. + .5) * N);
 
-	Printf("%f", d_cp[index] / pi);
+	//Printf("%f", d_cp[index] / pi);
 	for (int i=0; i<Nbins; ++i) {
 		hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nhs[index].events[E_SIGNAL][i]);
 		hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ihs[index].events[E_SIGNAL][i]);
@@ -197,8 +206,8 @@ void plot_dc2(float* d_cp, float* dc2_mh_n, float* dc2_mh_i, float* dc2_cp, floa
 	gdc2_mnh->SetMarkerColor(ci[CI_NH]);
 	gdc2_mih->SetMarkerColor(ci[CI_IH]);
 	gdc2_mnh->SetMinimum(0);
-	gdc2_mnh->SetMaximum(25);
-	gdc2_mih->SetMaximum(25);
+	//gdc2_mnh->SetMaximum(25);
+	//gdc2_mih->SetMaximum(25);
 	gdc2_mnh->SetLineWidth(3);
 	gdc2_mih->SetLineWidth(3);
  	p = (TPad*)c4->GetPad(2);	

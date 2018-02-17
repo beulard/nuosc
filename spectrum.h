@@ -3,7 +3,7 @@
 #include "osc_defs.h"
 
 // global experiment baseline
-const double L = 700.;
+const double L = 1300.;
 const int Nbins = 37;
 const int firstbin = 3;
 
