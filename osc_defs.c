@@ -107,3 +107,14 @@ void populate(hierarchy* h, h_type t, float d_cp) {
 	}
 	populate_common(h);
 }
+
+void flip_hierarchy(hierarchy* h) {
+	h->dm2_31 = -h->dm2_31;
+	h->dm2_32 = h->dm2_31 - h->dm2_21;
+	// flip the type
+	h->type = (h_type)(1 - h->type);
+
+	// And call populate_common to repopulate dm2 matrix 
+	populate_common(h);
+}
+

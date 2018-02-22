@@ -86,24 +86,6 @@ void get_integrals(spectrum* s, double* integrals) {
 	}
 }
 
-// Normalize a spectrum to the CDR rates given the integrals of the d_cp=0 spectra
-void normalize(spectrum* s, const double* integrals) {
-	for (int i=0; i<N_RATES; ++i) {
-		for (int j=0; j<Nbins; ++j) {
-			s->events[i][j] *= norms[s->h->type][i] / integrals[i];
-		}
-	}
-}
-
-// Gaussian smear the energy bins of a spectrum
-void smear(spectrum* s) {
-	TRandom r;
-	for (int i=0; i<Nbins; ++i) {
-		
-	}
-	
-}
-
 // Oscillate neutrinos for each flavor and for each energy and get the FD flux.
 void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antimode) {	
 	
@@ -121,21 +103,11 @@ void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antim
 		for (int j=0; j<samples; ++j) {
 			double E = 0.2 * (firstbin + i + (double)j / (double)samples);
 			
-			// If we want to implement matter effects, we need to recalculate
-			// the MNS matrix for every energy since the C factor depends on E
 			
-			// TODO for antineutrinos, this is negative
-			double A = 2.52e-28 * Ne * E / (os->h->dm2_31);
-			double C = sqrt(pow(cos(2. * os->h->t13) - A, 2) + sinsq(2. * os->h->t12));
-
 			// Now we change the effective mass splitting and mixing angles and 
 			// recalculate everything. We don't want to modify the original hierarchy though.
 			hierarchy h;
 			memcpy(&h, os->h, sizeof(hierarchy));
-			//h.dm2_31 *= C;
-			//h.t12 = 0.5 * asin(sin(2. * h.t12) / C);
-			//populate_common(&h);
-			//Printf("%f", h.t12 / TMath::Pi() * 180.);
 			
 			avg_P[E_SIGNAL] += P_me(f_m, f_e, E, &h, false);
 			avg_P[ANTIE_SIGNAL] += P_me(f_m, f_e, E, &h, true);
@@ -153,19 +125,18 @@ void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antim
 		os->events[E_SIGNAL][i] = s.mu[i + firstbin] * avg_P[E_SIGNAL];
 		os->events[ANTIE_SIGNAL][i] = s.antimu[i + firstbin] * avg_P[ANTIE_SIGNAL];
 		os->events[MU_SIGNAL][i] = s.mu[i + firstbin] * avg_P[MU_SIGNAL];
-		//	To get a more realistic picture, we normalize these to predicted event rates.
-
 
 	}
 
 
 	// We want to store a d_cp=0 oscillated spectrum so we can normalize others to it
-	static int call = 0;
+	/*static int call = 0;
 	static hierarchy h_0[2];
 	static spectrum s_0[2];
 	static double integrals_0[2][N_RATES];
 	if (call == 0) {
 		call = 1;
+		memset(integrals_0, 0, 2 * N_RATES * sizeof(double));
 		for (int k=0; k<2; ++k) {
 			populate(&h_0[k], (h_type)k, 0.);
 
@@ -175,101 +146,104 @@ void oscillate(const initial_spectrum* is, spectrum* os, bool normal, bool antim
 
 			get_integrals(&s_0[k], integrals_0[k]);
 		}
-	}
+	}*/
 
-	// If the normal flag is set, we normalize the spectrum to the d_cp=0 one and
-	// then smear it
-	if (normal) {
-		normalize(os, integrals_0[os->h->type]);
+	// /!\ CHANGE: normalization should not be performed in this function,
 	
+	// If the normal flag is set, we normalize the spectrum to the d_cp=0 one
+	//if (normal) {
+	//	normalize(os, integrals_0[os->h->type]);
+	//}
+}
 
-		// Add gaussian smearing to the oscillated spectra reconstructed energy
-		static int seed = 0;
-		TRandom ra(time(NULL) + seed);
-		seed++;
-		// So we need to create a new spectrum to put the displaced energies events
-		// Reconstructed spectrum
-		spectrum recon = {0};
+// Energy reconstruction function with smearing of the reconstructed energy to
+// simulate experimental uncertainties
+void reconstruct(const spectrum* s, spectrum* os, int smooth) {
 
-		// Total number of reconstructed spectra
-		const int N_rec_total = 10000;
+	// Random number generator
+	static int seed = 0;
+	TRandom ra(seed);
+	seed++;
 
-		// Because we cannot allocate more than 2000 spectra, we need to repeat 'N_passes' times
-		const int N_passes = 1 + (N_rec_total-1) / 2000;
-		// Maximum number of spectra per pass
-		const int N_rec_max = 2000;
-		// Number of reconstructed spectra in the last pass
-		const int N_rec_last = N_rec_total % 2000;
-		//Printf("%d %d", N_passes, N_rec_last);
-		//
-		// TODO instead of smoothing a spectrum
-		// repeat the sensitivity plot for every reconstructed spectrum
-		// and take the mean as the center and evaluate the standard deviation
-		// and plot that as a band around the mean
-		//
-		// TODO try to plot sensitivity for 'extreme' values for the mixing
-		// angle (which? check out CDR) and plot a band around the sensitivity
-		// at the best fit
 
-		// Final spectrum, with averaged values from all reconstructed spectra
-		spectrum s_f = {0};
+	// TODO instead of smoothing a spectrum
+	// repeat the sensitivity plot for every reconstructed spectrum
+	// and take the mean as the center and evaluate the standard deviation
+	// and plot that as a band around the mean
+	//
+	// TODO try to plot sensitivity for 'extreme' values for the mixing
+	// angle (which? check out CDR) and plot a band around the sensitivity
+	// at the best fit
 
-		for (int pass=0; pass<N_passes; ++pass) {
-			const bool last_pass = (pass == N_passes-1);
-			const int N_rec = last_pass ? N_rec_last : N_rec_max;
-			//Printf("\tpass %d, N=%d", pass, N_rec);
+	const int N_rec = smooth;
 
-			spectrum s_rec[N_rec];
-			memset(s_rec, 0, N_rec * sizeof(spectrum));
+	// Reconstructed spectrum that will overwrite the original one
+	spectrum s_f = {0};
+
 	
-			for (int n=0; n<N_rec; ++n) {
-				// For each event, we displace the energy by a random number from a gaussian 
-				// distribution
-				for (int i=0; i<Nbins; ++i) {
-					// True value of the energy (center of each bin)
-					double E = 0.2 * (firstbin + i) + 0.1;
-					//Printf("%f", E);
-					for (int j=0; j<ceil(os->events[E_SIGNAL][i]); ++j) {
-						// Can play around with the sigma on the gaussian for different results
-						//double Erec = ra.Gaus(E, 0.9 * (E - 0.7));
-						double E_rec = ra.Uniform(0.1 * E, E + 1.5);
-						// After picking E_rec from a uniform distribution,
-						// we take it slightly closer to the true value
-						// as indicated by the DUNE simulations
-						// This increases the overall sensitivity 
-						// by a small amount the more we move E_rec but it also
-						// makes the spectrum more similar to those of DUNE.
-						E_rec += (E - E_rec) / 2.5;
-	
-						// Find the bin corresponding to the reconstructed energy
-						int bin = round((E_rec - 0.7) / 7.4 * Nbins + 1e-3);
+	for (int n=0; n<N_rec; ++n) {
+		// Temporary reconstructed spectrum
+		spectrum s_rec = {0};
 
-						// If our reconstructed energy was out of bounds, 
-						// we just assign the same bin.
-						// This gives the true energy a slightly better chance at being found
-						if (bin >= Nbins)
-							bin = i;
-						if (bin < 0)
-							bin = i;
-						
-	
-						// We want to move this event to the bin we picked
-						s_rec[n].events[E_SIGNAL][bin] += 1;
-					}
-					// Avoid zero events for stability (crashes in delta chi^2 calculation)
-					if (s_rec[n].events[E_SIGNAL][i] < .1)
-						s_rec[n].events[E_SIGNAL][i] = 0.1;
+		// For each event, we displace the energy by a random number from a gaussian 
+		// distribution
+		for (int i=0; i<Nbins; ++i) {
+			// True value of the energy (center of each bin)
+			double E = 0.2 * (firstbin + i) + 0.1;
+			//Printf("%f", E);
+			for (int j=0; j<ceil(s->events[E_SIGNAL][i]); ++j) {
+				// Can play around with the sigma on the gaussian for different results
+				double E_rec = ra.Gaus(E, 0.35);
+				//double E_rec = ra.Uniform(0.5 * E, E + 1.5); 
+				// This actually gives nice results...
+				//double E_rec = ra.Uniform(0.6, 8);
+				//double E_rec = E;
+				
+				// After picking E_rec from a uniform distribution,
+				// we take it slightly closer to the true value
+				// as indicated by the DUNE simulations
+				// This increases the overall sensitivity 
+				// by a small amount the more we move E_rec but it also
+				// makes the spectrum more similar to those of DUNE.
+				//E_rec += (E - E_rec) / 1.5;
+		
+				// Find the bin corresponding to the reconstructed energy
+				int bin = round((E_rec - 0.7) / 7.4 * Nbins + 1e-3);
+
+				// If our reconstructed energy was out of bounds, 
+				// we just assign the same bin.
+				// This gives the true energy a slightly better chance at being found
+				if (bin >= Nbins)
+					bin = i;
+				if (bin < 0)
+					bin = i;
+		
+				// The value of each event is 1, except for the last one which might be
+				// worth less because of our floating point precision
+				double value = 1.;
+				if (j == ceil(s->events[E_SIGNAL][i]) - 1){
+					value = s->events[E_SIGNAL][i] - ceil(s->events[E_SIGNAL][i]) + 1.;
 				}
+				// We want to move this event to the bin we picked
+				s_rec.events[E_SIGNAL][bin] += value;
 			}
-			// Now we want to average over all spectra to create a smoother one
-			for (int n=0; n<N_rec; ++n) {
-				for (int i=0; i<Nbins; ++i) {
-					s_f.events[E_SIGNAL][i] += s_rec[n].events[E_SIGNAL][i] / (double)N_rec_total;
-				}
-			}
+			// Avoid zero events for stability (crashes in delta chi^2 calculation)
+			if (s_rec.events[E_SIGNAL][i] < .1)
+				s_rec.events[E_SIGNAL][i] = 1.;
+		}
+		
+		for (int i=0; i<Nbins; ++i) {
+			s_f.events[E_SIGNAL][i] += s_rec.events[E_SIGNAL][i] / N_rec;
 		}
 
-		// After obtaining final spectrum, copy it over to output
-		memcpy(os->events, s_f.events, Nbins * N_RATES * sizeof(double));
+	}
+	// After obtaining final spectrum, copy it over to output
+	memcpy(os->events, s_f.events, Nbins * N_RATES * sizeof(double));
+}
+
+
+void normalize(spectrum* s, double integral, h_type h) {
+	for (int i=0; i<Nbins; ++i) {
+		s->events[E_SIGNAL][i] *= norms[h][E_SIGNAL] / integral;
 	}
 }

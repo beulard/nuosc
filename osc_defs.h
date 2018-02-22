@@ -9,7 +9,7 @@ enum flavor {
 };
 
 enum h_type {
-	NH,
+	NH = 0,
 	IH
 };
 
@@ -53,5 +53,7 @@ struct hierarchy {
 void populate(hierarchy* h, h_type t, float d_cp = -1111.);
 //	does not change numerical data but calculates derived quantities (trigonometrics, MNS) 
 void populate_common(hierarchy* h);
+// Change the mass hierarchy
+void flip_hierarchy(hierarchy* h);
 
 #endif

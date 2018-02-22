@@ -52,5 +52,16 @@ double P(flavor a, flavor b, double E, hierarchy* h, bool anti);
 void oscillate(const initial_spectrum* is, spectrum* s, 
 				bool normal=true, bool antimode=false);
 
+// Energy reconstruction function with smearing of the reconstructed energy to
+// simulate experimental uncertainties
+// If the 'smooth' parameter is set, the spectrum is reconstructed multiple times
+// and averaged over to make it smooth
+void reconstruct(const spectrum* s, spectrum* os, int smooth=1);
+
+// Normalize a spectrum to the CDR predicted event rates, given the d_cp=0
+// spectrum integral that we want to normalize to. Usually that will be the
+// spectrum of the same mass hierarchy.
+void normalize(spectrum* s, double integral, h_type h);
+
 
 #endif
