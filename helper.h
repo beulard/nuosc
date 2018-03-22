@@ -2,27 +2,18 @@
 #define HELPER
 #include <complex>
 #include "TMath.h"
+#include "color_index.h"
 
 const double pi = TMath::Pi();
 
-enum color_index {
-	CI_BACKGROUND,
-	CI_E,
-	CI_MU,
-	CI_TAU,
-	CI_NH,
-	CI_IH,
-	CI_1,
-	CI_2,
-	CI_3,
-	CI_4,
-	CI_N
-};
 
-int ci[CI_N];
+// Print complex number
+void complex_print(std::complex<double> z);
 
-static void complex_print(std::complex<double> z) {
-	Printf("%f + %fi", std::real(z), std::imag(z));
-}
+// Statistical mean of a set of N values
+double mean(double* vals, int N);
+
+// Statistical standard deviation from the mean
+double std_dev(double* vals, double mean, int N);
 
 #endif

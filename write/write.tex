@@ -17,22 +17,95 @@
 \begin{document}
 \maketitle
 
+
+\subsection{Neutrinos and neutrino oscillations}
+The neutrino particle first appeared in 1934 in Fermi's theory of the $\beta$-decay
+process\cite{fermi}, where a neutron would decay into a proton and emit an electron and a
+light, neutral particle. This extra particle was required as a way to explain the
+continuous energy spectrum of the electron. A number of subsequent experiments
+were designed to map out the properties of the neutrino and its
+interactions\cite{zuber}. As of today, the neutrino is still not fully
+understood, and neutrino physics has become one of the leading branches of
+experimental particle physics along with collider physics. 
+
+The existence of distinct flavours of neutrinos was first investigated by
+Bruno Pontecorvo in 1959\cite{pontecorvo}. He found that different neutrino flavours
+interacted with different leptons, therefore establishing the three neutrinos
+known today as $\nu_e$, $\nu_\mu$ and $\nu_\tau$, and hinting at the
+possibility of flavour oscillations, which he later theorized.
+As will be discussed later, the fact that a neutrino can change its flavour by
+propagating through empty space is direct evidence that neutrinos are massive
+particles, unlike what is initially described by the Standard Model.
+The 2015 Nobel Prize was awarded to the SuperKamiokande and SNO collaborations
+for the discovery of neutrino oscillations in 1999 and 2001, respectively.
+Although neutrino oscillations have been observed, some of the physical parameters that
+describe this process have remained difficult to probe because of the lack of
+accuracy in the measurements of past experiments. 
+The Deep Underground Neutrino Experiment (DUNE) in the United States and the
+upgrade to SuperKamiokande, HyperKamiokande (HyperK) in Japan, are examples of
+future experiments that aim to determine these parameters and start the era of
+precision measurements in neutrino physics.
+
+In the Standard Model, there are twelve elementary fermions, six quarks and six
+leptons (plus their respective antiparticles). The leptons consist of three
+charged leptons $(e, \mu, \tau)$ and three corresponding charge-less neutrinos
+$(\nu_e, \nu_\mu, \nu_\tau)$. The electron neutrino $\nu_e$, for example, is
+\emph{defined} as the neutrino which can interact weakly with an electron and a
+$W$ boson~(Fig.~\ref{fig:weak_vertex}).
+
+\begin{figure}
+	\label{fig:weak_vertex}
+\end{figure}
+
+Neutrinos, being leptons and carrying zero charge, interact only via the weak
+interaction, which makes them impossible to observe directly. Their existence
+and their properties can only be inferred from their interactions with other
+particles.
+Experimentally, only left-handed neutrinos and right-handed
+antineutrinos are observed. In the Standard Model, this curious property would
+prevent the neutrinos from acquiring a mass through interactions with the
+Higgs field in the same way that charged leptons do. Hence the Standard Model
+on its own cannot accurately describe neutrinos, and extensions such as the
+seesaw mechanism or extra dimensions are needed. This discussion lies beyond
+the scope of this paper since neutrino oscillations can be described by fairly
+straightforward matrix and quantum mechanics, and quantum field theory will not
+be needed. % mal dit
+
+\section{}
+We will now introduce the mathematical tools that we use to describe neutrino
+oscillations. Neutrinos are able to oscillate flavour because the quantum states that
+are produced in weak interactions, called the \emph{weak eigenstates}, are
+different from the states that propagate in spacetime under the free
+Hamiltonian, called the \emph{mass eigenstates}. As we will see, these two
+eigenbases are simply related by a \emph{mixing matrix}, analogous (or, in the
+case of two neutrinos, identical) to a rotation of the axes in a Cartesian
+coordinate system.
+The derivations in this section are heavily inspired by chapter 8 of
+Zuber's textbook on neutrino physics\cite{zuber}.
+
 \subsection{Neutrino oscillation formalism} 
 Let us consider a general neutrino state as a superposition of $n$ orthogonal
-eigenstates \cite{zuber}. We have two obvious eigenbases: the flavour (weak) eigenstates
-$\ket{\nu_{\alpha}}$ and the mass eigenstates $\ket{\nu_i}$. Flavour
-eigenstates interact with matter through the weak interaction,
-and hence are the states we observe in nature.
-Eigenstates are orthogonal within each basis and the two bases are related by a
-unitary rotation $U$: 
+eigenstates. We mentioned the two eigenbases of interest: the weak (flavour)
+eigenstates $\ket{\nu_{\alpha}}$, $\alpha=e, \mu, \tau$, and the mass
+eigenstates $\ket{\nu_i}$, $i=1, 2, 3$. 
+This is stupid, we are specifying 3 eigenstates when we said we were
+considering the general case.
+Flavour eigenstates interact with
+matter through the weak interaction, and hence are the states we observe in
+nature.  Eigenstates are orthogonal within each basis and the two bases are
+related by a unitary transformation conventionally represented by the
+Pontecorvo-Maki-Nakagawa-Sakata (PMNS) mixing (((Citation needed)))
+matrix $U$: 
 \begin{align*}
 \bra{\nu_\alpha}\ket{\nu_\beta} = \delta_{\alpha \beta}, \quad
-\bra{\nu_i}\ket{\nu_j} = \delta_{ij}  \quad
+	\bra{\nu_i}\ket{\nu_j} &= \delta_{ij}  \quad
 \ket{\nu_\alpha} = \sum_i U_{\alpha i} \ket{\nu_i}\\
-\ket{\nu_i} = \sum_i (U^\dagger)_{i \alpha} \ket{\nu_\alpha} = \sum_i
-	U^*_{\alpha i} \ket{\nu_\alpha}, U^\dagger U = 1.
+	\ket{\nu_i} = \sum_\gamma (U^\dagger)_{i \gamma}~\quad &\quad \ket{\nu_\gamma} = \sum_\gamma
+	U^*_{\gamma i} \ket{\nu_\gamma} \\U^\dagger U &= 1,
 \end{align*}
-Mass eigenstates are stationary states and evolve in time as $\ket{\nu_i(x,
+where $\alpha, \beta, \gamma = e, \mu, \tau$ and $i, j = 1, 2, 3$. ((Pas clair,
+on dirait que alpha, beta, gamma are respectively e, mu and tau.))\\
+Since they are solutions of the free Hamiltonian in a vacuum, the mass eigenstates are stationary states and evolve in time as $\ket{\nu_i(x,
 t)} = \me^{-\mi E_i t} \ket{\nu_i(x, 0)}$, where $\ket{\nu_i(x, 0)} = \me^{\mi p
 x} \ket{\nu_i}$ for a plane wave neutrino produced at $x=0$.
 Hence a neutrino produced as a flavour eigenstate $\alpha$ would show the
@@ -94,7 +167,7 @@ and the transition probability follows from equation \ref{eq:nuprob}:
 \subsection{Three neutrino oscillations}
 When we consider three eigenstates, the number of parameters jumps to four:
 three CP-preserving mixing angles and a CP-violating phase $\delta_{CP}$. The
-mixing matrix was introduced by Maki, Nakagawa and Sakata in 1962~\cite{MNS}.
+mixing matrix was introduced by Maki, Nakagawa and Sakata in 1962\cite{MNS}.
 Analogously to the two neutrino case, it can be presented as a rotation matrix,
 with the mixing angles $\theta_{ij}$ acting as Euler angles and the
 CP-violating phase 
@@ -108,12 +181,149 @@ U_{\mathrm{MNS}} =
 ,$$
 where $c_{ij} = \cos(\theta_{ij})$ and $s_{ij} = \sin(\theta_{ij})$.
 
+\subsection{Neutrino oscillations in matter}
+So far we have only discussed neutrino oscillations in vacuum, where they do
+not interact. In matter, where atoms are present, they can interact with
+electrons and nucleons (?) via the weak interaction [citation needed], which affects the
+oscillations. A neutrino can scatter either by exchanging a $W^\pm$ boson ---
+charged current (CC) interaction --- or by exchanging a $Z$ boson --- neutral
+current (NC) interaction. The neutral current interaction is experienced
+equally by all three flavours, hence it does not have an effect on the relative
+propagation phases, and causes no change in the oscillation probability. The
+charged current is, as we have seen from the interaction vertex
+(fig.~\ref{fig:weak_vertex}), proper (?) to the neutrino flavour. Since only
+electrons are present in matter, only electron neutrinos are subject to CC
+interactions, and oscillation probabilities
+
+((CAN SHOW DEMONSTRATION FOR 2 FLAVOURS, SEE ZUBER p.216 OR RICCIARDI'S
+NOTES))
+
+
+Experiments in which neutrinos spend a significant amount of time propagating through
+matter --- e.g. neutrinos from the sun's core, or neutrinos propagating underground in the
+Earth's mantle --- require us to take matter effects into account in order to produce a
+realistic model. The DUNE experiment will be performed entirely underground
+with a baseline of 1300km, enough to have a significant effect on the
+oscillation probability from muon neutrinos to electron neutrinos. A comparison
+between models with and without matter effects for that baseline is shown on
+figure~\ref{fig:matter_effects}.
+((TODO PLOT MATTER.C))
+
 \subsection{CP violating phase}
 
 \subsection{Sensitivities}
+Neutrino experiments are characterised by the extremely small scattering cross
+section of weak processes. Neutrinos are almost massless, have no charge, and
+being leptons, they are not affected by strong interactions. These unique
+properties make their detection particularly difficult and the associated
+experiments particularly costly and time-inefficient. The best way for
+experimenters to compensate for a small cross section is to increase the scale
+of their detector. 
+
+The Sudbury Neutrino Observatory (SNO) experiment, which confirmed
+the existence of matter effects on neutrino oscillations in 2001, consisted of 1000
+tons of heavy water enclosed in a sphere of diameter 12 meters\cite{thomson}.
+The DUNE experiment, expected to start collecting data in 2024, will use 4850L
+of liquid argon for a total fiducial mass\footnote{The outermost parts of the
+detector are more sensitive to background events. To account for this, all
+events outside the more reliable central region are discarded. The part of the
+total detector mass that remains is called fiducial mass.} of 40 kilotons\cite{cdr}.
+For projects of this scale, it is crucial to try to maximize the time and cost
+efficiency of the experiment by choosing the design that will provide the best
+chance of scientific discovery.
+
+In general, it is not obvious which design choices (baseline, for example) will lead to better
+sensitivity. By sensitivity, we mean the ability of the experiment to make a
+relevant discovery. For example, if DUNE was to estimate $\delta_{CP}$ and
+determine that it excludes $\delta_{CP}=0$ and $\delta_{CP}=\pi$ with a
+$3\sigma$ confidence level, one could say it has discovered CP violation in the
+lepton sector.
+
+As a consequence, experimentalists have devised statistical methods to allow
+quantifying of sensitivity in order to compare different designs,
+and create the most efficient experiments.
+Additionally, these methods enable us to compare experiments that have
+different characteristics --- baseline, detector technology, neutrino source
+--- and to understand the complementarities that could result from combining
+their results.
+
+
+One of the most sought after discoveries in neutrino physics is that of the neutrino
+mass hierarchy, that is, the sign of the mass difference $\Delta m^2_{31} =
+m^2_3 - m^2_1$. Naturally, we can define a statistic that describes how
+sensitive a given experiment is to the mass hierarchy. That is, this
+statistic tells us how good the experiment will be at discriminating
+between the two possible hypotheses, NH or IH.
+
+((Give a heuristic introduction to the $\Delta \chi^2$ statistic and how it is
+used to estimate sensitivity))
+((Very good inspiration in Introduction from Ciuffoli 1305.5150))
+
+\subsubsection{Derivation of $\Delta \chi^2$ for the mass hierarchy}
+The mass hierarchy can only turn out to be normal (NH), or inverted (IH). As
+such, it is considered as a discrete hypothesis (in contrast with a continuous
+variable such as $\delta_{CP}$ or $\theta_{23}$) in our statistical analysis.
+The method we use\cite{ciuffoli, qian} is presented in a fairly
+statistics-heavy manner but we only use it in its simplest occurence,
+namely a model with no nuisance parameters. However, we later introduce
+systematic uncertainties by hand by modeling the reconstruction of neutrino
+energies at the detector.
+In a neutrino experiment such as DUNE, neutrino events (e.g.~$\nu_e$
+appearance) will be recorded as a
+function of their reconstructed energy. We denote by $y_i$ the event count,
+where $i = 1, 2, ..., N$ is the index of the energy bin. The event counts are
+distributed according to a Gaussian with variance $\sigma_i^2$. Our theoretical models
+will yield predicted event counts that will depend on the true mass hierarchy.
+We denote by $y^N_i$ the predicted count under normal hierarchy and by $y^I_i$
+the predicted count under inverted hierarchy.
+Let us assume that the true hierarchy is normally ordered. Then we can write
+our experimental event counts as $y_i = y^N_i + \sigma_i g_i$, where $g_i$ is a
+random variable from a Gaussian distribution.
+The $\Delta \chi^2$ statistic can then be written as
+\begin{align*}
+	\Delta \chi^2 &= \chi_I^2 - \chi_N^2\\
+	&= \sum_i \frac{(y_i - y^I_i)^2}{\sigma_i^2} - \sum_i \frac{(y_i -
+	y^N_i)^2}{\sigma_i^2}\\
+	&= \sum_i \frac{(y^N_i + \sigma_i g_i - y^I_i)^2 - (y^N_i + \sigma_i g_i -
+	y^N_i)^2}{\sigma_i^2}\\
+	&= \sum_i \frac{(y^N_i - y^I_i)^2}{\sigma_i^2} + \sum_i \frac{2(y^N_i -
+	y^I_i)}{\sigma_i} g_i
+\end{align*}
+In this form, we can see that $\Delta \chi^2$ is a Gaussian-distributed random
+variable where the mean is
+$$\overline{\Delta\chi^2} = \sum_i \frac{(y^N_i - y^I_i)^2}{\sigma_i^2},$$
+and the standard deviation is
+$$\sigma_{\Delta\chi^2} = \sqrt{\sum_i \frac{4(y^N_i - y^I_i)^2}{\sigma_i^2}}\\
+= 2\sqrt{\overline{\Delta\chi^2}}.$$
+
+In these expressions, the experimental counts $y_i$ do not appear, which means
+that we can evaluate the $\overline{\Delta\chi^2}$ (mean delta chi-squared)
+statistic from our theoretical models only.
+
+((TODO this is not true, fix))
+It is fairly evident\cite{qian} that when the
+event count $y^N_i$ is large (we are still under our assumption that the true hierarchy
+is normal), we can substitute the statistical uncertainty $\sigma_i$ by
+$\sqrt{y^N_i}$, such that our expression becomes
+$$\overline{\Delta\chi^2} = \sum_i \frac{(y^N_i - y^I_i)^2}{y^N_i}.$$
+If we work under the opposite assumption, where we have a true inverted
+hierarchy, the denominator is simply replaced by $y^I_i$. 
+
+This statistic is used throughout the neutrino physics literature\cite{cdr,
+martin-albo}((MORE CITATIONS NEEDED)) to express the sensitivity of future experiments.
+((Give details)).
+
+
+
+\subsubsection{Sensitivity to $\delta_{CP}$}
+In addition to the sensitivity to the mass hierarchy, we estimate the
+sensitivity to CP discovery by simulating data for all values of $\delta_{CP}$
+and comparing to CP-conserving values $\delta_{CP} = 0, \pi$.
+
 
 
 \subsubsection{Delta chi squared} 
+((TODO read this section and retain good bits))
 Let's work under the assumption that the true mass hierarchy (the one chosen by
 nature) is the \emph{normal} one. When we oscillate our initial spectrum over
 the baseline and obtain a prediction for the far detector spectrum, we are,
@@ -134,7 +344,7 @@ between our \emph{assumed true} spectrum and each of the \emph{inverted
 hierarchy} spectra. The smaller the $\chi^2$, the better the fit, hence the
 minimum $\chi^2$, for a given assumed $\delta_{CP}$, represents the best
 possible agreement with the opposite hierarchy. This particular statistic is
-called the $\overline{\Delta\chi^2}$, the mean $\Delata\chi^2$, and since it tells
+called the $\overline{\Delta\chi^2}$, the mean $\Delta\chi^2$, and since it tells
 us how ``badly'' our experiment might differentiate between different values of
 a parameter,  it is a good measure of the \emph{sensitivity} of the experiment
 to this underlying parameter.  We call the quantity
@@ -146,11 +356,24 @@ $\sqrt{\overline{\Delta\chi^2}}$ the sensitivity.
 
 
 \begin{thebibliography}{20} 
-	\bibitem{zuber} Kai Zuber, \textit{Neutrino
-		Oscillations}, 2004
-	\bibitem{MNS} Maki, Nakagawa, Sakata, \textit{Remarks on the Unified Model of
-		Elementary Particles}, 1962
+	\bibitem{zuber} Zuber K. Neutrino
+		Oscillations. \textit{IOP Publishing}. 2004
+	\bibitem{thomson} Thomson M. Modern Particle Physics. \textit{Cambridge
+		University Press}. 2013
+	\bibitem{MNS} Maki Z, Nakagawa M, Sakata S. Remarks on the Unified Model of
+		Elementary Particles. \textit{Progress of Theoretical Physics}. 1962
+	\bibitem{cdr} DUNE Collaboration. Long-Baseline Neutrino Facility (LBNF) and
+		Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report Volume
+		2: The Physics Program for DUNE at LBNF. \texttt{arXiv:1512.06148}. 2015
+	\bibitem{fermi} Fermi E. Versuch einer Theorie der $\beta$-Strahlen. I.
+		\textit{Z. Physik}. 1934
+	\bibitem{pontecorvo} Pontecorvo B. \textit{Sov. J. Phys.} 1960
+	\bibitem{ciuffoli} Ciuffoli E, Evslin J, Zhang X. Sensitivity to the
+		Neutrino Mass Hierarchy. \texttt{arXiv:1305.5150v4}. 2013
+	\bibitem{qian} Qian X, Tan A, Wang W, Ling JJ, McKeown RD, Zhang C.
+		Statistical Evaluation of Experimental Determinations of Neutrino Mass
+		Hierarchy. \texttt{arXiv:1210.3651}. 2012
+	\bibitem{martin-albo} Martin-Albo J. Sensitivity of DUNE to long-baseline
+		neutrino oscillation physics. \texttt{arXiv:1710.08964}. 2017
 	
-\end{thebibliography}
-
-\end{document}
+\end{thebibliography} \end{document}

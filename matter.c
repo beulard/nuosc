@@ -8,9 +8,9 @@
 
 void matter() {
 	// We have to pick a hierarchy that effectively shows the difference.
-	hierarchy h;
+	parameters p;
 	//double d_cp = -pi/2.;
-	populate(&h, NH);
+	p.populate(NH);
 
 	// number of samples
 	const int N = 100000;
@@ -22,8 +22,8 @@ void matter() {
 		// Range x (E) from 0.1 to 10 GeV
 		x[i] = 1e-1 + (double)i / (double)N * (10. - 1e-1);
 
-		y[i] = P(f_m, f_e, x[i], &h, false);
-		y_me[i] = P_me(f_m, f_e, x[i], &h, false);
+		y[i] = P(f_m, f_e, x[i], 1300, &p, false);
+		y_me[i] = P_me(f_m, f_e, x[i], 1300, &p, false);
 	}
 
 	TCanvas* c = new TCanvas("c1", "c1", 700, 500);

@@ -8,287 +8,113 @@ void plot_particles(float* mu, float* e);
 void plot_antiparticles(float* antimu, float* antie);
 void read_spectrum(initial_spectrum* s);
 void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i, double* sd_mh_i, double* dc2_cp, double* sd_cp_n, double* dc2_cp_ih, double* sd_cp_i, int N);
-void do_dc2(const initial_spectrum* s);
-void do_dc2_theta(const initial_spectrum* s);
+void do_dc2(const initial_spectrum* s, double baseline);
+void do_dc2_theta(const initial_spectrum* s, double baseline);
 
 
-// Mean delta chi-squared between a test spectrum and a "true" spectrum,
-// as given in 1210.3651 p.9
-double mean_dc2(const double* test, const double* tru, int N = 37) {
+// Mean delta chi-squared between a test spectrum and a "true" spectrum and a set of 
+// standard deviations,
+// as given in 1210.3651 p.9.
+double mean_dc2(const double* test, const double* tru, const double* sd = NULL, int N = 37) {
 	double r = 0.;
-	for (int i=0; i<N; ++i) {
-		r += pow(test[i] - tru[i], 2) / tru[i];
-	}
+	//if (sd == NULL) {
+		double avg_rate = 0.;
+		for (int i=0; i<N; ++i) {
+			avg_rate += test[i] / N;
+		}
+		for (int i=0; i<N; ++i) {
+			//r += pow(test[i] - tru[i], 2) / /*tru[i]*/ avg_rate;
+			if (i>6 && tru[i] > 1)
+			r += pow(test[i] - tru[i], 2) / test[i];//2./avg_rate;// / pow(test[i] / 5., 2);
+		}
+	/*} else {
+		for (int i=0; i<N; ++i) {
+			if (i > 4)
+			r += pow(test[i] - tru[i], 2) / pow(sd[i], 2);
+		}
+	}*/
 	return r;
 }
 
-// Statistical mean of a set of N values
-double mean(double* vals, int N) {
-	double r = 0.;
-	for (int i=0; i<N; ++i) {
-		r += vals[i] / N;
-	}
-	return r;
-}
 
-// Statistical standard deviation from the mean
-double std_dev(double* vals, double mean, int N) {
-	double r = 0.;
-	for (int i=0; i<N; ++i) {
-		r += pow(vals[i] - mean, 2) / (N-1);
-	}
-
-	return sqrt(r);
-}
 
 // theta=0: plot sensitivity with error band
 // theta=1: plot sensitivity for best fit and 1sigma theta23 as band
 void nuspectrum(int theta=0) {
 	gStyle->SetOptStat(0);
 
-	// initial spectrum in the LBNF's neutrino mode
-	initial_spectrum nu;
-	// and in the antineutrino mode
-	initial_spectrum antinu;
 
-	// read data from root file
-	read_spectrum(&nu);
-	
+	initial_spectrum is_dune;
+	is_dune.read("data/dune_mu.csv");
+
+	//is_dune.plot();
+
+	initial_spectrum is_hyperk;
+	is_hyperk.read("data/hyperk.csv");
+
+	//is_hyperk.plot();
+
+	//initial_spectrum is_spl;
+	//is_spl.read("data/southpole_mu.csv");
+
+	//is_spl.plot();
+
+
+
 	// switch particle/antiparticle spectrum around for the antinu mode
-	for (int i=0; i<50; ++i) {
+	/*for (int i=0; i<50; ++i) {
 		antinu.mu[i] = nu.antimu[i];
 		antinu.antimu[i] = nu.mu[i];
 		antinu.e[i] = nu.antie[i];
 		antinu.antie[i] = nu.e[i];
-	}
+	}*/
 	
-	// plot the initial spectrum (un-normalized)
-	//plot_initial(nu.mu, nu.antimu, nu.e, nu.antie);
-	//plot_initial(antinu.mu, antinu.antimu, antinu.e, antinu.antie);
-	
-	// Do the best-fit oscillation
-	//oscillate(&nu, &best_fit_nu);
-	
-
-	// Main functions
-	/*if(anti)
-		do_dc2(&antinu);
-	else
-		do_dc2(&nu);
-		*/
 	if(theta == 0)
-		do_dc2(&nu);
+		do_dc2(&is_dune, 1300);
 	else if(theta == 1)
-		do_dc2_theta(&nu);
+		do_dc2_theta(&is_dune, 1300);
 }
 
-double get_integral(const spectrum* s) {
-	double r=0.;
+
+
+// Calculates the mean oscillation spectrum over a given set of N parameter combinations
+// Also provides the standard deviation through 'out_sd'
+// Output arrays should have size double[Nbins]
+/*void get_MC_spectrum(parameters* p, int N, double* out_spectrum, double* out_sd) {
+	double spectra[Nbins][N];
+	for (int i=0; i<N; ++i) {
+		for (int j=0; j<Nbins; ++j) {
+			spectra[j][i] = P_me(f_m, f_e, (j + firstbin) * 0.2, &p[i], false);
+		}
+	}
 	for (int i=0; i<Nbins; ++i) {
-		r += s->events[E_SIGNAL][i];
+		out_spectrum[i] = mean(spectra[i], N);
+		out_sd[i] = std_dev(spectra[i], out_spectrum[i], N);
 	}
-	return r;
-}
+}*/
 
-// Calculates MH mean delta chi squared and standard deviation given a hierarchy and theta_23
-void calculate_mh_sens(const initial_spectrum* s, h_type H, double** dc2_out, double** sd_out, double theta=0., int N=61, int N_rec=100) {
-	
-	// Values of d_cp
-	double d_cp[N];
-	
+/*void plot_MC_spectrum(double* spectrum, double* sd) {
 
-	double dc2[N][N_rec];
-	memset(&dc2, 0, N * N_rec * sizeof(double));
-
-	// We need these for normalizations
-	hierarchy nh0, ih0;
-	populate(&nh0, NH, 0.);
-	populate(&ih0, NH, 0.);
-	nh0.t23 = theta;
-	ih0.t23 = theta;
-	populate_common(&nh0);
-	populate_common(&ih0);
-
-	flip_hierarchy(&ih0);
-
-	spectrum nh0s, ih0s;
-	nh0s.h = &nh0;
-	ih0s.h = &ih0;
-	oscillate(s, &nh0s);
-	oscillate(s, &ih0s);
-
-	hierarchy nh[N], ih[N];
-
-	// Oscillated, but not reconstructed spectra
-	spectrum osc_nhs[N];
-	spectrum osc_ihs[N];
-	memset(&osc_nhs, 0, N * sizeof(spectrum));
-	memset(&osc_ihs, 0, N * sizeof(spectrum));
-
-	// Normalization for the NH spectra
-	double nh0_int = get_integral(&nh0s);
-	normalize(&nh0s, nh0_int, NH);
-
-	double ih0_int = get_integral(&ih0s);
-	normalize(&ih0s, ih0_int, IH);
-
-
-	// Reconstructed spectra, build from non-reconstructed ones
-	spectrum *nhs, *ihs;
-	nhs = (spectrum*)malloc(N * N_rec * sizeof(spectrum));
-	ihs = (spectrum*)malloc(N * N_rec * sizeof(spectrum));
-
-	// Initialize the hierarchies
-	for (int i=0; i<N; ++i) {
-		Printf("%d/%d", i+1, N);
-		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * pi;
-
-		populate(&nh[i], H, d_cp[i]);
-		populate(&ih[i], H, d_cp[i]);
-
-		// Change theta23
-		nh[i].t23 = theta;
-		ih[i].t23 = theta;
-		populate_common(&nh[i]);
-		populate_common(&ih[i]);
-
-		// Flip MH of ih hierarchies
-		flip_hierarchy(&ih[i]);
-
-		osc_nhs[i].h = &nh[i];
-		osc_ihs[i].h = &ih[i];
-		oscillate(s, &osc_nhs[i]);
-		oscillate(s, &osc_ihs[i]);
-
-		normalize(&osc_nhs[i], nh0_int, NH);
-		normalize(&osc_ihs[i], ih0_int, IH);
-
-		// Reconstruct the spectra
-		// It is important that we get ALL the spectra before we go
-		// into the next loop because it will go through them all to calculate
-		// sensitivity.
-		for (int n=0; n<N_rec; ++n) {
-			nhs[i + n*N].h = &nh[i];
-			ihs[i + n*N].h = &ih[i];
-			reconstruct(&osc_nhs[i], &nhs[i + n*N]);
-			reconstruct(&osc_ihs[i], &ihs[i + n*N]);
-		}
-	}
-	
-	// TODO
-	// if we reconstruct all spectra, we get pretty nice results, but the sensitivity is
-	// very low (and the code takes long to run).
-	// maybe try to play around with energy reconstruction 
-
-	// Calculate sensitivity
-	for (int n=0; n<N_rec; ++n) {
-		// Loop over delta_CP values
-		for (int i=0; i<N; ++i) {
-			
-			// for each d_cp we want to calculate the minimum corresponding delta chi squared
-			double min_dc2 = 1e28;
-
-			// So we perform another loop over delta_CP and take the minimum chi squared we find
-			for (int j=0; j<N; ++j) {
-
-				// When we assume normal hierarchy, the NH spectrum is fixed in i and we
-				// search the IH with j
-				double dc2_n = mean_dc2(ihs[n*N + j].events[E_SIGNAL], 
-										nhs[n*N + i].events[E_SIGNAL]);
-
-				min_dc2 = min(dc2_n, min_dc2);
-
-			}
-
-			dc2[i][n] = min_dc2;
-		}
+	double x[Nbins];
+	for (int i=0; i<Nbins; ++i) {
+		x[i] = (i + firstbin) * 0.2;
 	}
 
+	TCanvas* c = new TCanvas();
+	TGraph* gs = new TGraph(Nbins, x, spectrum);
+	TGraph* gsd = new TGraphErrors(Nbins, x, spectrum, NULL, sd);
+	gsd->SetFillColor(3);
+	gsd->Draw("a3");
+	gs->Draw("same");
 
-	// Mean sensitivity
-	double* mean_dc2_mh = (double*)malloc(N * sizeof(double));
-
-	// Standard deviations from the mean
-	double* sd_mh = (double*)malloc(N * sizeof(double));
-
-	// After calculating all sensitivities, we want to create an average and a
-	// standard deviation for each sample d_cp point
-	for (int i=0; i<N; ++i) {
-		mean_dc2_mh[i] = sqrt(mean(dc2[i], N_rec));
-
-		sd_mh[i] = sqrt(std_dev(dc2[i], mean_dc2_mh[i], N_rec));
-	}
-
-	// Set the output values but check for NULL pointers
-	// Caller function should remember to free these memory blocks
-	if (dc2_out)
-		*dc2_out = mean_dc2_mh;
-	if (sd_out)
-		*sd_out = sd_mh;
-
-	free(nhs);
-	free(ihs);
-}
-
-void do_dc2_theta(const initial_spectrum* s) {
-	const int N=61;
-	const int N_rec=300;
-
-	double theta23 = 0.738;
-	//double theta23_hi = 0.738 * (1 + 3 * .059);
-	//double theta23_lo = 0.738 * (1 - 3 * .059);
-	double theta23_hi = 0.927;
-	double theta23_lo = 0.66;
-	
-	double *dc2_mean, *dc2_hi, *dc2_lo;
-
-	calculate_mh_sens(s, NH, &dc2_mean, NULL, theta23, N, N_rec);
-	calculate_mh_sens(s, NH, &dc2_hi, NULL, theta23_hi, N, N_rec);
-	calculate_mh_sens(s, NH, &dc2_lo, NULL, theta23_lo, N, N_rec);
+}*/
 
 
-	// Plotting
-	double x[N];
-	double d_cp[N];
-	for (int i=0; i<N; ++i) {
-		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * pi;
-		x[i] = d_cp[i] / pi;
-	}
-	
-
-	TCanvas* c4 = new TCanvas("c9", "", 600, 500);
-	c4->SetFillColor(ci[CI_BACKGROUND]);
-	
-	TGraph* gdc2_mean = new TGraph(N, x, dc2_mean);
-	TGraph* gdc2_hi = new TGraph(N, x, dc2_hi);
-	TGraph* gdc2_lo = new TGraph(N, x, dc2_lo);
-	gdc2_mean->SetFillColor(ci[CI_NH]);
-	gdc2_mean->Draw();
-	gdc2_mean->SetTitle("True normal hierarchy");
-	gdc2_mean->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
-	gdc2_mean->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	gdc2_mean->GetXaxis()->SetLimits(-1., 1.);
-	gdc2_mean->SetMinimum(0);
-	//gdc2_mean->SetMaximum(20);
-	gdc2_mean->SetLineColor(4);
-	gdc2_mean->SetMarkerColor(4);
-	gdc2_mean->SetLineWidth(2);
-	gdc2_hi->SetLineWidth(2);
-	gdc2_hi->SetLineColor(3);
-	gdc2_lo->SetLineWidth(2);
-	//gdc2_lo->SetLineColor(5);
-	gdc2_hi->Draw("same");
-	gdc2_lo->Draw("same");
-
-	c4->SetTitle("MH sensitivity");
-}
-
-
-void do_dc2(const initial_spectrum* s) {
+void do_dc2(const initial_spectrum* is, double L) {
 	// Number of times we will evaluate the sensitivity to compose the final plot
-	const int N_rec = 300;
+	const int N_rec = 10;
 	// Number of d_cp samples
-	const int N = 61;
+	const int N = 21;
 	// Values of d_cp
 	double d_cp[N];
 
@@ -300,128 +126,254 @@ void do_dc2(const initial_spectrum* s) {
 	double dc2_cp_i[N][N_rec] = {0};
 
 
-	// Calculate mean delta chi squared at each d_cp
-	hierarchy nh0, nhpi;
+	// Parameter combinations for normalization
+	parameters nh0, nhpi;
 	// Hierarchy that has NH parameters (theta23) but inverted mass hierarchy
-	hierarchy nhi0;
-	populate(&nh0, NH, 0.);
-	populate(&nhpi, NH, pi);
-	populate(&nhi0, NH, 0.);
-	flip_hierarchy(&nhi0);
+	parameters nhi0;
+	nh0.populate(NH, 0.);
+	nhpi.populate(NH, pi);
+	nhi0.populate(NH, 0.);
+	nhi0.flip_hierarchy();
 
 	spectrum nh0s, nhpis;
 	spectrum nhi0s;
-	nh0s.h = &nh0;
-	nhpis.h = &nhpi;
-	nhi0s.h = &nhi0;
-	oscillate(s, &nh0s);
-	oscillate(s, &nhpis);
-	oscillate(s, &nhi0s);
+
+	nh0s.p = &nh0;
+	nhpis.p = &nhpi;
+	nhi0s.p = &nhi0;
+
+	// Oscillate these spectra with specific parameters
+	nh0s.oscillate(is, L);
+	nhpis.oscillate(is, L);
+	nhi0s.oscillate(is, L);
+
+	const double dune_e_nh = 861;
+	const double dune_e_ih = 495;
 
 	// Integral for d_cp = 0 that we use to normalize spectra under NH assumption
-	double nh0_int = get_integral(&nh0s);
-	normalize(&nh0s, nh0_int, NH);
-	normalize(&nhpis, nh0_int, NH);
+	double nh0_int = nh0s.get_integral();
+	nh0s.normalize(nh0_int, dune_e_nh);
+	nhpis.normalize(nh0_int, dune_e_nh);
 
-	double nhi0_int = get_integral(&nhi0s);
+	double nhi0_int = nhi0s.get_integral();
 	// We normalize nhi0s to the IH event rates because it is oscillated under IH
-	normalize(&nhi0s, nhi0_int, IH);
+	nhi0s.normalize(nhi0_int, IH);
 
-	reconstruct(&nh0s, &nh0s, 100);
-	reconstruct(&nhpis, &nhpis, 100);
-	reconstruct(&nhi0s, &nhi0s, 100);
+	//nh0s.reconstruct(100);
+	//nhpis.reconstruct(100);
+	//nhi0s.reconstruct(100);
 
 
-	hierarchy ih0, ihpi;
+	parameters ih0, ihpi;
 	// Hierarchy that has IH parameters (theta23) but NH mass hierarchy
-	hierarchy ihn0;
-	populate(&ih0, IH, 0.);
-	populate(&ihpi, IH, pi);
-	populate(&ihn0, IH, 0.);
-	flip_hierarchy(&ihn0);
+	parameters ihn0;
+	ih0.populate(IH, 0.);
+	ihpi.populate(IH, pi);
+	ihn0.populate(IH, 0.);
+	ihn0.flip_hierarchy();
 
 	spectrum ih0s, ihpis;
 	spectrum ihn0s;
-	ih0s.h = &ih0;
-	ihpis.h = &ihpi;
-	ihn0s.h = &ihn0;
-	oscillate(s, &ih0s);
-	oscillate(s, &ihpis);
-	oscillate(s, &ihn0s);
+	ih0s.p = &ih0;
+	ihpis.p = &ihpi;
+	ihn0s.p = &ihn0;
+	ih0s.oscillate(is, L);
+	ihpis.oscillate(is, L);
+	ihn0s.oscillate(is, L);
 
-	double ih0_int = get_integral(&ih0s);
-	normalize(&ih0s, ih0_int, IH);
-	normalize(&ihpis, ih0_int, IH);
+	double ih0_int = ih0s.get_integral();
+	ih0s.normalize(ih0_int, IH);
+	ihpis.normalize(ih0_int, IH);
 
-	double ihn0_int = get_integral(&ihn0s);
-	normalize(&ihn0s, ihn0_int, NH);
+	double ihn0_int = ihn0s.get_integral();
+	ihn0s.normalize(ihn0_int, NH);
 
-	reconstruct(&ih0s, &ih0s, 100);
-	reconstruct(&ihpis, &ihpis, 100);
-	reconstruct(&ihn0s, &ihn0s, 100);
+	//ih0s.reconstruct(100);
+	//ihpis.reconstruct(100);
+	//ihn0s.reconstruct(100);
 
-	Printf("%e %e %e %e", nh0_int, nhi0_int, ih0_int, ihn0_int);
 
-	// N * 2 hierarchies
-	// The nh array contains hierarchies that will be used in calculating
+	// N * 2 set of parameters
+	// The nh array contains parameters that will be used in calculating
 	// sensitivity under the assumption that the mass hierarchy is normally ordered.
 	// Technically, the second element (nh[i][1]) has inverted ordering.
-	hierarchy nh[N][2], ih[N][2];
+	parameters nh[N][2], ih[N][2];
 
-	// Oscillated, but not reconstructed spectra
+	// Oscillated and reconstructed (multiple times) spectra
 	spectrum osc_nhs[N][2] = {0};
 	spectrum osc_ihs[N][2] = {0};
 
-	// Reconstructed spectra, build from non-reconstructed ones
+	// Spectra that will be reconstructed only once
 	spectrum *nhs, *ihs;
 	nhs = (spectrum*)malloc(N * N_rec * sizeof(spectrum) * 2);
 	ihs = (spectrum*)malloc(N * N_rec * sizeof(spectrum) * 2);
 	
+
+	// We store the event rate uncertainties here
+	double osc_nhs_sd[N][2];
+	double osc_ihs_sd[N][2];
+
+	// Number of Monte Carlo iterations for each parameter
+	const int N_MC = 20;
+
+
+	// TODO REMOVE
+	// Average event rates.
+	// The last word (eg t23) denotes the parameter we will vary in a Monte Carlo
+	// simulation.
+	double mean_rate_nh_t23[N][Nbins];
+	double mean_rate_ih_t23[N][Nbins];
+	double mean_rate_t13[N][Nbins];
+	memset(mean_rate_nh_t23, 0, N * Nbins * sizeof(double));
+	memset(mean_rate_ih_t23, 0, N * Nbins * sizeof(double));
+
+	// Standard deviations around the means
+	double sd_nh_t23[N][Nbins];
+	double sd_ih_t23[N][Nbins];
+	memset(sd_nh_t23, 0, N * Nbins * sizeof(double));
+	memset(sd_ih_t23, 0, N * Nbins * sizeof(double));
+
 
 	// Initialize the hierarchies
 	for (int i=0; i<N; ++i) {
 		Printf("%d/%d", i+1, N);
 		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * pi;
 
+		// We can either populate with NH best fit values and then flip the sign of dm2_31
+		// or we can populate with respective best fit values (latter makes more sense)
+
+		/* //UNDER TESTING
 		for (int j=0; j<2; ++j) {
-			populate(&nh[i][j], NH, d_cp[i]);
-			populate(&ih[i][j], IH, d_cp[i]);
+			nh[i][j].populate(NH, d_cp[i]);
+			ih[i][j].populate(IH, d_cp[i]);
 		}
-		flip_hierarchy(&nh[i][1]);
-		flip_hierarchy(&ih[i][1]);
+		nh[i][1].flip_hierarchy();
+		ih[i][1].flip_hierarchy();
+		*/
+		nh[i][0].populate(NH, d_cp[i]);
+		nh[i][1].populate(IH, d_cp[i]);
+		ih[i][0].populate(IH, d_cp[i]);
+		ih[i][1].populate(NH, d_cp[i]);
+
 
 
 		for (int j=0; j<2; ++j) {
-			osc_nhs[i][j].h = &nh[i][j];
-			osc_ihs[i][j].h = &ih[i][j];
-			oscillate(s, &osc_nhs[i][j]);
-			oscillate(s, &osc_ihs[i][j]);
+			osc_nhs[i][j].p = &nh[i][j];
+			osc_ihs[i][j].p = &ih[i][j];
+			osc_nhs[i][j].oscillate(is, L);
+			osc_ihs[i][j].oscillate(is, L);
 
 			// Normalize NH spectra to NH0 and IH spectra to IH0
 			if (j==0) {
-				normalize(&osc_nhs[i][j], nh0_int, NH);
-				normalize(&osc_ihs[i][j], ih0_int, IH);
+				osc_nhs[i][j].normalize(nh0_int, NH);
+				osc_ihs[i][j].normalize(ih0_int, IH);
 			}
+			/*else {
+				osc_nhs[i][j].normalize(nhi0_int, IH);
+				osc_ihs[i][j].normalize(ihn0_int, NH);
+			}*/
 			else {
-				normalize(&osc_nhs[i][j], nhi0_int, IH);
-				normalize(&osc_ihs[i][j], ihn0_int, NH);
+				osc_nhs[i][j].normalize(ih0_int, IH);
+				osc_ihs[i][j].normalize(nh0_int, NH);
 			}
+
+			//osc_nhs[i][j].reconstruct(50);
+			//osc_ihs[i][j].reconstruct(50);
+
+			
 
 			// Oscillate/reconstruct the spectra
 			// It is important that we get ALL the spectra before we go
 			// into the next loop because it will go through them all to calculate
 			// sensitivity.
 			for (int n=0; n<N_rec; ++n) {
-				nhs[n*N*2 + i*2 + j].h = &nh[i][j];
-				ihs[n*N*2 + i*2 + j].h = &ih[i][j];
-				reconstruct(&osc_nhs[i][j], &nhs[n*N*2 + i*2 + j], 3);
-				reconstruct(&osc_ihs[i][j], &ihs[n*N*2 + i*2 + j], 3);
+				nhs[n*N*2 + i*2 + j].p = &nh[i][j];
+				ihs[n*N*2 + i*2 + j].p = &ih[i][j];
+				osc_nhs[i][j].reconstruct(&nhs[n*N*2 + i*2 + j], 1);
+				osc_ihs[i][j].reconstruct(&ihs[n*N*2 + i*2 + j], 1);
 			}
 		}
+
+		// For each oscillated, reconstructed true spectrum, we
+		// need a set of uncertainties on event rates that we can feed
+		// to the mean_dc2 function.
+		// To calculate this, we use a Monte Carlo method to propagate errors
+		// from the oscillation parameters (theta23, ...) to the oscillation
+		// probabilities, and thus event rates.
+		//
+		// The propagation need only be done once for each combination of
+		// hierarchy and d_cp, after which we simply multiply the sigma on P
+		// by the true event count.
+		
+
+		// The parameters we are considering are dm2_31, t13 and t23,
+		// since those have the biggest impact on the oscillation
+		// probability for the energy range we are considering.
+		// One of the mass squared difference is given by the other two so it
+		// does not have its own uncertainty. 			
+		// For each parameter, we want to perform N_MC trials and store the 
+		// resulting probability spectra. We will combine the standard deviations
+		// at the end through a quadratic addition.
+		
+		//if(i == 15) {
+		parameters nh_t23[N_MC];
+		parameters ih_t23[N_MC];
+		parameters nh_dm2_31[N_MC];
+		parameters nh_t13[N_MC];
+		spectrum s_nh_t23[N_MC];
+		spectrum s_ih_t23[N_MC];
+
+		/*TRandom ra;
+		for (int n=0; n<N_MC; ++n) {
+			nh_t23[n].populate(NH, d_cp[i]);
+			nh_t23[n].t23 = ra.Gaus(pdg[NH].t23, pdg_sd[NH].t23);
+
+			ih_t23[n].populate(IH, d_cp[i]);
+			ih_t23[n].t23 = ra.Gaus(pdg[IH].t23, pdg_sd[IH].t23);
+
+			nh_dm2_31[n].populate(NH, d_cp[i]);
+			nh_dm2_31[n].dm2_31 = ra.Gaus(pdg[NH].dm2_31, pdg_sd[NH].dm2_31);
+
+			nh_t13[n].populate(NH, d_cp[i]);
+			nh_t13[n].t13 = ra.Gaus(pdg[NH].t13, pdg_sd[NH].t13);
+
+			s_nh_t23[n].p = &nh_t23[n];
+			s_nh_t23[n].oscillate(is);
+
+			s_nh_t23[n].normalize(nh0_int, NH);
+
+			s_nh_t23[n].reconstruct(10);
+
+			s_ih_t23[n].p = &ih_t23[n];
+			s_ih_t23[n].oscillate(is);
+			s_ih_t23[n].normalize(ih0_int, IH);
+			s_ih_t23[n].reconstruct(10);
+		}
+
+		for (int k=0; k<Nbins; ++k) {
+			for (int n=0; n<N_MC; ++n) {
+				mean_rate_nh_t23[i][k] += s_nh_t23[n].events[E_SIGNAL][k] / N_MC;
+				mean_rate_ih_t23[i][k] += s_ih_t23[n].events[E_SIGNAL][k] / N_MC;
+			}
+			for (int n=0; n<N_MC; ++n) {
+				sd_nh_t23[i][k] += 
+					pow(s_nh_t23[n].events[E_SIGNAL][k] - mean_rate_nh_t23[i][k], 2) / (N_MC-1);
+				sd_ih_t23[i][k] +=
+					pow(s_ih_t23[n].events[E_SIGNAL][k] - mean_rate_ih_t23[i][k], 2) / (N_MC-1);
+			}
+		}
+		for (int k=0; k<Nbins; ++k) {
+			sd_nh_t23[i][k] = sqrt(sd_nh_t23[i][k]);
+			sd_ih_t23[i][k] = sqrt(sd_ih_t23[i][k]);
+		}*/
+		
 	}
-	Printf("%f %f", get_integral(&osc_ihs[N/2][0]), get_integral(&osc_ihs[N/2][1]));
+
+	//plot_MC_spectrum(mean_rate_ih_t23[0], sd_ih_t23[0]);
+	//plot_MC_spectrum(mean_rate_nh_t23[5], sd_nh_t23[5]);
 
 
+	Printf("N_rec = %d", N_rec);
 	for (int n=0; n<N_rec; ++n) {
 		// Loop over delta_CP values
 		for (int i=0; i<N; ++i) {
@@ -437,12 +389,16 @@ void do_dc2(const initial_spectrum* s) {
 				// When we assume normal hierarchy, the NH spectrum is fixed in i and we
 				// search the IH with j
 				double dc2_n = mean_dc2(//nhs[n*N*2 + j*2 + 1].events[E_SIGNAL], 
-										osc_nhs[j][1].events[E_SIGNAL],
-										nhs[n*N*2 + i*2 + 0].events[E_SIGNAL]);
+										osc_ihs[j][0].events[E_SIGNAL],
+										//nhs[n*N*2 + i*2 + 0].events[E_SIGNAL]);
+										osc_nhs[i][0].events[E_SIGNAL],
+										sd_nh_t23[i]);
+
 				// Vice versa
 				double dc2_i = mean_dc2(//ihs[n*N*2 + j*2 + 1].events[E_SIGNAL], 
-										osc_ihs[j][1].events[E_SIGNAL],
-										ihs[n*N*2 + i*2 + 0].events[E_SIGNAL]);
+										osc_nhs[j][0].events[E_SIGNAL],
+										//ihs[n*N*2 + i*2 + 0].events[E_SIGNAL]);
+										osc_ihs[i][0].events[E_SIGNAL], sd_ih_t23[i]);
 
 				
 
@@ -451,20 +407,28 @@ void do_dc2(const initial_spectrum* s) {
 
 			}
 
-			dc2_mh_n[i][n] = min_dc2_n;
-			dc2_mh_i[i][n] = min_dc2_i;
+			dc2_mh_n[i][n] = sqrt(min_dc2_n);
+			dc2_mh_i[i][n] = sqrt(min_dc2_i);
 
 			// For the CP sensitivity we want the j=0 elements (the ones with
 			// the correct hierarchy)
-			dc2_cp_n[i][n] = min(mean_dc2(nhs[n*N*2 + i*2 + 0].events[E_SIGNAL],
-					   				      nh0s.events[E_SIGNAL]),
-				   	 	         mean_dc2(nhs[n*N*2 + i*2 + 0].events[E_SIGNAL], 
-								          nhpis.events[E_SIGNAL]));
+			dc2_cp_n[i][n] = sqrt(min(min(mean_dc2(osc_nhs[i][0].events[E_SIGNAL],
+										  osc_nhs[N/2][0].events[E_SIGNAL]),
+				   	 	         mean_dc2(osc_nhs[i][0].events[E_SIGNAL],
+										  osc_nhs[0][0].events[E_SIGNAL])),
+								 mean_dc2(osc_nhs[i][0].events[E_SIGNAL],
+									 	  osc_nhs[N-1][0].events[E_SIGNAL])));
 
-			dc2_cp_i[i][n] = min(mean_dc2(ihs[n*N*2 + i*2 + 0].events[E_SIGNAL], 
-									      ih0s.events[E_SIGNAL]),
-							     mean_dc2(ihs[n*N*2 + i*2 + 0].events[E_SIGNAL], 
-								   	      ihpis.events[E_SIGNAL]));
+			dc2_cp_i[i][n] = sqrt(min(min(mean_dc2(//ihs[n*N*2 + i*2 + 0].events[E_SIGNAL], 
+											   osc_ihs[i][0].events[E_SIGNAL],
+									      //ih0s.events[E_SIGNAL]),
+										  osc_ihs[N/2][0].events[E_SIGNAL]),
+							     mean_dc2(//ihs[n*N*2 + i*2 + 0].events[E_SIGNAL], 
+									      osc_ihs[i][0].events[E_SIGNAL],
+								   	      //ihpis.events[E_SIGNAL])));
+										  osc_ihs[0][0].events[E_SIGNAL])),
+							    	mean_dc2(osc_ihs[i][0].events[E_SIGNAL],
+											 osc_ihs[N-1][0].events[E_SIGNAL])));
 		}
 
 	}
@@ -485,16 +449,24 @@ void do_dc2(const initial_spectrum* s) {
 	// After calculating all sensitivities, we want to create an average and a
 	// standard deviation for each sample d_cp point
 	for (int i=0; i<N; ++i) {
-		mean_dc2_mh_n[i] = mean(dc2_mh_n[i], N_rec);
+		double dc2_max = 0.;
+		double dc2_min = 10000.;
+		for (int j=0; j<N_rec; ++j) {
+			dc2_min = min(dc2_min, dc2_mh_n[i][j]);
+			dc2_max = max(dc2_max, dc2_mh_n[i][j]);
+		}
+		//mean_dc2_mh_n[i] = mean(dc2_mh_n[i], N_rec);
+		mean_dc2_mh_n[i] = (dc2_max + dc2_min) / 2.;
 		mean_dc2_mh_i[i] = mean(dc2_mh_i[i], N_rec);
 		mean_dc2_cp_n[i] = mean(dc2_cp_n[i], N_rec);
 		mean_dc2_cp_i[i] = mean(dc2_cp_i[i], N_rec);
 
-		sd_mh_n[i] = sqrt(std_dev(dc2_mh_n[i], mean_dc2_mh_n[i], N_rec));
-		sd_mh_i[i] = sqrt(std_dev(dc2_mh_i[i], mean_dc2_mh_i[i], N_rec));
-		sd_cp_n[i] = sqrt(std_dev(dc2_cp_n[i], mean_dc2_cp_n[i], N_rec));
-		sd_cp_i[i] = sqrt(std_dev(dc2_cp_i[i], mean_dc2_cp_i[i], N_rec));
-	}	
+		sd_mh_n[i] = 0;//(dc2_max - dc2_min) / 2.;
+		//sd_mh_n[i] = sqrt(std_dev(dc2_mh_n[i], mean_dc2_mh_n[i], N_rec));
+		sd_mh_i[i] = 0;//std_dev(dc2_mh_i[i], mean_dc2_mh_i[i], N_rec);
+		sd_cp_n[i] = 0;//std_dev(dc2_cp_n[i], mean_dc2_cp_n[i], N_rec);
+		sd_cp_i[i] = 0;//std_dev(dc2_cp_i[i], mean_dc2_cp_i[i], N_rec);
+	}
 
 	// To plot a test spectrum
 	
@@ -502,13 +474,13 @@ void do_dc2(const initial_spectrum* s) {
 	//ccc->SetLogy();
 	TH1* hnh = new TH1F("hnh", "", Nbins, 0.6, 8.);
 	TH1* hih = new TH1F("hih", "", Nbins, 0.6, 8.);
-	int index = (int)((0.4 / 2. + .5) * N);
+	int index = (int)((-0. / 2. + .5) * N);
 
 	//Printf("%f", d_cp[index] / pi);
 	for (int i=0; i<Nbins; ++i) {
-		hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nhs[index*2].events[E_SIGNAL][i]);
+		hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, osc_ihs[index][0].events[E_SIGNAL][i]);
 		//hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ih0s.events[E_SIGNAL][i]);
-		hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nh0s.events[E_SIGNAL][i]);
+		hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, osc_ihs[index][1].events[E_SIGNAL][i]);
 		//hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ih0s.events[E_SIGNAL][i]);
 	}
 
@@ -516,11 +488,14 @@ void do_dc2(const initial_spectrum* s) {
 	hnh->SetMaximum(110);
 	hih->Draw("hist same");
 	hnh->SetLineWidth(2);
-	hih->SetLineColor(2);
+	hnh->SetLineColor(ci[CI_NH]);
+	hih->SetLineColor(ci[CI_IH]);
+
 	
 
 	
-	plot_dc2(d_cp, mean_dc2_mh_n, sd_mh_n, mean_dc2_mh_i, sd_mh_i, mean_dc2_cp_n, sd_cp_n,  mean_dc2_cp_i, sd_cp_i, N);
+	plot_dc2(d_cp, mean_dc2_mh_n, sd_mh_n, mean_dc2_mh_i, sd_mh_i, 
+			       mean_dc2_cp_n, sd_cp_n,  mean_dc2_cp_i, sd_cp_i, N);
 	
 
 	free(nhs);
@@ -535,10 +510,10 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 	double ydih[N];
 	for (int i=0; i<N; ++i) {
 		x[i] = d_cp[i] / pi;
-		ymnh[i] = sqrt(dc2_mh_n[i]);
-		ymih[i] = sqrt(dc2_mh_i[i]);
-		ydnh[i] = sqrt(dc2_cp[i]);
-		ydih[i] = sqrt(dc2_cp_ih[i]);
+		ymnh[i] = dc2_mh_n[i];
+		ymih[i] = dc2_mh_i[i];
+		ydnh[i] = dc2_cp[i];
+		ydih[i] = dc2_cp_ih[i];
 	}
 
 
@@ -551,14 +526,15 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 	TGraph* gdc2_mnh = new TGraph(N, x, ymnh);
 	TGraph* gdc2_mnh_e = new TGraphErrors(N, x, ymnh, NULL, sd_mh_n);
 	gdc2_mnh_e->SetFillColor(ci[CI_NH]);
-	gdc2_mnh_e->Draw("a4");
+	gdc2_mnh_e->Draw("a3");
 	gdc2_mnh->Draw("same");
 	gdc2_mnh_e->SetTitle("True normal hierarchy");
 	gdc2_mnh_e->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	gdc2_mnh_e->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_mnh_e->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mnh_e->SetMinimum(0);
-	gdc2_mnh->SetLineColor(4);
+	//gdc2_mnh->SetLineColor(4);
+	gdc2_mnh->SetLineColor(ci[CI_NH]);
 	gdc2_mnh->SetMarkerColor(4);
 	gdc2_mnh->SetLineWidth(3);
 
@@ -568,18 +544,19 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 	c4->SetTitle("MH sensitivity");
 	gdc2_mih_e->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	gdc2_mih_e->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	gdc2_mih->SetLineColor(kRed+1);
+	//gdc2_mih->SetLineColor(kRed+1);
+	gdc2_mih->SetLineColor(ci[CI_IH]);
 	gdc2_mih->SetMarkerColor(2);
 	gdc2_mih_e->SetFillColor(ci[CI_IH]);
-	//gdc2_mnh->SetMaximum(25);
-	//gdc2_mih->SetMaximum(25);
+	//gdc2_mnh_e->SetMaximum(25);
+	//gdc2_mih_e->SetMaximum(25);
 	gdc2_mih->SetLineWidth(3);
  	p = (TPad*)c4->GetPad(2);	
 	p->cd();
 	gdc2_mih_e->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mih_e->SetMinimum(0);
 	//gdc2_mih->SetMaximum(25);
-	gdc2_mih_e->Draw("a4");
+	gdc2_mih_e->Draw("a3");
 	gdc2_mih->Draw("same");
 	
 
@@ -617,8 +594,180 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 	gdc2_cp_ih->GetXaxis()->SetLimits(-1, 1);
 }
 
+// Calculates MH mean delta chi squared and standard deviation given a hierarchy and theta_23
+void calculate_mh_sens(const initial_spectrum* is, double L, h_type H, double** dc2_out, double theta=0., int N=21) {
+	
+	// Values of d_cp
+	double d_cp[N];
+	
 
-void read_spectrum(initial_spectrum* s) {
+	double* dc2 = (double*)malloc(N * sizeof(double));
+
+	// We need these for normalizations
+	parameters nh0, ih0;
+	nh0.populate(NH, 0.);
+	ih0.populate(NH, 0.);
+
+	ih0.flip_hierarchy();
+
+	spectrum nh0s, ih0s;
+	nh0s.p = &nh0;
+	ih0s.p = &ih0;
+	nh0s.oscillate(is, L);
+	ih0s.oscillate(is, L);
+
+	// Normalization for the NH spectra
+	double nh0_int = nh0s.get_integral();
+	nh0s.normalize(nh0_int, NH);
+
+	double ih0_int = ih0s.get_integral();
+	ih0s.normalize(ih0_int, IH);
+
+
+
+	parameters nh[N], ih[N];
+
+	spectrum osc_nhs[N];
+	spectrum osc_ihs[N];
+
+
+	// Initialize the hierarchies
+	for (int i=0; i<N; ++i) {
+		Printf("%d/%d", i+1, N);
+		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * pi;
+
+		nh[i].populate(H, d_cp[i]);
+		ih[i].populate(H, d_cp[i]);
+
+		// Change theta23
+		nh[i].t23 = theta;
+		ih[i].t23 = theta;
+		nh[i].populate_common();
+		ih[i].populate_common();
+
+		// Flip MH of ih hierarchies
+		ih[i].flip_hierarchy();
+
+		osc_nhs[i].p = &nh[i];
+		osc_ihs[i].p = &ih[i];
+		osc_nhs[i].oscillate(is, L);
+		osc_ihs[i].oscillate(is, L);
+
+
+		if (H == NH) {
+			osc_nhs[i].normalize(nh0_int, NH);
+			osc_ihs[i].normalize(ih0_int, IH);
+		}
+		else {
+			osc_nhs[i].normalize(ih0_int, IH);
+			osc_ihs[i].normalize(nh0_int, NH);
+		}
+			
+		osc_nhs[i].reconstruct(300);
+		osc_ihs[i].reconstruct(300);
+
+	}
+	
+	// TODO
+	// if we reconstruct all spectra, we get pretty nice results, but the sensitivity is
+	// very low (and the code takes long to run).
+	// maybe try to play around with energy reconstruction 
+
+	// Calculate sensitivity
+	// Loop over delta_CP values
+	for (int i=0; i<N; ++i) {
+		
+		// for each d_cp we want to calculate the minimum corresponding delta chi squared
+		double min_dc2 = 1e28;
+
+		// So we perform another loop over delta_CP and take the minimum chi squared we find
+		for (int j=0; j<N; ++j) {
+
+			// When we assume normal hierarchy, the NH spectrum is fixed in i and we
+			// search the IH with j
+			double dc2_n = mean_dc2(osc_ihs[j].events[E_SIGNAL], 
+									osc_nhs[i].events[E_SIGNAL]);
+
+			min_dc2 = min(dc2_n, min_dc2);
+
+		}
+
+		dc2[i] = sqrt(min_dc2);
+	}
+
+
+	// Set the output values but check for NULL pointers
+	// Caller function should remember to free these memory blocks
+	if (dc2_out)
+		*dc2_out = dc2;
+	else
+		free(dc2);
+
+}
+
+void do_dc2_theta(const initial_spectrum* is, double L) {
+	const int N=21;
+
+	double theta23 = 0.738;
+	//double theta23_hi = 0.738 * (1 + 3 * .059);
+	//double theta23_lo = 0.738 * (1 - 3 * .059);
+	double theta23_hi = 0.798;
+	double theta23_lo = 0.683;
+	
+	double *dc2_mean, *dc2_hi, *dc2_lo;
+
+	calculate_mh_sens(is, L, NH, &dc2_mean, theta23, N);
+	calculate_mh_sens(is, L, NH, &dc2_hi, theta23_hi, N);
+	calculate_mh_sens(is, L, NH, &dc2_lo, theta23_lo, N);
+
+
+	// Plotting
+	double x[N];
+	double d_cp[N];
+	for (int i=0; i<N; ++i) {
+		d_cp[i] = ((float)i / (float)(N-1) * 2. - 1.) * pi;
+		x[i] = d_cp[i] / pi;
+	}
+	
+
+	TCanvas* c4 = new TCanvas("c9", "", 600, 500);
+	c4->SetTitle("MH sensitivity");
+	//c4->SetFillColor(ci[CI_BACKGROUND]);
+	
+	TGraph* gdc2_mean = new TGraph(N, x, dc2_mean);
+	double e_y[N];
+	double e_e[N];
+
+	for (int i=0; i<N; ++i) {
+		e_y[i] = (dc2_hi[i] + dc2_lo[i]) / 2.;
+		e_e[i] = (dc2_hi[i] - dc2_lo[i]) / 2.;
+	}
+
+	TGraphErrors* ge = new TGraphErrors(N, x, e_y, NULL, e_e);
+
+	ge->SetTitle("True normal hierarchy");
+	ge->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
+	ge->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	ge->GetXaxis()->SetLimits(-1., 1.);
+	ge->SetMinimum(0);
+	//gdc2_mean->SetMaximum(20);
+	gdc2_mean->SetLineColor(4);
+	gdc2_mean->SetMarkerColor(4);
+	gdc2_mean->SetLineWidth(2);
+
+	ge->SetFillStyle(1001);
+	ge->SetFillColor(ci[CI_NH]);
+	ge->Draw("a3");
+	gdc2_mean->Draw("same");
+
+
+	free(dc2_mean);
+	free(dc2_hi);
+	free(dc2_lo);
+}
+
+
+/*void read_spectrum(initial_spectrum* s) {
 	// read from root file
 	TFile* f = TFile::Open("data/spectrum.root");
 
@@ -642,9 +791,9 @@ void read_spectrum(initial_spectrum* s) {
 
 		++i;
 	}
-}
+}*/
 
-void plot_initial(float* mu, float* antimu, float* e, float* antie) {
+/*void plot_initial(float* mu, float* antimu, float* e, float* antie) {
 	TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 	// set log y axis and no statistics legend
 	c1->SetLogy();	
@@ -688,5 +837,5 @@ void plot_initial(float* mu, float* antimu, float* e, float* antie) {
 	gPad->SetGrid();
 	gPad->BuildLegend();
 
-}
+}*/
 

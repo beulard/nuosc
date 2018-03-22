@@ -4,22 +4,22 @@
 
 //	hierarchies to be used: combinations of normal and inverted 
 //	those first two are the best fit delta hierarchies
-hierarchy nhd, ihd;
+parameters nhd, ihd;
 //	four hierarchies, one for each delta_cp = 0, 90, 180, 270 degrees
-hierarchy nh[3];
-hierarchy ih[3];
+parameters nh[3];
+parameters ih[3];
 
 
 double plot_P_nhd(double* x, double* par) {
-	return P(f_m, f_e, x[0], &nhd, (bool)par[1]);
+	return P(f_m, f_e, x[0], 1300, &nhd, (bool)par[1]);
 }
 
 double plot_P_ihd(double* x, double* par) {
-	return P(f_m, f_e, x[0], &ihd, (bool)par[1]);
+	return P(f_m, f_e, x[0], 1300, &ihd, (bool)par[1]);
 }
 
 double plot_P_nh(double* x, double* par) {
-	double p = P_me(f_m, f_e, x[0], &nh[(int)par[0]], (bool)par[1]);
+	double p = P_me(f_m, f_e, x[0], 1300, &nh[(int)par[0]], (bool)par[1]);
 	// Fix plots overflowing out of their frame/axes
 	if (p > 0.2)
 		p = 0.2;
@@ -27,18 +27,18 @@ double plot_P_nh(double* x, double* par) {
 }
 
 double plot_P_ih(double* x, double* par) {
-	return P(f_m, f_e, x[0], &ih[(int)par[0]], (bool)par[1]);
+	return P(f_m, f_e, x[0], 1300, &ih[(int)par[0]], (bool)par[1]);
 }
 
 void plot_P(bool anti);
 
 void nu() {
 	for(int i=0; i<3; ++i) {
-		populate(&nh[i], NH);
+		nh[i].populate(NH);
 		//	set delta to a multiple of 90 degrees and recalculate MNS
 		nh[i].d_cp = TMath::Pi() / 2. * (i - 1);
 		//nh[0].d_cp = -0.8 * pi;
-		populate_common(&nh[i]);
+		nh[i].populate_common();
 	}
 	
 	//	styling of plot titles

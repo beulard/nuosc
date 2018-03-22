@@ -2,29 +2,36 @@
 #include "helper.h"
 
 
-hierarchy nh;
-hierarchy ih;
+parameters nh;
+parameters ih;
 
 
 double plot_P(double* x, double* par) {
-	hierarchy* h;
+	parameters* p;
 	if((int)par[0] == 0)
-		h = &nh;
+		p = &nh;
 	else
-		h = &ih;
-	double p = P_me(f_m, f_e, x[0], h, false);
+		p = &ih;
+	double r = P_me(f_m, f_e, x[0], p, false);
 	// Fix plots overflowing out of their frame/axes
-	//if (p > 0.2)
-	//	p = 0.2;
-	return p;
+	//if (r > 0.2)
+	//	r = 0.2;
+	return r;
 }
 
 
 void plot_P();
 
 void numh() {
-	populate(&nh, NH);
-	populate(&ih, IH);
+	nh.populate(NH);
+	nh.d_cp = 0;
+	nh.populate_common();
+	ih.populate(IH);
+	ih.d_cp = 0;
+	ih.populate_common();
+	//ih.d_cp = -pi/2;
+	//ih.populate_common();
+	//ih.flip_hierarchy();
 	
 	//	styling of plot titles
 	gStyle->SetTitleAlign(33);
@@ -84,7 +91,7 @@ void numh() {
 void plot_P() {
 	TF1* f[2];
 	//Color_t cols[3] = { 4, 2, 3 };
-	int cols[2] = { ci[CI_1], ci[CI_2] };
+	int cols[2] = { ci[CI_NH], ci[CI_IH] };
 
 	for(int i=0; i<2; ++i) {
 		char title[64];

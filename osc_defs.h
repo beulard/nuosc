@@ -8,19 +8,21 @@ enum flavor {
 	f_t = 2
 };
 
+// Hierarchy type
 enum h_type {
 	NH = 0,
 	IH
 };
 
-struct hierarchy {
+
+// Describes a set of oscillation parameters, used to calculate oscillation probabilities
+class parameters {
+public:
 	// Base hierarchy type (NH, IH)
 	h_type type;
 	////	Numerical data
 	//	mass differences, in eV^2
 	double dm2_21;
-	//	absolute value of dm^2 as given in pdg neutrino mixing paper
-	//double dm2;
 	double dm2_31;
 	double dm2_32;
 	
@@ -46,14 +48,24 @@ struct hierarchy {
 	complex<double> MNS_23[9];
 	complex<double> MNS_13[9];
 	complex<double> MNS_12[9];
+
+
+	// Populate the data with a given hierarchy and best fit parameters (defined in pdg)
+	void populate(h_type t, float d_cp = -1111.);
+	//	does not change numerical data but calculates derived quantities (trigonometrics, MNS) 
+	void populate_common();
+	// Change the mass hierarchy
+	void flip_hierarchy();
+
+private:
+	// Populate with PDG values
+	void populate_nh(double d_cp);
+	void populate_ih(double d_cp);
 };
 
+// Global PDG best fit values and uncertainties
+parameters pdg[2];
+parameters pdg_sd[2];
 
-//	helper function to populate hierarchy object
-void populate(hierarchy* h, h_type t, float d_cp = -1111.);
-//	does not change numerical data but calculates derived quantities (trigonometrics, MNS) 
-void populate_common(hierarchy* h);
-// Change the mass hierarchy
-void flip_hierarchy(hierarchy* h);
 
 #endif

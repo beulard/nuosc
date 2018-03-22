@@ -4,29 +4,29 @@
 #include "osc_defs.h"
 #include <complex>
 
-hierarchy* h = new hierarchy;
+parameters* p = new parameters;
 
 //	probability of a neutrino initially in flavor a to transition to flavor b, as a function
 //	of L/E (km/GeV) expression from zuber p. 192
 double P(flavor a, flavor b, double x) {
-	double p = 0.;
+	double r = 0.;
 
 	//	formula found in Zuber p.192
 	for(int i=0; i<3; ++i) {
-		p += pow(abs(h->MNS[a*3 + i] * std::conj(h->MNS[b*3 + i])), 2);
+		r += pow(abs(p->MNS[a*3 + i] * std::conj(p->MNS[b*3 + i])), 2);
 	}
 
 	for(int i=0; i<3; ++i) {
 		for(int j=0; j<3; ++j) {
 			if(j > i) {
-				p += 2. * real(h->MNS[a*3 + i] * conj(h->MNS[a*3 + j]) 
-				  * conj(h->MNS[b*3 + i]) * h->MNS[b*3 + j] 
-				  * exp(complex<double>(-2.i * 1.2668 * h->dm2_mat[i*3 + j] * x)));
+				r += 2. * real(p->MNS[a*3 + i] * conj(p->MNS[a*3 + j]) 
+				  * conj(p->MNS[b*3 + i]) * p->MNS[b*3 + j] 
+				  * exp(complex<double>(-2.i * 1.2668 * p->dm2_mat[i*3 + j] * x)));
 			}
 		}
 	}
 
-	return p;
+	return r;
 }
 
 // alternative expression for P (zuber p. 196)
@@ -54,7 +54,7 @@ double plot_P(double* x, double* par) {
 
 //	main: in_f is the flavor at t=0
 void nucp(int in_h = NH, int in_f = 0) {
-	populate(h, (h_type)in_h);
+	p->populate((h_type)in_h);
 
 	// Test if the probability adds up to 1 at every point.
 	// It does!
