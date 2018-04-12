@@ -65,8 +65,9 @@ public:
 	~spectrum();
 
 	parameters* p;
-	double events[N_RATES][Nbins];
+	//double events[N_RATES][Nbins];
 	// Electron signal array
+	int N_bins;
 	double* e;
 
 
@@ -75,8 +76,9 @@ public:
 	//				bool normal=true, bool antimode=false);
 	// CHANGED we need to be able to control the energy range and bin count for oscillations
 	// Oscillate neutrinos in range [x1, x2] given baseline and bin_count
-	void oscillate(const initial_spectrum* is, double baseline, 
-				   double x1, double x2, int bin_count);
+	// DROPPED we will not need this if we don't model another experiment (eg icecube)
+	void oscillate(const initial_spectrum* is, double baseline);
+				   //double x1, double x2, int bin_count);
 	
 	// Energy reconstruction function with smearing of the reconstructed energy to
 	// simulate experimental uncertainties.

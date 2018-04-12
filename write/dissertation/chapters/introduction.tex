@@ -1,0 +1,516 @@
+% This chapter gives reader the background knowledge they will need in order to understand the following chapters. This should not include descriptions of the work you have done, but it should provide the motivation for why you did it.  Some reports will have two chapters of background material (e.g. one on general background from books, and one providing a review of journal articles you have read).
+\label{ch:introduction}
+We will now give an overview of the theoretical concepts that are used
+throughout this report. We will present a review of neutrino flavour
+oscillations in a vacuum, for the commonly considered cases of two and three
+neutrino flavours. We will also derive the oscillation probability for
+neutrinos in matter with a constant density, in the simpler case of two
+neutrinos. 
+
+
+\section{History of the neutrino}
+The neutrino particle first appeared in 1934 in Fermi's theory of the $\beta$-decay
+process\cite{fermi}, where a neutron would decay into a proton and emit an electron and a
+light, neutral particle. This extra particle was required as a way to explain the
+continuous energy spectrum of the electron. A number of subsequent experiments
+were designed to map out the properties of the neutrino and its
+interactions\cite{zuber}. As of today, the neutrino is still not fully
+understood, and neutrino physics has become one of the leading branches of
+experimental particle physics along with collider physics. 
+
+The existence of distinct flavours of neutrinos was first investigated by
+Bruno Pontecorvo in 1959\cite{pontecorvo}. He found that different neutrino flavours
+interacted with different leptons, therefore establishing the three neutrinos
+known today as $\nu_e$, $\nu_\mu$ and $\nu_\tau$, and hinting at the
+possibility of flavour oscillations, which he later theorized.
+As will be discussed later, the fact that a neutrino can change its flavour by
+propagating through empty space is direct evidence that neutrinos are massive
+particles, unlike what is initially described by the Standard Model.
+The 2015 Nobel Prize was awarded to the SuperKamiokande and SNO collaborations
+for the discovery of neutrino oscillations in 1999 and 2001\footnote{In fact,
+SNO observed oscillations in matter, known as the MSW effect\cite{smirnov},
+while SuperK observed oscillations in the vacuum.}, respectively.
+Although neutrino oscillations have been observed, some of the physical parameters that
+describe this process have remained difficult to probe because of the lack of
+accuracy in the measurements of past experiments. 
+The Deep Underground Neutrino Experiment (DUNE) in the United States and the
+upgrade to SuperKamiokande, HyperKamiokande (HyperK) in Japan, are examples of
+future experiments that aim to determine these parameters and start the era of
+precision measurements in neutrino physics.
+
+
+In the Standard Model, there are twelve elementary fermions: six quarks and six
+leptons (plus their respective antiparticles). The leptons consist of three
+charged leptons $(e, \mu, \tau)$ and three corresponding charge-less neutrinos
+$(\nu_e, \nu_\mu, \nu_\tau)$. The electron neutrino $\nu_e$, for example, is
+the neutrino which can interact weakly with an electron and a
+$W$ boson~(Fig.~\ref{fig:weak_vertex}). 
+
+\begin{wrapfigure}{r}[1.5cm]{0.2\textwidth}
+	\includegraphics{images/weak_vertex.pdf}
+	\captionsetup{justification=centering}
+	\caption{The weak vertex for an electron neutrino.}
+	\label{fig:weak_vertex}
+\end{wrapfigure}
+
+Neutrinos, being leptons (colorless) and carrying zero charge, interact only via the weak
+interaction, which makes them impossible to observe directly. Their existence
+and their properties can only be inferred from their interactions with other
+particles.
+Experimentally, only left-handed neutrinos and right-handed
+antineutrinos are observed. In the Standard Model, this curious property would
+prevent the neutrinos from acquiring a mass through interactions with the
+Higgs field in the same way that charged leptons do\cite{schwichtenberg}. Hence
+the Standard Model on its own cannot accurately describe neutrinos, and
+extensions such as the seesaw mechanism or extra dimensions are needed. This
+discussion lies beyond the scope of this report since we are only concerned
+with the phenomenological description of neutrino oscillations, which is
+achieved via straightforward quantum mechanics in the next section.
+
+\section{Neutrino oscillations}
+We will now introduce the mathematical tools that we use to describe neutrino
+oscillations. 
+
+It is now known experimentally that 
+the neutrino flavours ($\nu_e, \nu_\mu, \nu_\tau$) can mix when propagating through
+space\cite{superk}. This process is intrinsically linked to the quark generation
+mixing between down, strange and bottom quarks\cite{pdg_ckm}
+and is direct evidence that for all these particles,
+the weak eigenstates\footnote{Weak eigenstate: state which interacts with the W, Z bosons.} are not in one-to-one correspondence with the mass
+eigenstates\footnote{Mass eigenstate: state which has definite mass and
+propagates through space as a wave.}.
+
+In the Standard Model (SM), the W bosons mediate the interactions between up-type and
+down-type quarks, and between charged leptons and neutrinos. The interaction
+terms in the Lagrangian can be expressed either in the weak eigenbasis or the
+mass eigenbasis\cite{langacker}. For down-type quarks and neutrinos, these
+bases are not identical but are related by the Cabibbo-Kobayashi-Maskawa (CKM) matrix
+and the Pontecorvo-Maki-Nakagawa-Sakata (PMNS) matrix\cite{zuber}, respectively.
+This allows neutrinos and down-type quarks to change their flavour (or generation)
+as they travel in space.
+
+
+\subsection{Neutrino oscillation formalism} 
+The following derivations are heavily inspired by chapter 8 of
+Kai Zuber's textbook on neutrino physics\cite{zuber}.
+Let us consider a general system where there exist $n$ neutrino flavours. 
+We mentioned the two eigenbases of interest: the weak (flavour)
+eigenstates $\ket{\nu_{\alpha}}$ where $\alpha$ is a lepton flavour,
+$\alpha=l_1, l_2, ..., l_n$, and the mass eigenstates $\ket{\nu_i}$, $i=1, 2,
+..., n$. 
+Flavour eigenstates interact with matter through the weak interaction, and
+hence are the states we observe in nature. Eigenstates are orthogonal within
+each basis:
+$$
+\bra{\nu_\alpha}\ket{\nu_\beta} = \delta_{\alpha \beta}, \quad
+	\bra{\nu_i}\ket{\nu_j} = \delta_{ij}  \quad
+$$
+and the two bases are related by a $n\times n$ unitary matrix $U$:
+\begin{align}
+	&\ket{\nu_\alpha} = \sum_i U_{\alpha i} \ket{\nu_i}\label{eq:bases1}\\
+	&\ket{\nu_i} = \sum_\gamma (U^\dagger)_{i \gamma} \ket{\nu_\gamma} = \sum_\gamma
+			U^*_{\gamma i} \ket{\nu_\gamma}\label{eq:bases2}\\
+	&U^\dagger U = 1, \nonumber
+\end{align}
+where greek letters denote indices in the flavour basis and latin letters
+denote indices in the mass basis.
+
+The mass eigenstates are solutions of the free Hamiltonian in a vacuum, hence
+they are stationary states and evolve in time as $\ket{\nu_i(x,
+t)} = \me^{-\mi E_i t} \ket{\nu_i(x, 0)}$, where $\ket{\nu_i(x, 0)} = \me^{\mi p
+x} \ket{\nu_i}$ for a plane wave neutrino produced at $x=0$.
+Hence a neutrino produced as a flavour eigenstate $\alpha$ would have the
+following time dependence:
+\begin{align*}
+\ket{\nu_\alpha(x, t)} &= \sum_i U_{\alpha i} \ket{\nu_i(x, t)} \\
+		&= \sum_i U_{\alpha i} \me^{-\mi E_i t} \me^{\mi p x} \ket{\nu_i}\\
+		&= \sum_{i, \gamma} U_{\alpha i} U^*_{\gamma i} \me^{\mi p x}
+				\me^{-\mi E_i t} \ket{\nu_\gamma}\quad\text{(using eq.~\ref{eq:bases2})}.
+\end{align*}
+Thus the transition amplitude to a flavour $\beta$ is 
+\begin{align}
+	A_{\alpha \rightarrow \beta}(x, t) = \bra{\nu_\beta}\ket{\nu_\alpha(x, t)} \nonumber
+			= \sum_i U^*_{\beta i} U_{\alpha i} \me^{\mi p x}
+			\me^{-\mi E_i t}\quad\text{(using eq.~\ref{eq:bases1})}.
+\end{align}
+By assuming that all neutrinos have small masses, and thus are highly
+relativistic, we are able to perform a binomial approximation on their
+energy\footnote{We are working in natural units where $c=\hbar=1$.}: 
+\begin{equation} E_i = \sqrt{m_i^2 + p^2} \simeq p + \frac{m_i^2}{2 p} \simeq E +
+\frac{m_i^2}{2E},\label{eq:binomial}\end{equation}
+where we call $E \approx p$ the neutrino energy at the source\footnote{As
+pointed out by Cohen, Glashow and Ligeti\cite{cohen}, we are taking a shortcut
+here by assuming that the weak eigenstate comes out as a linear superposition
+of mass eigenstates with equal energies. However our description leads to
+identical oscillation formulae as a more physically rigorous one where particle
+entanglement after the interaction is taken into account. We choose to keep
+this derivation and skip the details for the sake of simplicity.}. We call $L$
+the distance from the neutrino source to the detector, known as the baseline.
+Under our relativistic assumption, we have $L \approx t$. Going back to the
+transition amplitude,
+\begin{align*}
+	A_{\alpha \rightarrow \beta}(L, E) &= \sum_i U^*_{\beta i} U_{\alpha i}
+	\exp(\mi E L - \mi(E + \frac{m_i^2}{2 E}) L)\\
+	&= \sum_i U^*_{\beta i} U_{\alpha i} \exp(-\mi \frac{m_i^2 L}{2E}),
+\end{align*}
+The transition probability is then
+\begin{align}
+	\label{eq:nuprob}
+	P_{\alpha \rightarrow \beta}(L, E) &= |A_{\alpha \rightarrow \beta}(L, E)|^2 \nonumber\\
+	&= \sum_i \sum_j U_{\alpha i} U^*_{\beta i} U^*_{\alpha j} U_{\beta j}
+	\exp(-\mi \frac{\Delta m_{ij}^2}{2} \frac{L}{E}),
+\end{align}
+where $\Delta m^2_{ij} = m^2_i - m^2_j$ is the mass squared difference between
+two mass eigenstates.
+The analysis is similar when considering anti-neutrinos except that $U$ must be
+replaced by $U^*$ everywhere and vice-versa.
+
+The formula we have derived here is the general probability of oscillation from a
+flavour eigenstate $\ket{\nu_\alpha}$ to another flavour eigenstate
+$\ket{\nu_\beta}$. This effectively describes the probability that after
+travelling a distance $L$, the neutrino wavefunction will collapse into a
+$\beta$ flavoured neutrino if it interacts in our detector.
+In the following sections, we apply this formalism to two-neutrino and
+three-neutrino systems and show plots of the oscillation probability.
+
+
+
+\subsection{Two-neutrino oscillations}\label{sec:twonu}
+The case for two neutrino eigenstates is the simplest to consider. The
+unitary nature of the mixing matrix $U$ and the arbitrarity of the complex phases
+of quantum states reduces the number of observable mixing parameters to
+one\cite{langacker}.
+An enlightening way to write the mixing matrix is\cite{zuber} 
+\begin{equation}
+	\begin{bmatrix} \nu_\mu \\ \nu_\tau \end{bmatrix} =
+	\begin{bmatrix} \cos\theta & \sin\theta \\
+								 -\sin\theta & \cos\theta \end{bmatrix}
+	\begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix},
+		\label{eq:twonumixing}
+\end{equation}
+where $\theta$ is called the mixing angle.
+We see here that the two eigenbases are analogous to two sets of Cartesian axes
+in two dimensions, one being rotated by an angle $\theta$ with respect to the
+other.
+
+We use the $\mu$ and $\tau$ flavours here in reference to the
+atmospheric neutrino experiment at SuperK\cite{superk}: for neutrinos produced
+by cosmic rays in the atmosphere, it is a good approximation to consider a
+two-neutrino oscillation between the $\mu$ and $\tau$ flavours, and to neglect
+the $\nu_\mu \rightarrow \nu_e$ channel. 
+This simple mixing matrix can be substituted in eq.~\ref{eq:nuprob} to obtain a
+more concrete oscillation probability:
+\begin{align}
+	P_{\nu_\mu \rightarrow \nu_\tau}(L, E) &= U_{\mu 1}^2 U_{\tau 1}^2 + U_{\mu 2}^2
+	U_{\tau 2}^2 \nonumber\\&\quad+ U_{\mu 1} U_{\tau 1} U_{\mu 2} U_{\tau 2} \bigg[\exp(-\mi
+	\frac{\Delta m_{12}^2 L}{2 E}) + \exp(-\mi \frac{\Delta m_{21}^2 L}{2
+	E})\bigg]\nonumber\\
+	&= \cos^2\theta \sin^2\theta\enskip \bigg[2 - 2\cos\frac{\Delta m_{21}^2 L}{2
+	E}\bigg]\quad\text{(since $\Delta m_{12}^2 = -\Delta m_{21}^2$)}\nonumber\\
+	&= \sin^2(2\theta)\sin^2\bigg(\frac{\Delta m^2}{4}
+	\frac{L}{E}\bigg).\label{eq:twonu}
+\end{align}
+Note that there are only two mass eigenstates here, hence we define $\Delta m^2
+\equiv \Delta m_{21}^2$.
+
+This example is particularly informative, as one can clearly see the role of
+each parameter in the oscillation probability. The first term is a constant
+which depends on the mixing angle, and must be determined by experiment. For
+$\theta = \frac{\pi}{4}$, the mixing is maximal and the probability is allowed
+to increase up to 100\%. The second term is manifestly oscillatory. Its
+frequency is determined by the mass difference $\Delta m^2$, which may also be
+determined by fitting experimental data. Note also that if the mass squared
+difference is zero, the oscillation probability is zero. This implies that
+oscillations are only possible if at least one of the mass eigenstates has a
+non-zero mass.
+Evidently, since there are only two flavours, the probability of $\nu_\mu$
+``survival'' is
+$$P_{\nu_\mu \rightarrow \nu_\mu}(L, E) = 1 - P_{\nu_\mu \rightarrow
+\nu_\tau}(L, E).$$
+
+
+
+\subsection{Three neutrino oscillations}
+When we consider three eigenstates, the number of parameters is increased to
+four\cite{langacker}:
+three mixing angles $\theta_{12}, \theta_{13}$ and $\theta_{23}$, and an
+imaginary phase $\delta_{CP}$. This so called CP-violating phase gives rise to
+a difference between oscillation probabilities of neutrinos and anti-neutrinos,
+hence it allows violation of the charge-parity (CP) symmetry. 
+The mixing matrix can be written in a suggestive way as
+\begin{equation}\label{eq:PMNS}
+U_{\mathrm{PMNS}} = 
+\begin{bmatrix} 1 & 0 & 0 \\ 0 & c_{23} & s_{23} \\ 0 & -s_{23} & c_{23} \end{bmatrix}
+\begin{bmatrix} c_{13} & 0 & s_{13} \me^{-\mi \delta_{CP}} \\ 0 & 1 & 0 \\
+								-s_{13} \me^{\mi \delta_{CP}} & 0 & c_{13} \end{bmatrix} 
+\begin{bmatrix} c_{12} & s_{12} & 0 \\ -s_{12} & c_{12} & 0 \\ 0 & 0 & 1 \end{bmatrix}
+,\end{equation}
+where $c_{ij} = \cos(\theta_{ij})$ and $s_{ij} = \sin(\theta_{ij})$.
+This form is analogous to a 3D rotation around three Euler angles, except for
+the appearance of $\delta_{CP}$ in the ``13'' rotation.
+
+Unlike in the two-neutrino case, substituting this mixing matrix into
+eq.~\ref{eq:nuprob} turns out not to be very insightful. It is important
+however to underline all the oscillation parameters that are present here.
+Along with the four mixing parameters in the PMNS matrix, we have three mass
+squared differences $\Delta m^2_{31},~\Delta m^2_{32}$ and $\Delta m^2_{21}$,
+of which two are independent since $\Delta m^2_{32} + \Delta m^2_{21} = \Delta
+m^2_{31}$. This leaves six independent
+parameters that must be determined by oscillation experiments.
+In section~\ref{sec:state}, we will go over the current state of our knowledge
+of these parameters, which will provide motivation for the work presented in
+chapter~\ref{ch:methods}.
+
+
+\subsection{Neutrino oscillations in matter}
+So far we have only discussed neutrino oscillations in vacuum, where no weak
+interactions take place.
+In matter, where atoms are present, neutrinos can undergo coherent forward
+scattering off of atomic electrons, modifying the oscillation probability over
+large enough distances. This is known as the Mikheyev-Smirnov-Wolfenstein (MSW)
+effect\cite{wolfenstein, mikheyev-smirnov}, or simply matter effect.
+\begin{figure}
+	\centering
+	\begin{subfigure}{0.3\textwidth}
+		\centering
+	\feynmandiagram[small, vertical=a to b]{
+		ni [particle=\(\nu_e\)] -- [fermion] b -- [fermion] ef [particle=\(e^-\)],
+		a -- [boson, edge label=\(W\)] b,
+		ei [particle=\(e^-\)] -- [fermion] a -- [fermion] nf [particle=\(\nu_e\)],
+		};
+		\caption{Electron-neutrino scattering.}
+		\label{fig:nu_e-scatter}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\centering
+		\feynmandiagram[small, horizontal=a to b]{
+			ei [particle=\(e^-\)] -- [fermion] a -- [fermion] ni
+			[particle=\(\bar{\nu}_e\)],
+			a -- [boson, edge label=\(W^-\)] b,
+			nf [particle=\(\bar{\nu}_e\)] -- [fermion] b -- [fermion] ef
+			[particle=\(e^-\)],
+			};
+			\caption{Anti-$\nu_e$ scattering.}
+			\label{fig:anti-nu_e-scatter}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\centering
+		\feynmandiagram[small, vertical=a to b]{
+			ni [particle=\(\nu_{e,\mu,\tau}\)] -- [fermion] b -- [fermion] nf
+			[particle=\(\nu_{e,\mu,\tau}\)],
+			a -- [boson, edge label=\(Z\)] b,
+			ei [particle=\(e^-\)] -- [fermion] a -- [fermion] ef [particle=\(e^-\)],
+		};
+		\caption{Scattering through $Z$ boson affects all flavours equally.}
+		\label{fig:z-scatter}
+	\end{subfigure}
+	\caption{The three possible tree-level interactions of neutrinos with atomic
+	electrons in matter.}
+\label{fig:forward_scatter}
+\end{figure}
+
+A neutrino can scatter either by exchanging a $W^\pm$ boson --- known as
+charged current (CC) interaction --- or by exchanging a $Z$ boson --- neutral
+current (NC) interaction. The neutral current interaction is experienced
+equally by all three flavours (fig.~\ref{fig:z-scatter}), hence it does not
+have an effect on the relative
+propagation phases, and causes no change in the oscillation probability. The
+charged current is specific to the neutrino flavour. Since only
+electrons are present in matter, only electron neutrinos are subject to CC
+interactions~(figs.~\ref{fig:nu_e-scatter},~\ref{fig:anti-nu_e-scatter}). 
+Hence electron neutrinos propagating in matter pick up a different phase than
+if they were propagating in empty space. This can be implemented in the
+oscillation formalism by adding a potential term to the Hamiltonian for
+electron neutrinos only. This term will be proportional to the density of
+matter and to the weak coupling constant\cite{zuber}.
+
+In what follows, we derive the corrections that must be applied to the
+oscillation formalism for two neutrino flavours, in order to accurately
+describe oscillations in matter.
+This derivation is inspired by section~8.9 of Kai Zuber's textbook\cite{zuber}
+and Stefania Ricciardi's notes on oscillations in matter\cite{ricciardi}.
+
+We start from the time evolution of two mass eigenstates (Schrödinger's
+equation):
+\begin{align}
+	\mi \frac{\md}{\md t} \begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix}
+		&= \hat{H}_\text{mass} \begin{bmatrix} \nu_1 \\ \nu_2
+		\end{bmatrix}\nonumber \\
+		&= \begin{bmatrix} E_1 & 0 \\ 0 & E_2 \end{bmatrix} \begin{bmatrix} \nu_1
+\\ \nu_2 \end{bmatrix}\nonumber \\
+&= \frac{1}{2E} \bmat{m^2_1 & 0 \\ 0 & m^2_2} \bmat{\nu_1 \\ \nu_2} + \bmat{E &
+0 \\ 0 & E} \bmat{\nu_1 \\ \nu_2},\label{eq:massvacuum}
+\end{align}
+where in the last step we used the approximation of eq.~\ref{eq:binomial}.
+The second term is a multiple of the identity, and only contributes a common phase to
+the wavefunctions $\nu_1$ and $\nu_2$. It does not affect the oscillations, and
+will be discarded in what follows.
+Now we transform into the flavour basis by using $\ket{\nu_\text{mass}} =
+U^\dagger \ket{\nu_\text{flavour}}$ (eq.~\ref{eq:bases2}), and multiply by $U$ on the left:
+\begin{align*}
+	\mi \frac{\md}{\md t}\bigg( U^\dagger \bmat{ \nu_e \\ \nu_\mu
+	}\bigg)
+		&= \frac{1}{2E}\bmat{m^2_1 & 0 \\ 0 & m^2_2} U^\dagger \bmat{\nu_e
+			\\ \nu_\mu} \\
+		\implies 
+	\mi \underbrace{U U^\dagger}_{=1} \frac{\md}{\md t}\bmat{\nu_e \\ \nu_\mu}
+		&= \underbrace{\frac{1}{2E} U \bmat{m^2_1 & 0 \\ 0 & m^2_2}
+			U^\dagger }_{\equiv \hat{H}_{\text{flavour}}} \bmat{\nu_e
+			\\ \nu_\mu}.
+\end{align*}
+For this illustration, our two flavours are $\nu_e$ and $\nu_\mu$ because matter effects play
+an important role in the oscillations between those two, for example
+in long baseline experiments, or for solar neutrinos.
+We use the explicit form of $U$ for two neutrinos (eq.~\ref{eq:twonumixing}) to
+determine $\hat{H}_\text{flavour}$. The result is
+\begin{equation}\hat{H}_\text{flavour} = \frac{\Delta m^2}{4 E} \bmat{-\cos 2\theta & \sin
+	2\theta \\ \sin 2\theta & \cos
+2\theta},\label{eq:flavourvacuum}\end{equation}
+where $\Delta m^2 = m_2^2 - m_1^2$, and we have subtracted a multiple of the
+identity. Our goal, after introducing the extra potential in matter, will be to
+express the flavour Hamiltonian in this form, albeit with different $\Delta
+m^2$ and $\theta$, and to relate it to the mass eigenstates in matter. This
+will ensure that we can simply apply the steps of section~\ref{sec:twonu} and
+directly obtain the oscillation formula.
+
+In matter, the electron neutrinos interact with electrons, so we must add a
+potential term $V_e$ to the Hamiltonian. For simplicity, we assume that this
+term is constant, i.e. that the density of matter is constant. This assumption
+is fairly accurate for neutrinos propagating in the Earth's crust, but not for
+solar neutrinos, for example. The Hamiltonian in matter is
+\begin{equation}
+	\hat{H}^m_\text{flavour} = \frac{\Delta m^2}{4 E} \bmat{-\cos 2\theta & \sin
+	2\theta \\ \sin 2\theta & \cos 2\theta} + \bmat{V_e & 0 \\ 0 &
+	0}.\label{eq:matter_potential}
+\end{equation}
+Again, we subtract a multiple of the identity $V_e / 2$ without affecting the
+oscillations:
+\begin{equation}\hat{H}^m_\text{flavour} = \frac{\Delta m^2}{4 E} \bmat{-\cos 2\theta + A & \sin
+2\theta \\ \sin 2\theta & \cos 2\theta - A},\label{eq:flavourmatter1}\end{equation}
+where $A = 2 E V_e / \Delta m^2$.
+This form of the Hamiltonian implies that the mass eigenstates in the vacuum
+are not mass eigenstates in matter. Indeed, if we go back the the mass
+eigenbasis, we see that the Hamiltonian is no longer diagonal:
+\begin{align*}
+	\hat{H}^m_\text{mass} &= U^\dagger \hat{H}^m_\text{flavour} U\\
+	&= \frac{\Delta m^2}{4E} \bmat{A \cos 2\theta - 1 & A \sin 2\theta \\ A \sin
+	2\theta & 1 - A\cos 2\theta}.
+\end{align*}
+It can be diagonalized by transforming the mass eigenvector such that
+\begin{align}\mi \frac{\md}{\md t} \bmat{\nu_{1m} \\ \nu_{2m}} &= \underbrace{\frac{1}{2E}
+\bmat{m^2_{1m} & 0 \\ 0 & m^2_{2m}}}_{\equiv \hat{H}^m_\text{mass, diag}}
+\bmat{\nu_{1m} \\ \nu_{2m}},\label{eq:massmatter}\end{align}
+where $\nu_{1m}$ and $\nu_{2m}$ are the mass eigenstates in this new basis, and
+the eigenvalues $m^2_{1m}$ and $m^2_{2m}$ obey
+\begin{equation}\Delta m^2_m = m^2_{2m} - m^2_{1m} = \Delta m^2 \sqrt{(\cos 2\theta - A)^2 +
+\sin^2 2\theta}.\label{eq:deltam2m}\end{equation}
+Equation~\ref{eq:massmatter} is the equivalent of eq.~\ref{eq:massvacuum} in
+matter. The matter interaction has the effect of changing the mass difference
+between our mass eigenstates. This will effectively change the frequency of the
+oscillations. We now try to relate the new mass eigenstates to the old flavour
+eigenstates. We can always define
+$$\bmat{\nu_e \\ \nu_\mu} \equiv \underbrace{\bmat{\cos \theta_m & \sin \theta_m \\ -\sin
+\theta_m & \cos \theta_m}}_{U_m} \bmat{\nu_{1m} \\ \nu_{2m}}.$$
+Following the same steps as equations~\ref{eq:massvacuum}
+to~\ref{eq:flavourvacuum}, this definition is equivalent to redefining the
+flavour Hamiltonian in matter as
+\begin{equation}\hat{H}_\text{flavour} = \frac{\Delta m^2_m}{4 E} \bmat{-\cos 2\theta_m &
+\sin 2\theta_m \\ \sin 2\theta_m & \cos 2\theta_m}.\label{eq:flavourmatter2}\end{equation}
+Equating equations~\ref{eq:flavourmatter2} and~\ref{eq:flavourmatter1}, we
+finally get the relationship between our old and new mixing angles:
+\begin{align}
+	\frac{\Delta m^2}{4 E} \bmat{-\cos 2\theta & \sin 2\theta \\ \sin 2\theta &
+	\cos 2\theta} &\overset{!}{=} \frac{\Delta m^2_m}{4 E} \bmat{-\cos 2\theta_m &
+	\sin 2\theta_m \\ \sin 2\theta_m & \cos 2\theta_m} \nonumber\\\implies
+	\sin 2\theta_m &= \sin 2\theta \frac{\Delta m^2}{\Delta m^2_m}\nonumber\\
+	&= \frac{\sin 2\theta}{
+		\sqrt{(\cos 2\theta - A)^2 + \sin^2 2\theta}}\label{eq:thetam}%\\\implies
+	%\cos 2\theta_m &= (\cos 2\theta - A) \frac{\Delta m^2}{\Delta m^2_m}\\
+	%&= (\cos
+	%2\theta - A) \sqrt{(\cos 2\theta - A)^2 + \sin^2 2\theta}
+\end{align}
+Because we diagonalized the Hamiltonian in the mass basis and wrote the flavour
+Hamiltonian in this form, equation~\ref{eq:twonu} is automatically valid and
+our oscillation probability is
+\begin{equation}
+	P^m_{\nu_e \rightarrow \nu_\mu}(L, E) = \sin^2(2\theta_m)
+	\sin^2\bigg(\frac{\Delta m^2_m L}{4 E}\bigg),\label{eq:twonumatter}
+\end{equation}
+where the parameters in matter are given by equations~\ref{eq:deltam2m}
+and~\ref{eq:thetam}.
+
+This derivation shows that matter effects can be taken into account by a simple
+redefinition of the oscillation parameters, at least in the case of two
+neutrino flavours. For three neutrinos, the algebra is a lot more involved, and
+beyond the scope of this report. Ohlsson and Snellman\cite{ohlsson} have
+shown that the same idea applies for three neutrino flavours, namely that we can
+express all oscillation parameters in matter by diagonalizing the matter
+Hamiltonian, and obtain the probability through the same formula
+\begin{equation}
+	P^m_{\alpha \rightarrow \beta}(L, E) = \sum_i \sum_j U^m_{\alpha i}
+	U^{m*}_{\beta i} U^{m*}_{\alpha j} U^m_{\beta j} \exp(-\mi \frac{\Delta
+	\tilde{m}^2_{ij} L}{2 E}),
+\end{equation}
+where $U^m$ and $\Delta \tilde{m}^2_{ij}$ can be expressed in terms of $U$,
+$\Delta m_{ij}$ and the eigenvalues and components of the Hamiltonian in
+matter. Although they only considered the case where $\delta_{CP}=0$,
+expressions for the parameters were later derived\cite{kneller} in the general
+case, for any $\delta_{CP}$.
+
+Experiments in which neutrinos spend a significant amount of time propagating
+through matter --- e.g. neutrinos from the sun's core, or neutrinos propagating
+underground through the Earth --- require us to take matter effects into
+account in order to produce a realistic model. The DUNE experiment will be
+performed entirely underground with a baseline of 1300km, enough to have a
+significant effect on the oscillation probability from muon neutrinos to
+electron neutrinos. 
+
+
+\subsection{The state of neutrino oscillations}\label{sec:state}
+Neutrino oscillations are still far from being fully understood. Aside from the
+fact that they are not compatible with the Standard Model, the phenomenology of
+oscillations is not yet complete. While three of the parameters are now known
+with uncertainties of a few percent, the remaining three are expected to
+be fully constrained only by the current and next generation of experiments.
+Initially, solar neutrino experiments were responsible for the determination of
+$\theta_{12}$ and $\Delta m^2_{21}$, while $\theta_{13}$ and $|\Delta m^2_{31}|$
+were measured by atmospheric neutrino experiments\cite{barger}. 
+
+While the absolute value of $\Delta m^2_{31}$ is known with high precision, its
+sign is still unknown. This problem of whether the third mass eigenstate is
+heavier or lighter than the other two is called the neutrino mass hierarchy ---
+or mass ordering --- problem. It is likely to be resolved by the next
+generation of long baseline neutrino experiments, as we will show in our results. 
+Throughout this report, we will denote by ``normal hierarchy'' (NH) the case
+where the third mass eigenstate is heavier than the other two ($m_3 > m_2 >
+m_1$, and $\Delta m^2_{31}$ is a positive value), and by ``inverted hierarchy''
+(IH) the case where it is lighter ($\Delta m^2_{31}$ negative).
+
+The second unknown is the octant of $\theta_{23}$. This parameter is known to
+lie around \SI{45}{\degree}, in either the first or second octant of the unit
+circle. However long baseline experiments in the past have typically only been
+sensitive to $\sin^2{2 \theta_{23}}$, resulting in two possible degenerate
+values for $\theta_{23}$ that could fit the same data\footnote{Since
+$\sin(2(\pi/4+x)) = \sin(2(\pi/4-x))$ for any $x$.}\cite{novat23}.
+In order to break this degeneracy, a possible solution is to design an
+experiment with \emph{more} matter effects~\cite{raut}, e.g. a long baseline
+underground experiment. DUNE will be such an experiment, as well as
+T2HKK, a proposal to build a second detector in Korea for the J-PARC (T2K) neutrino
+beam in Tokai, Japan, with a baseline of 1000\textasciitilde1300 km\cite{t2hkk}.
+
+The last unknown is the CP violating phase $\delta_{CP}$. Unlike the other
+parameters, there is so far no constraints on its value.
+Because of its relationship to CP violation in the lepton sector, this
+parameter has a cosmological relevance since it could explain in part the
+overwhelming presence of matter over antimatter in the universe. Similarly to
+the other two parameters, it is expected that the next generation of neutrino
+experiments will determine $\delta_{CP}$.
+
+Although we use the standard three-neutrino framework throughout this report,
+it is relevant to mention that it may not be entirely correct. The existence of
+sterile neutrinos --- neutrinos which do not interact via the weak interaction,
+but do mix with the others via oscillations --- has not been ruled out by
+oscillation experiments. The evidence for the existence of such particles would
+be the non-unitarity of the three-neutrino mixing matrix. Since
+$\delta_{CP}$ is still not fully constrained, it is so far impossible to rule out
+sterile neutrinos.

@@ -230,34 +230,37 @@ events outside the more reliable central region are discarded. The part of the
 total detector mass that remains is called fiducial mass.} of 40 kilotons\cite{cdr}.
 For projects of this scale, it is crucial to try to maximize the time and cost
 efficiency of the experiment by choosing the design that will provide the best
-chance of scientific discovery.
+chance of scientific discovery. It is thus conventional as part of the design
+process to evaluate the experiment's sensitivity to the relevant physical
+parameters. This is then used to legitimize the project to the scientific
+community and attract the support of funding agencies.
 
 In general, it is not obvious which design choices (baseline, for example) will lead to better
 sensitivity. By sensitivity, we mean the ability of the experiment to make a
-relevant discovery. For example, if DUNE was to estimate $\delta_{CP}$ and
-determine that it excludes $\delta_{CP}=0$ and $\delta_{CP}=\pi$ with a
-$3\sigma$ confidence level, one could say it has discovered CP violation in the
-lepton sector.
+relevant discovery. For example, the sensitivity of DUNE to $\delta_{CP}$ is
+its capacity to discover CP violation in the lepton sector, i.e. to exclude the
+values $\delta_{CP}=0$ and $\delta_{CP}=\pi$ with an acceptable confidence
+level.
 
 As a consequence, experimentalists have devised statistical methods to allow
-quantifying of sensitivity in order to compare different designs,
-and create the most efficient experiments.
-Additionally, these methods enable us to compare experiments that have
-different characteristics --- baseline, detector technology, neutrino source
---- and to understand the complementarities that could result from combining
-their results.
+the quantification of sensitivity in order to compare different designs or even
+different experiments, and to be able to do so in a mathematically rigorous way that is
+accepted by the most scientists.
+When applied, these methods enable us to compare potential experiments that
+could have different characteristics --- baseline, detector technology,
+neutrino source --- and to understand the complementarities that could result
+from combining their results.
 
 
-One of the most sought after discoveries in neutrino physics is that of the neutrino
-mass hierarchy, that is, the sign of the mass difference $\Delta m^2_{31} =
-m^2_3 - m^2_1$. Naturally, we can define a statistic that describes how
-sensitive a given experiment is to the mass hierarchy. That is, this
-statistic tells us how good the experiment will be at discriminating
-between the two possible hypotheses, NH or IH.
+Currently, one of the most sought after discoveries in neutrino physics is that of the neutrino
+mass hierarchy; that is, the sign of the mass difference $\Delta m^2_{31} =
+m^2_3 - m^2_1$. Naturally, one can define a statistic that describes how
+sensitive a given experiment is to the mass hierarchy. This
+statistic will tell us how good the experiment will be at discriminating
+between the two possible hypotheses, NH or IH. The larger its value, the more
+likely it will be for the experiment's results (for a given run-time) to
+provide an answer to the mass hierarchy problem.
 
-((Give a heuristic introduction to the $\Delta \chi^2$ statistic and how it is
-used to estimate sensitivity))
-((Very good inspiration in Introduction from Ciuffoli 1305.5150))
 
 \subsubsection{Derivation of $\Delta \chi^2$ for the mass hierarchy}
 The mass hierarchy can only turn out to be normal (NH), or inverted (IH). As
@@ -320,39 +323,6 @@ In addition to the sensitivity to the mass hierarchy, we estimate the
 sensitivity to CP discovery by simulating data for all values of $\delta_{CP}$
 and comparing to CP-conserving values $\delta_{CP} = 0, \pi$.
 
-
-
-\subsubsection{Delta chi squared} 
-((TODO read this section and retain good bits))
-Let's work under the assumption that the true mass hierarchy (the one chosen by
-nature) is the \emph{normal} one. When we oscillate our initial spectrum over
-the baseline and obtain a prediction for the far detector spectrum, we are,
-under this assumption, modeling the true oscillations as they will happen in
-the real experiment. Since the CP violating phase $\delta_{CP}$ is still
-experimentally unknown, it is useful to perform the neutrino oscillations while
-changing $\delta_{CP}$ over its allowed range $[-\pi,\pi)$. For each of these
-spectra, we are thus making two assumptions: one is the true mass hierarchy,
-and the other is the true CP violating phase.
-
-Now we ask: if our assumptions are wrong and either the true mass hierarchy is
-inverted, or the phase is not what we think, or both: how accurately can we
-rule out our initial assumptions? To answer this, we repeat the oscillation
-with inverted hierarchy parameters, and again, we explore every value of
-$\delta_{CP}$. A good way to define the agreement between two sets of data (or
-in this case, predictions) is the $\chi^2$ statistic. We calculate a $\chi^2$
-between our \emph{assumed true} spectrum and each of the \emph{inverted
-hierarchy} spectra. The smaller the $\chi^2$, the better the fit, hence the
-minimum $\chi^2$, for a given assumed $\delta_{CP}$, represents the best
-possible agreement with the opposite hierarchy. This particular statistic is
-called the $\overline{\Delta\chi^2}$, the mean $\Delta\chi^2$, and since it tells
-us how ``badly'' our experiment might differentiate between different values of
-a parameter,  it is a good measure of the \emph{sensitivity} of the experiment
-to this underlying parameter.  We call the quantity
-$\sqrt{\overline{\Delta\chi^2}}$ the sensitivity.
-
-% TODO
-% Derivation of delta chi squared sensitivity, quote paper 'Sensitivity to the
-% Neutrino Mass Hierarchy.pdf'.
 
 
 \begin{thebibliography}{20} 

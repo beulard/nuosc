@@ -12,7 +12,7 @@ double plot_P(double* x, double* par) {
 		p = &nh;
 	else
 		p = &ih;
-	double r = P_me(f_m, f_e, x[0], p, false);
+	double r = P_me(f_m, f_e, x[0], 295, p, false);
 	// Fix plots overflowing out of their frame/axes
 	//if (r > 0.2)
 	//	r = 0.2;
@@ -24,10 +24,10 @@ void plot_P();
 
 void numh() {
 	nh.populate(NH);
-	nh.d_cp = 0;
+	nh.d_cp = pi/2;
 	nh.populate_common();
 	ih.populate(IH);
-	ih.d_cp = 0;
+	ih.d_cp = pi/2;
 	ih.populate_common();
 	//ih.d_cp = -pi/2;
 	//ih.populate_common();
@@ -66,7 +66,7 @@ void numh() {
 	//c1->Divide(2, 1);
 	//c1->GetPad(1)->SetLogx();
 	//c1->GetPad(2)->SetLogx();
-	c1->SetLogx();
+	//c1->SetLogx();
 	
 
 
@@ -99,11 +99,11 @@ void plot_P() {
 			strcpy(title, "Normal hierarchy");
 		else
 			strcpy(title, "Inverted hierarchy");
-		f[i] = new TF1(title, plot_P, 0.1, 10., 1);
+		f[i] = new TF1(title, plot_P, 0.1, 2., 1);
 		f[i]->SetParameter(0, (double)i);
 
 		f[i]->SetTitle("");
-		f[i]->SetMaximum(.2);
+		f[i]->SetMaximum(.1);
 		f[i]->SetMinimum(0.0);
 		f[i]->SetNpx(20000);
 		f[i]->GetXaxis()->SetTitle("E (GeV)");

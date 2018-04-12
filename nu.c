@@ -19,10 +19,10 @@ double plot_P_ihd(double* x, double* par) {
 }
 
 double plot_P_nh(double* x, double* par) {
-	double p = P_me(f_m, f_e, x[0], 1300, &nh[(int)par[0]], (bool)par[1]);
+	double p = P(f_m, f_e, x[0], 1300, &nh[(int)par[0]], (bool)par[1]);
 	// Fix plots overflowing out of their frame/axes
-	if (p > 0.2)
-		p = 0.2;
+	//if (p > 0.2)
+		//p = 0.2;
 	return p;
 }
 
@@ -35,17 +35,18 @@ void plot_P(bool anti);
 void nu() {
 	for(int i=0; i<3; ++i) {
 		nh[i].populate(NH);
+		//nh[i].flip_hierarchy();
 		//	set delta to a multiple of 90 degrees and recalculate MNS
 		nh[i].d_cp = TMath::Pi() / 2. * (i - 1);
-		//nh[0].d_cp = -0.8 * pi;
+		//Printf("%f", nh[i].d_cp);
 		nh[i].populate_common();
 	}
 	
 	//	styling of plot titles
-	gStyle->SetTitleAlign(33);
-	gStyle->SetTitleX(.999);
-	gStyle->SetTitleY(.5);
-	
+	//gStyle->SetTitleAlign(33);
+	//gStyle->SetTitleX(.999);
+	//gStyle->SetTitleY(.5);
+
 	//	UNCOMMENT FOR BEST FIT DELTA
 	/*populate(&nhd, NH);
 	populate(&ihd, IH);
@@ -75,7 +76,6 @@ void nu() {
 	//c1->GetPad(1)->SetLogx();
 	//c1->GetPad(2)->SetLogx();
 	c1->SetLogx();
-	
 
 
 	//c1->cd(1);
@@ -103,7 +103,14 @@ void plot_P(bool anti) {
 
 	for(int i=0; i<3; ++i) {
 		char title[64];
-		snprintf(title, 64, "#delta_{CP} = %d%c", (i-1) * 90, 176);
+		//snprintf(title, 64, "#delta_{CP} = %d%c", (i-1) * 90, 176);
+		if (i == 0)
+			snprintf(title, 64, "#delta_{CP} = -#pi/2");
+		else if (i == 1)
+			snprintf(title, 64, "#delta_{CP} = 0");
+		else
+			snprintf(title, 64, "#delta_{CP} = #pi/2");
+
 		f[i] = new TF1(title, plot_P_nh, 0.1, 10., 2);
 		f[i]->SetParameter(0, (double)i);
 		f[i]->SetParameter(1, (double)anti);
@@ -118,10 +125,18 @@ void plot_P(bool anti) {
 		else 
 			f[i]->GetYaxis()->SetTitle("P(#nu_{#mu} #rightarrow #nu_{e})");
 
-		f[i]->SetLineWidth(0);
+		f[i]->SetLineWidth(3);
+		f[i]->SetLineColor(cols[i]);
 
-		f[i]->SetFillColor(cols[i]);
-		f[i]->SetFillStyle(1001);
+
+		
+		f[i]->GetXaxis()->SetTitleSize(0.049);
+		f[i]->GetYaxis()->SetTitleSize(0.049);
+		f[i]->GetXaxis()->SetLabelSize(0.045);
+		f[i]->GetYaxis()->SetLabelSize(0.045);
+		f[i]->GetYaxis()->SetTitleOffset(0.94);
+		//f[i]->SetFillColor(cols[i]);
+		//f[i]->SetFillStyle(1001);
 	}
 	// need to change order in drawing depending on anti or not
 	if (anti) {

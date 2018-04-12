@@ -111,6 +111,7 @@ void parameters::populate_common() {
 	
 	mat_mult(MNS_23, MNS_13, temp);
 	mat_mult(temp, MNS_12, MNS);
+
 	//memcpy(h->MNS, MNS, 9 * sizeof(complex<double>));
 }
 

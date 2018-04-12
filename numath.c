@@ -27,7 +27,7 @@ void mat_mult(const complex<double>* m1, const complex<double>* m2, complex<doub
 		for(int j=0; j<dim; ++j) {
 			out[i*3 + j] = 0.;
 			for(int k=0; k<dim; ++k) {
-				out[i*3 + j] += m1[i*3 + k] * m2[j + k*3];
+				out[i*3 + j] += m1[i*3 + k] * m2[k*3 + j];
 			}
 		}
 	}

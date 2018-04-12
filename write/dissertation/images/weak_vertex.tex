@@ -1,0 +1,10 @@
+\RequirePackage{luatex85}
+\documentclass{standalone}
+\usepackage{tikz-feynman}
+
+\begin{document}
+	\feynmandiagram[small, vertical=a to b] {
+		e [particle=\(e^-\)] -- [fermion] a -- [fermion] n [particle=\(\nu_{e}\)],
+		a -- [boson, edge label=\(W^-\)] b[nudge up=2mm],
+	};
+\end{document}

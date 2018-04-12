@@ -9,13 +9,14 @@ double P(flavor a, flavor b, double E, double L, parameters* p, bool anti) {
 		r += pow(abs(p->MNS[a*3 + i] * conj(p->MNS[b*3 + i])), 2);
 	}
 
+
 	if (anti) {
 		for (int i=0; i<3; ++i) {
 			for (int j=0; j<3; ++j) {
 				if (j > i) {
 					r += 2. * real( conj(p->MNS[a*3 + i]) * p->MNS[a*3 + j]
 						  * p->MNS[b*3 + i] * conj(p->MNS[b*3 + j])
-						  * exp(complex<double>(-2.i * 1.2668 * p->dm2_mat[i*3 + j] * L/E)));
+						  * exp(complex<double>(2.i * 1.2668 * p->dm2_mat[i*3 + j] * L/E)));
 				}
 			}
 		}
@@ -25,8 +26,8 @@ double P(flavor a, flavor b, double E, double L, parameters* p, bool anti) {
 			for(int j=0; j<3; ++j) {
 				if(j > i) {
 					r += 2. * real(p->MNS[a*3 + i] * conj(p->MNS[a*3 + j]) 
-							* conj(p->MNS[b*3 + i]) * p->MNS[b*3 + j]
-							* exp(complex<double>(-2.i * 1.2668 *  p->dm2_mat[i*3 + j] * L/E)));
+							 * conj(p->MNS[b*3 + i]) * p->MNS[b*3 + j]
+							 * exp(complex<double>(2.i * 1.2668 * p->dm2_mat[i*3 + j] * L/E)));
 				}
 			}
 		}
@@ -131,31 +132,49 @@ void initial_spectrum::plot() {
 	g->Draw();
 }
 
+
+spectrum::spectrum() {
+	e = NULL;
+	N_bins=0;
+}
+
+spectrum::~spectrum() {
+	if (e)
+		delete[] e;
+}
+
 double spectrum::get_integral() {
+	if (!e) return 0;
 	double r=0.;
-	for (int i=0; i<Nbins; ++i) {
-		r += events[E_SIGNAL][i];
+	for (int i=0; i<N_bins; ++i) {
+		//r += events[E_SIGNAL][i];
+		r += e[i];
 	}
 	return r;
 }
 
 
 // Store the integrals of the fluxes in the 'integrals' array (size N_RATES)
-void get_integrals(spectrum* s, double* integrals) {
+/*void get_integrals(spectrum* s, double* integrals) {
 	for (int i=0; i<N_RATES; ++i) {
 		for (int j=0; j<Nbins; ++j) {
 			integrals[i] += s->events[i][j];
 		}
 	}
-}
+}*/
 
 
 // Oscillate neutrinos for each flavor and for each energy and get the FD flux.
 //void spectrum::oscillate(const initial_spectrum* is, double L, bool normal, bool antimode) {	
-void spectrum::oscillate(const initial_spectrum* is, double L,
-					     double x1, double x2, int bin_count) {
+void spectrum::oscillate(const initial_spectrum* is, double L) {
+				//	     double x1, double x2, int bin_count) {
+
+	const int bin_count = 37;
+	double x1 = 0.6;
+	double x2 = 8.0;
 
 	e = new double[bin_count];
+	N_bins = bin_count;
 	for (int i=0; i<bin_count; ++i) {
 		// Instead of using the probability value at the discrete point given by i * 0.2,
 		// we average the probabilities over the range (i*0.2 + eps, (i+1) * 0.2)
@@ -164,7 +183,8 @@ void spectrum::oscillate(const initial_spectrum* is, double L,
 		double avg_P[N_RATES] = {0};
 		double avg_flux = 0;
 		for (int j=0; j<samples; ++j) {
-			double E = 0.2 * (firstbin + i + (double)j / (double)samples);
+			//double E = 0.2 * (firstbin + i + (double)j / (double)samples);
+			double E = x1 + (i + (double)j / samples) * (x2 - x1) / bin_count;
 			
 			avg_flux += is->interp->Eval(E) / samples;
 			
@@ -175,33 +195,18 @@ void spectrum::oscillate(const initial_spectrum* is, double L,
 			avg_P[MU_SIGNAL] += P(f_m, f_m, E, L, p, false) / samples;
 
 		}
-		//for (int j=0; j<N_RATES; ++j) {
-	//		avg_P[j] /= (double)samples;
-	//	}
 
-			
-
-		//	Number of events at FD if we could detect every single neutrino.
-		//events[E_SIGNAL][i] = is->mu[i + firstbin] * avg_P[E_SIGNAL];
-		//events[ANTIE_SIGNAL][i] = is->antimu[i + firstbin] * avg_P[ANTIE_SIGNAL];
-		//events[MU_SIGNAL][i] = is->mu[i + firstbin] * avg_P[MU_SIGNAL];
-		
-		events[E_SIGNAL][i] = avg_flux * avg_P[E_SIGNAL];
+		//events[E_SIGNAL][i] = avg_flux * avg_P[E_SIGNAL];
+		e[i] = avg_flux * avg_P[E_SIGNAL];
 
 	}
-
-	// TODO
-	// We are missing events as we are reducing the range of energies without taking
-	// into account the neutrinos produced outside of that range that may have been 
-	// reconstructed into the range.
-
 
 }
 
 // Energy reconstruction function with smearing of the reconstructed energy to
 // simulate experimental uncertainties
 void spectrum::reconstruct(spectrum* os, int smooth) {
-
+	
 	// Random number generator
 	static int seed = 0;
 	TRandom ra(seed);
@@ -217,56 +222,73 @@ void spectrum::reconstruct(spectrum* os, int smooth) {
 	// angle (which? check out CDR) and plot a band around the sensitivity
 	// at the best fit
 
-	const int N_rec = smooth;
+	int N_rec = smooth;
 
 	// Reconstructed spectrum that will overwrite the original one
-	spectrum s_f = {0};
+	double s_f[N_bins];
+	memset(s_f, 0, N_bins * sizeof(double));
 
+	Printf("%d", N_rec);
 	
 	for (int n=0; n<N_rec; ++n) {
 		// Temporary reconstructed spectrum
-		spectrum s_rec = {0};
+		double s_rec[N_bins];
+		memset(s_rec, 0, N_bins * sizeof(double));
+
 
 		// For each event, we displace the energy by a random number from a gaussian 
 		// distribution
-		for (int i=0; i<Nbins; ++i) {
+		for (int i=0; i<N_bins; ++i) {
 			// True value of the energy (center of each bin)
-			double E = 0.2 * (firstbin + i) + 0.1;
-			//Printf("%f", E);
-			for (int j=0; j<ceil(events[E_SIGNAL][i]); ++j) {
+			double E = 0.2 * (3 + i) + 0.1;
+
+			for (int j=0; j<(int)ceil(e[i]); ++j) {
 				// Can play around with the sigma on the gaussian for different results
 				double E_rec = -1.;
-				while (E_rec > E + 2. || E_rec < 0.1 * E || E_rec < 0.6) {
-					E_rec = ra.Gaus(E, 0.1 * E);
+				while (E_rec > E + 2. || E_rec < 0.1 * E || E_rec < 0.7 || E_rec > 7.9) {
+					//E_rec = ra.Gaus(E, 0.1 * E);
+					E_rec = ra.Gaus(E, 0.2);
 				}
 				//E_rec = E;
 				
 
 				// Find the bin corresponding to the reconstructed energy
-				int bin = round((E_rec - 0.7) / 7.4 * Nbins + 1e-3);
+				int bin = (int)round((E_rec - 0.7) / 7.4 * N_bins + 1e-3);
+
+				// This means overflow and should be caught
+				if (bin < 0)
+					Printf("%d", bin);
+				if (bin > N_bins - 1)
+					Printf("%d", bin);
 
 		
 				// The value of each event is 1, except for the last one which might be
 				// worth less because of our floating point precision
 				double value = 1.;
-				if (j == ceil(events[E_SIGNAL][i]) - 1){
-					value = events[E_SIGNAL][i] - floor(events[E_SIGNAL][i]);
+				if (j == (int)ceil(e[i]) - 1){
+					value = e[i] - (int)floor(e[i]);
 				}
 				// We want to move this event to the bin we picked
-				s_rec.events[E_SIGNAL][bin] += value;
+				s_rec[bin] += value;
 			}
-			// Avoid zero events for stability (crashes in delta chi^2 calculation)
-			if (s_rec.events[E_SIGNAL][i] < 1)
-				s_rec.events[E_SIGNAL][i] = 1.;
 		}
+
 		
-		for (int i=0; i<Nbins; ++i) {
-			s_f.events[E_SIGNAL][i] += s_rec.events[E_SIGNAL][i] / N_rec;
+		for (int i=0; i<N_bins; ++i) {
+			s_f[i] += s_rec[i] / N_rec;
 		}
+		// Avoid zero events for stability (crashes in delta chi^2 calculation)
+		//for (int i=0; i<N_bins; ++i) {
+		//	if (s_f[i] < 1)
+		//		s_f[i] = 1.;
+		//}
+
 
 	}
 	// After obtaining final spectrum, copy it over to output
-	memcpy(os->events, s_f.events, Nbins * N_RATES * sizeof(double));
+	memcpy(os->e, s_f, N_bins * sizeof(double));
+
+	
 }
 
 void spectrum::reconstruct(int smooth) {
@@ -274,8 +296,9 @@ void spectrum::reconstruct(int smooth) {
 }
 
 void spectrum::normalize(double integral, double predicted) {
-	for (int i=0; i<Nbins; ++i) {
+	for (int i=0; i<N_bins; ++i) {
 		//events[E_SIGNAL][i] *= norms[h][E_SIGNAL] / integral;
-		events[E_SIGNAL][i] *= predicted / integral;
+		//events[E_SIGNAL][i] *= predicted / integral;
+		e[i] *= predicted / integral;
 	}
 }

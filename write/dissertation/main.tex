@@ -1,0 +1,119 @@
+\documentclass[11pt,twoside]{report} %please use 11pt for your report
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,width=15cm]{geometry}
+
+\usepackage{afterpage}
+
+%%%% MY STUFF %%%%
+% exponential e
+\newcommand{\me}{\mathrm{e}}
+% imaginary i
+\newcommand{\mi}{\mathrm{i}}
+% differential operator
+\newcommand{\md}{\mathrm{d}}
+% bracketed matrix
+\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+% fast epsilon
+\newcommand{\eps}{\epsilon}
+% bracketed equation
+%\newcommand{\equation}[1]{\begin{equation}#1\end{equation}}
+% bracketed align
+%\newcommand{\align}[1]{\begin{align}#1\end{align}}
+
+
+% bold fonts in math mode
+%\usepackage{bm}
+
+\usepackage{physics}
+\usepackage{tikz-feynman}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage{siunitx}
+
+% why is this not defined in the package
+\DeclareSIUnit\year{year}
+\DeclareSIUnit\kt{\kilo\tonne}
+
+\captionsetup{font=small}
+
+%%%%%%%%%%%%%%%%
+
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+%\usepackage{babel,csquotes,xpatch}
+%\usepackage[backend=biber,style=authoryear]{biblatex}
+%\addbibresource{ref.bib}
+
+%% Useful packages
+%%Mathematical typesetting https://michael-prokop.at/latextug/amsldoc.pdf
+\usepackage{amsmath}
+\usepackage{caption}
+%%Adds to do notes and lists http://tug.ctan.org/macros/latex/contrib/todonotes/todonotes.pdf
+\usepackage[colorinlistoftodos]{todonotes}
+%%Uncomment below for internal hyperlinks
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+%Floating figures and tables
+\usepackage{float}
+%%Drawing Package
+%%\usepackage{pgf,tikz}\usepackage{mathrsfs}\usetikzlibrary{arrows}\pagestyle{empty}
+%%\usepackage{tikzscale}
+%% Clipping and trimming images http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/adjustbox/adjustbox.pdf
+\usepackage[export]{adjustbox}
+
+\begin{document}
+\input{title.tex}
+
+\input{abstract.tex}
+
+\tableofcontents % required
+%\listoftables % optional
+%\listoffigures % optional
+
+\thispagestyle{empty}
+
+\clearpage
+\pagenumbering{arabic}
+
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\input{preface.tex}
+
+\chapter{Introduction}
+\input{chapters/introduction.tex}
+
+\chapter{Methods}
+\input{chapters/chapter2.tex}
+
+%\chapter{Chapter 2 to N....}
+%\input{chapters/chapterN.tex}
+% make as many chapter files as you  need
+
+\chapter{Conclusion}
+\label{ch:conclusions}
+\input{chapters/conclusion.tex}
+
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgments}
+\input{chapters/acknowledgements.tex}
+%doesn't need to be long. You can reference the preface, "e.g. my thanks to everyone that contributed to this project, see Preface."
+
+%\chapter*{Bibliography}
+%\addcontentsline{toc}{chapter}{Bibliography}
+%\printbibliography
+
+\input{biblio.tex}
+
+
+\end{document}

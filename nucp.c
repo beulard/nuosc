@@ -3,58 +3,21 @@
 #include "numath.h"
 #include "osc_defs.h"
 #include <complex>
+#include "spectrum.h"
 
 parameters* p = new parameters;
 
-//	probability of a neutrino initially in flavor a to transition to flavor b, as a function
-//	of L/E (km/GeV) expression from zuber p. 192
-double P(flavor a, flavor b, double x) {
-	double r = 0.;
-
-	//	formula found in Zuber p.192
-	for(int i=0; i<3; ++i) {
-		r += pow(abs(p->MNS[a*3 + i] * std::conj(p->MNS[b*3 + i])), 2);
-	}
-
-	for(int i=0; i<3; ++i) {
-		for(int j=0; j<3; ++j) {
-			if(j > i) {
-				r += 2. * real(p->MNS[a*3 + i] * conj(p->MNS[a*3 + j]) 
-				  * conj(p->MNS[b*3 + i]) * p->MNS[b*3 + j] 
-				  * exp(complex<double>(-2.i * 1.2668 * p->dm2_mat[i*3 + j] * x)));
-			}
-		}
-	}
-
-	return r;
-}
-
-// alternative expression for P (zuber p. 196)
-/*double P(flavor a, flavor b, double x) {
-	double p = (a == b ? 1.0 : 0.0);
-
-	for (int i=0; i<3; ++i) {
-		for (int j=0; j<3; ++j) {
-			if (i > j) {
-				complex<double> K = MNS[a*3 + i] * conj(MNS[b*3 + i]) 
-					  * conj(MNS[a*3 + j]) * MNS[b*3 + j];
-					
-				p -= 4.0 * real(K) * sinsq(1.2668 * dm2_mat[i*3 + j] * x);
-				p += 4.0 * imag(K) * TMath::Sin(1.2668 * dm2_mat[i*3 + j] * x)
-					     * TMath::Cos(1.2668 * dm2_mat[i*3 + j] * x);
-			}
-		}
-	}
-	return p;
-}*/
 
 double plot_P(double* x, double* par) {
-	return P((flavor)par[0], (flavor)par[1], x[0]);
+	return P((flavor)par[0], (flavor)par[1], 1., x[0], p, false);
 }
 
 //	main: in_f is the flavor at t=0
 void nucp(int in_h = NH, int in_f = 0) {
-	p->populate((h_type)in_h);
+	p->populate(NH, 0);
+	if(in_h == 1) {
+		p->flip_hierarchy();
+	}
 
 	// Test if the probability adds up to 1 at every point.
 	// It does!
@@ -87,11 +50,25 @@ void nucp(int in_h = NH, int in_f = 0) {
 		e_e->SetLineColor(ci[CI_E]);
 		e_m->SetLineColor(ci[CI_MU]);
 		e_t->SetLineColor(ci[CI_TAU]);
+
+		e_e->GetYaxis()->SetTitle("P(L, E)");
+		e_e->GetXaxis()->SetTitle("L/E (km/GeV)");
+
+		e_e->GetXaxis()->SetTitleSize(0.049);
+		e_e->GetXaxis()->SetLabelSize(0.045);
+		e_e->GetYaxis()->SetTitleSize(0.049);
+		e_e->GetYaxis()->SetLabelSize(0.045);
+		e_e->GetYaxis()->SetTitleOffset(0.9);
+
+		//e_e->SetLineWidth(2);
+		//e_m->SetLineWidth(2);
+		//e_t->SetLineWidth(2);
 	//		e_e->SetRange(0., 5000.);
 		e_e->Draw();
 		e_m->Draw("same");
 		e_t->Draw("same");
 		c1->BuildLegend();
+		e_e->SetTitle("");
 	}
 	if(in_f == f_m) {
 		TF1* m_e = new TF1("", plot_P, 0., 35000., 2);
@@ -116,6 +93,8 @@ void nucp(int in_h = NH, int in_f = 0) {
 		m_e->Draw();
 		m_m->Draw("same");
 		m_t->Draw("same");
+		c1->BuildLegend();
+		m_e->SetTitle("");
 	}
 	if(in_f == f_t) {
 		TF1* t_e = new TF1("", plot_P, 0., 35000., 2);

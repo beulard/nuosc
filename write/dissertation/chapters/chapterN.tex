@@ -1,0 +1,69 @@
+All reports will have at least one other chapter. These chapters are to explain what you did, your results, and your interpretation of those results. 
+
+Discuss a draft outline with your supervisor. Review the mark scheme to make sure your chapters are addressing all the points mentioned.
+
+\todo{You/your supervisor can use this method to add notes and suggestions}
+
+\section{Section Title}
+\label{sec:nameofsection}
+
+\subsection{Subsections}
+
+You should use subsections throughout your report. The more you divide up the text into standalone chunks, the easier it is to read.
+
+\subsubsection{Subsubsections}
+
+Subsubsections will be numbered in the text, but won't appear by default in the table of contents, unless to fiddle with the latex settings (probably not something you'd want to do if you are a beginner).
+
+\paragraph{Headed Paragraphs} You can define paragraphs that start with bold headers, but these won't appear in the table of contents. 
+
+
+\section{Referencing sections, tables, figures, equations}
+Use the label command to make cross referencing a breeze. For example, this is how you would reference the Section above (see Section~\ref{sec:nameofsection}). This is how you would reference your conclusions chapter (see Chapter~\ref{ch:conclusions}).
+
+\section{Referencing books, journal articles, webpages}
+
+Here is an example of a book that has been included in the Bibliography \cite{MULLER2017}.
+
+You will add the information required for the citation and the bibliography to the ref.bib file. The format of that file is very peculiar. Do not try to replicate it yourself. Instead, cut and paste the entries from an online archive (ask your supervisor for advice about this).
+
+\section{Including Figures}
+
+Here is an example of how you include a figure. Note that LaTeX will decide where to place the figure on the page. You can override that, but ask someone to help if you are a LaTeX novice.
+
+\begin{figure}
+ 	\includegraphics[width=\linewidth]{images/ExampleFigure.pdf}
+	\caption{Add a caption to all your figures. If the figure is not one you have made yourself, it is essential that you reference the source.}
+	\label{fig:footprint}
+\end{figure}
+
+
+\section{Including Tables}
+
+Here is an example of how you include a table. Note that LaTeX will decide where to place the table on the page. You can override that, but ask someone to help if you are a LaTeX novice.
+
+\begin{table}
+	\setlength{\tabcolsep}{.4em}
+	\caption{Flat priors are specified with limits in square brackets, Gaussian priors with means $\pm$ standard deviations.}
+	\begin{tabular}{lll}
+		Parameter & Description & Prior \\ \hline
+		$\log_{10}M_{\rm 200m}$ & Halo mass & $[11.0,18.0]$ \\
+        $c_{\rm 200m}$ & Concentration & $[0,20]$\\
+        $\tau$ & Dimensionless miscentering offset & $0.17\pm0.04$\\
+		$f_{\rm mis}$ & Miscentered fraction & $0.25\pm0.08$\\
+		$A_{m}$&Shape \& bias & \autoref{eq:multiplicative_total_bias}\\
+		$B_0^{\rm cl}$ & Boost magnitude & $[0,\infty]$\\
+		$R_s^{\rm cl}$ & Boost factor scale radius & $[0,\infty]$ \\
+	\end{tabular}
+    \label{tab:modeling_parameters}
+\end{table}
+
+\section{Including Equations}
+
+Here is an example of a paragraph with an equation.
+
+This shift is quantified as being dependent on the scaled mis-centering offset in terms of $r_\lambda$. We model the probabilistic distribution of $y$ as a Gaussian distribution:
+\begin{equation}
+y\sim\mathcal{N}(\bar{y}(x), \sigma_y (x)),
+\end{equation} 
+with the mean and the dispersion, $\bar{y}( x)$ and $\sigma_{y} ( x)$, both depending on $x$. Specifically, $\bar{y}( x)$ is chosen as a Gaussian function between $y$ and $x$, $\bar{y}(x)=\mathrm{exp}(-x^2/\alpha^2)$ with $\alpha$ being a model parameter. $\sigma_y (x)$ is chosen as $\sigma_y (x)=a\times\mathrm{arctan}(bx)$ and $a$ and $b$ are model parameters.
