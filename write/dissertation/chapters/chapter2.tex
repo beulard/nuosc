@@ -1,16 +1,21 @@
 \label{ch:methods}
 We will now
 
-\section{Statistics}
-Introduce section
+\section{Statistical analysis}\label{sec:statistics}
+In this section, we will introduce qualitatively and quantitatively the definition of
+\emph{sensitivity} in the context of neutrino oscillation experiments. With a
+short derivation, we will show that in the case of the mass hierarchy question,
+the $\Delta \chi^2$ statistic is Gaussian-distributed around its mean,
+$\overline{\Delta \chi^2}$, which is the quantity we will determine from our
+model and use as a measure of sensitivity.
 
-\subsection{Sensitivities}
+\subsection{Experimental sensitivity}
 Neutrino experiments are characterised by the extremely small scattering cross
 section of weak processes. Neutrinos are almost massless, have no charge, and
 being leptons, they are not affected by strong interactions. These unique
 properties make their detection particularly difficult and the associated
 experiments particularly costly and time-inefficient. The best way for
-experimenters to compensate for a small cross section is to increase the scale
+experimentalists to compensate for a small cross section is to increase the scale
 of their detector. 
 
 The Sudbury Neutrino Observatory (SNO) experiment, which confirmed
@@ -20,114 +25,174 @@ The DUNE experiment, expected to start collecting data in 2024, will use 4850L
 of liquid argon for a total fiducial mass\footnote{The outermost parts of the
 detector are more sensitive to background events. To account for this, all
 events outside the more reliable central region are discarded. The part of the
-total detector mass that remains is called fiducial mass.} of 40 kilotons\cite{cdr}.
+total detector mass that remains is called fiducial mass.} of 40~kilotons\cite{cdr}.
 For projects of this scale, it is crucial to try to maximize the time and cost
-efficiency of the experiment by choosing the design that will provide the best
-chance of scientific discovery. It is thus conventional as part of the design
-process to evaluate the experiment's sensitivity to the relevant physical
-parameters. This is then used to legitimize the project to the scientific
-community and attract the support of funding agencies.
+efficiency of the experiment by optimizing its design. It is thus conventional as part of
+the design process to evaluate the experiment's sensitivity to the relevant
+physical parameters. This evaluation can be done concurrently with the
+evolution and refinement of the project. It can then be used to legitimize
+the project to the scientific community and attract the support of funding
+agencies.
 
-In general, it is not obvious which design choices (baseline, for example) will lead to better
-sensitivity. By sensitivity, we mean the ability of the experiment to make a
-relevant discovery. For example, the sensitivity of DUNE to $\delta_{CP}$ is
-its capacity to discover CP violation in the lepton sector, i.e. to exclude the
-values $\delta_{CP}=0$ and $\delta_{CP}=\pi$ with an acceptable confidence
-level.
-
-As a consequence, experimentalists have devised statistical methods to allow
-the quantification of sensitivity in order to compare different designs or even
-different experiments, and to be able to do so in a mathematically rigorous way that is
-accepted by the most scientists.
-When applied, these methods enable us to compare potential experiments that
+In general, it may be ambiguous which design choices will lead to a better
+sensitivity.  As a consequence, experimentalists have devised statistical
+methods to allow the quantification of sensitivity in order to compare
+different designs or even different experiments, and to be able to do so in a
+mathematically rigorous way that is accepted by the most scientists.
+When applied, these methods also enable us to compare potential experiments that
 could have different characteristics --- baseline, detector technology,
 neutrino source --- and to understand the complementarities that could result
 from combining their results.
 
+In a general experiment where a set of data $y_i$ is collected, one can
+evaluate the goodness of fit between the data and a model using the
+$\chi^2$ statistic:
+\begin{equation}
+	\chi^2(\theta) = \sum_i \frac{(y_i -
+	n_i(\theta))^2}{\sigma^2_i},\label{eq:chisq}
+\end{equation}
+where $n(\theta)$ are the values predicted by the model using a set of parameters
+$\theta$, and $\sigma_i$ is the uncertainty associated with the measurement $y_i$.
+This statistic can be minimized in parameter-space to yield the best-fit
+$\theta$, i.e. the set of parameters that seems to most accurately describe nature.
+Given two hypotheses $\theta_1$, $\theta_2$ about the true parameters, we can define another
+statistic $\Delta \chi^2$:
+\begin{equation}
+	\Delta \chi^2(\theta_1, \theta_2) = \chi^2(\theta_1) -
+	\chi^2(\theta_2),\label{eq:dc2}
+\end{equation}
+the sign of which tells us whether $\theta_2~(+)$ or $\theta_1~(-)$ is closer to the
+true set of parameters. So far, this seems to be irrelevant to our discussion,
+since calculating any $\chi^2$ requires measurements to have been made. In the
+next section we derive the \emph{distribution} of the $\Delta\chi^2$ statistic,
+and show how its mean can be calculated from models only in order to yield a measure of
+sensitivity.
 
-Currently, one of the most sought after discoveries in neutrino physics is that of the neutrino
-mass hierarchy; that is, the sign of the mass difference $\Delta m^2_{31} =
-m^2_3 - m^2_1$. Naturally, one can define a statistic that describes how
-sensitive a given experiment is to the mass hierarchy. This
-statistic will tell us how good the experiment will be at discriminating
-between the two possible hypotheses, NH or IH. The larger its value, the more
-likely it will be for the experiment's results (for a given run-time) to
-provide an answer to the mass hierarchy problem.
 
 
-\subsection{Derivation of $\Delta \chi^2$ for the mass hierarchy}
+
+\subsection{Distribution of $\Delta \chi^2$ for the mass hierarchy}
 The mass hierarchy can only turn out to be normal (NH), or inverted (IH). As
-such, it is considered as a discrete, non-nested hypothesis (in contrast with a continuous
-variable such as $\delta_{CP}$ or $\theta_{23}$) in our statistical analysis.
-The method we use\cite{ciuffoli, qian} is presented in a fairly
-statistics-heavy manner but we only use it in its simplest occurence,
-namely a model with no nuisance parameters ((this sentence is bad)). However,
-we later introduce systematic uncertainties by hand by modeling the
-reconstruction of neutrino energies at the detector.
+such, it is considered as a discrete, non-nested hypothesis --- in contrast with a continuous
+variable such as $\delta_{CP}$ or $\theta_{23}$. For this derivation, we consider the simple case
+where there are no nuisance parameters, as discussed in~\cite{ciuffoli, qian}.
+Hence the set of parameters $\theta$ of eq.~\ref{eq:chisq} is reduced to the
+choice of mass hierarchy, and the two hypotheses $\theta_1$ and $\theta_2$ of
+eq.~\ref{eq:dc2} correspond to IH and NH, respectively.
 
-(( This explanation is not well written dude please))
-In a neutrino experiment such as DUNE, neutrino events (e.g.~$\nu_e$
-appearance) will be recorded as a
-function of their reconstructed energy. We denote by $y_i$ the event count per
-energy bin,
-where $i = 1, 2, ..., N$ is the index of the energy bin.
+
+We denote by $y_i$ the event count recorded by a neutrino experiment per energy
+bin, where $i = 1, 2, ..., N$ is the index of the energy bin.
 Given that enough data has been collected,
-the event counts $y_i$ will be distributed around the true count
+the event counts $y_i$ will be distributed around their true value
 according to a Gaussian with variance $\sigma_i=\sqrt{y_i}$. 
 Our theoretical models will yield predicted event counts that will depend on
-the true mass hierarchy.  We denote by $y^N_i$ the predicted count under normal
-hierarchy and by $y^I_i$ the predicted count under inverted hierarchy.
-Let us assume that the true hierarchy (the one picked by nature) is normally
-ordered. Then we can write our experimental event counts as $y_i = y^N_i +
-\sigma_i g_i$, where $g_i$ is a random variable from a Gaussian distribution
-centered at zero and with variance 1.
-The $\Delta \chi^2$ statistic can then be written as
-\begin{align*}
-	\Delta \chi^2 &= \chi_I^2 - \chi_N^2\\
-	&= \sum_i \frac{(y_i - y^I_i)^2}{\sigma_i^2} - \sum_i \frac{(y_i -
-	y^N_i)^2}{\sigma_i^2}\\
-	&= \sum_i \frac{(y^N_i + \sigma_i g_i - y^I_i)^2 - (y^N_i + \sigma_i g_i -
-	y^N_i)^2}{\sigma_i^2}\\
-	&= \sum_i \frac{(y^N_i - y^I_i)^2}{\sigma_i^2} + \sum_i \frac{2(y^N_i -
-	y^I_i)}{\sigma_i} g_i
-\end{align*}
-In this form, we can see that $\Delta \chi^2$ is a Gaussian-distributed random
-variable where the mean is
-$$\overline{\Delta\chi^2} = \sum_i \frac{(y^N_i - y^I_i)^2}{\sigma_i^2},$$
+the true mass hierarchy.  We denote by $y^\text{N}_i$ the predicted count under normal
+hierarchy and by $y^\text{I}_i$ the predicted count under inverted hierarchy.
+Let us assume that the true hierarchy --- the one picked by nature --- is normally
+ordered. Then, assuming our model accurately describes nature,  we can write
+our experimental event counts as $y_i = y^\text{N}_i + \sigma_i g_i$, where
+$g_i$ is a random variable from a Gaussian distribution centered at zero and
+with variance 1.
+The $\Delta \chi^2$ statistic of equation~\ref{eq:dc2} can then be written as
+\begin{align}
+	\Delta \chi^2 &= \chi_\text{I}^2 - \chi_\text{N}^2\nonumber\\
+	&= \sum_i \frac{(y_i - y^\text{I}_i)^2}{\sigma_i^2} - \sum_i \frac{(y_i -
+	y^\text{N}_i)^2}{\sigma_i^2}\nonumber\\
+	&= \sum_i \frac{(y^\text{N}_i + \sigma_i g_i - y^\text{I}_i)^2 - (y^\text{N}_i + \sigma_i g_i -
+	y^\text{N}_i)^2}{\sigma_i^2}\nonumber\\
+	&= \sum_i \frac{(y^\text{N}_i - y^\text{I}_i)^2}{y^\text{N}_i} + \sum_i
+	\frac{2(y^\text{N}_i -
+	y^\text{I}_i)}{y^\text{N}_i} g_i,\label{eq:mean_dc2_mh}
+\end{align}
+where in the last step we have used that $\sigma_i = \sqrt{y_i} \approx \sqrt{y^\text{N}_i}$
+when our event count is large.
+In this form, we can see that $\Delta \chi^2$ is a Gaussian-distributed
+variable where the mean is the first term of eq.~\ref{eq:mean_dc2_mh}:
+\begin{equation}
+	\overline{\Delta\chi^2} \equiv \sum_i \frac{(y^\text{N}_i -
+y^\text{I}_i)^2}{y^\text{N}_i},\end{equation}
 and the standard deviation is
-$$\sigma_{\Delta\chi^2} = \sqrt{\sum_i \frac{4(y^N_i - y^I_i)^2}{\sigma_i^2}}\\
+$$\sigma_{\Delta\chi^2} \equiv \sqrt{\sum_i \frac{4(y^\text{N}_i -
+y^\text{I}_i)^2}{y^\text{N}_i}}\\
 = 2\sqrt{\overline{\Delta\chi^2}}.$$
-
-In these expressions, the experimental counts $y_i$ do not appear, which means
-that we can evaluate the $\overline{\Delta\chi^2}$ (mean delta chi-squared)
-statistic from our theoretical models only.
-
-((TODO this is not true, fix))
-It is fairly evident\cite{qian} that when the
-event count $y^N_i$ is large (we are still under our assumption that the true hierarchy
-is normal), we can substitute the statistical uncertainty $\sigma_i$ by
-$\sqrt{y^N_i}$, such that our expression becomes
-$$\overline{\Delta\chi^2} = \sum_i \frac{(y^N_i - y^I_i)^2}{y^N_i}.$$
 If we work under the opposite assumption, where we have a true inverted
-hierarchy, the denominator is simply replaced by $y^I_i$. 
+hierarchy, the denominator is simply replaced by $y^\text{I}_i$.
+These expressions do not depend on the measured counts $y_i$, hence they can be
+evaluated from models only. Looking at equation~\ref{eq:mean_dc2_mh}, we
+observe heuristically that the $\overline{\Delta\chi^2}$ variable measures the goodness of
+fit between one model obtained from NH oscillations and the other from IH
+oscillations. If the model is detailed enough to accurately predict the event
+counts to be measured in the experiment, this quantity then describes the
+ability of the experiment to discriminate between the two possible mass
+hierarchies. A larger $\overline{\Delta\chi^2}$ indicates that the experiment
+is more sensitive to the mass hierarchy. For this reason,
+this $\overline{\Delta\chi^2}$, or $\sqrt{\overline{\Delta\chi^2}}$, is often
+referred to in the neutrino physics literature as the sensitivity\footnote{It is also known as
+$\Delta\chi^2$ of the Asimov data set\cite{ciuffoli}, or the
+sensitivity of an average experiment\cite{blennow}.} of a given
+experiment to the mass hierarchy\cite{qian, martin-albo,
+ballett}.
 
-This statistic is used throughout the neutrino physics literature\cite{cdr,
-martin-albo}((MORE CITATIONS NEEDED)) to express the sensitivity of future experiments.
-((Give details)).
+\subsection{Sensitivity as a function of $\delta_{CP}$}
+Aside from the mass hierarchy, the CP violating phase is also 
+unknown. The sensitivity defined in equation~\ref{eq:mean_dc2_mh} will in
+general depend on the true value of $\delta_{CP}$. In evaluating the
+sensitivity of a future experiment, we must be very conservative so
+as to not draw hasty conclusions. 
+If we assume that the true hierarchy is NH and the true value of $\delta_{CP}$ is
+$\delta_0$, the sensitivity is, naively,
+\begin{equation*}
+	\overline{\Delta\chi^2}(\delta_0) = \sum_i \frac{(y^\text{N}_i(\delta_0) -
+	y^\text{I}_i(\delta_0))^2}{y^\text{N}_i(\delta_0)}.
+\end{equation*}
+However, this rules out every other possible $\delta_{CP}$ value and does not
+account for the possibility of our assumption being wrong. A better
+approach is to calculate\cite{blennow}
+\begin{equation}
+	\overline{\Delta\chi^2}(\delta_0) = \min_\delta \sum_i \frac{(y^\text{N}_i
+	(\delta_0) - y^\text{I}_i
+	(\delta))}{y^\text{N}_i(\delta_0)},\label{eq:mean_dc2_mh_d}
+\end{equation}
+where $\min_\delta$ means we are minimizing the argument over the allowed range
+of $\delta$.
+We are now considering every other value of $\delta_{CP}$ as being
+a possibility, hence being as conservative about the sensitivity as
+possible. We will plot equation~\ref{eq:mean_dc2_mh_d} as a function of
+$\delta_0$ for the DUNE experiment later in this chapter, after discussing the
+DUNE model.
 
 
+\subsection{Sensitivity to CP violation}
+In addition to the sensitivity to the mass hierarchy, we can estimate the
+sensitivity to CP violation as a function of $\delta_{CP}$ using a similar
+statistic as eq.~\ref{eq:mean_dc2_mh_d}. The sensitivity to CP violation
+is the ability of the experiment to discriminate between values of
+$\delta_{CP}$ that violate CP and values that do not. The only values that
+do not violate CP are $\delta_{CP}=0$ and $\delta_{CP}=\pi$. Hence we define
+\begin{equation}
+	\overline{\Delta\chi^2}_{CPV}(\delta_0) \equiv \min\bigg(\sum_i
+	\frac{(y_i(\delta_0) - y_i(0))^2}{y_i(\delta_0)},~~\sum_i
+	\frac{(y_i(\delta_0) - y_i(\pi))^2}{y_i(\delta_0)}\bigg),\label{eq:dc2_cpv}
+\end{equation}
+where $\delta_0$ is our assumed true value of $\delta_{CP}$, and the mass
+hierarchy can be either NH or IH. In equation~\ref{eq:dc2_cpv}, we are
+evaluating a goodness of fit between a model where CP is violated and a model
+where CP is conserved. This tells us, for every possible true value of
+$\delta_{CP}=\delta_0$, how badly experimental data will fit CP-conserving
+models; hence how easily we can rule out CP conservation. Note that we are
+again taking a minimum in order to conservatively estimate sensitivity.
+We will also show plots of CP violation sensitivity later in this chapter. 
 
-\subsection{Sensitivity to $\delta_{CP}$}
-In addition to the sensitivity to the mass hierarchy, we estimate the
-sensitivity to CP discovery by simulating data for all values of $\delta_{CP}$
-and comparing to CP-conserving values $\delta_{CP} = 0, \pi$.
+\subsection{Interpretation of the $\Delta\chi^2$ statistic}
+-Significance of discovery
 
 \section{Neutrino oscillations model}
 By implementing the concepts introduced in the previous chapter, we are able to
 model the oscillation of neutrinos through a vacuum or through matter.
 
 The first step of our work was to implement in code the phenomenological
-oscillation formulae of chapter~\ref{ch:introduction}. The simplest test case
+oscillation formulae of chapter~\ref{ch:osc}. The simplest test case
 is equation~\ref{eq:twonu}, the oscillation between two neutrino flavours.
 Figure~\ref{fig:twonu_plots} shows the oscillation
 probability of a neutrino initially produced as a $\nu_\mu$. 
@@ -209,7 +274,7 @@ the medium.
 
 \section{Modelling an accelerator-based long baseline experiment}
 
-\subsection{Intro to DUNE}
+\subsection{The DUNE experiment}
 The Deep Underground Neutrino Experiment (DUNE) is a future long-baseline
 experiment designed to --- among other goals --- determine the CP violating phase
 $\delta_{CP}$, the neutrino mass hierarchy (the sign of $\Delta m^2_{31}$) and
@@ -375,8 +440,8 @@ allows them to ``classify the types of neutrino interactions, including
 backgrounds and misidentified interactions''\cite{LBNE}. 
 Hence they are able to predict that the total number
 of CC events from $\nu_e$ appearance between 0.5 and \SI{8}{\GeV} during an exposure of 150
-kt$\cdot$MW$\cdot$year will be $N^{N}_\text{int}=861$ if the true hierarchy is normal,
-and $N^{I}_\text{int}=495$ if it is inverted. Although both results assume that
+kt$\cdot$MW$\cdot$year will be $N^\text{N}_\text{int}=861$ if the true hierarchy is normal,
+and $N^\text{I}_\text{int}=495$ if it is inverted. Although both results assume that
 $\delta_{CP}=0$, we will be able to calculate the event rates for all values of
 $\delta_{CP}$ using our model.
 
@@ -389,7 +454,7 @@ The integrated event rate for any $\delta_{CP}$ is given by
 	\delta)~\md E}{\int P (
 	\delta=0)~\md E} \times N_\text{int}\nonumber\\
 		&= \frac{\sum_j \Phi_j (\delta) }{\sum\limits_j \Phi_j (\delta=0)} \times
-	N_\text{int},\quad\text{using eq.~\ref{eq:flux},}\nonumber
+	N_\text{int},\quad\text{using eq.~\ref{eq:flux},}\label{eq:int_event_rate}
 \end{align}
 where $P(\delta)$ is the $\nu_\mu\rightarrow\nu_e$ appearance probability
 for any $\delta_{CP}=\delta$, and $\Phi_j \equiv \Phi^{(e)}_\text{osc}(E_j)$.
@@ -407,9 +472,6 @@ for any $\delta_{CP}$ using the integrated event rate from the CDR and two
 predicted fluxes we calculate using eq.~\ref{eq:flux}.
 Figure~\ref{fig:event_rate} shows examples of such spectra, for two values of
 $\delta_{CP}$ and the two possible hierarchies.
-
-
-
 \begin{figure}
 	\centering
 	\makebox[\textwidth][c]{
@@ -420,12 +482,95 @@ $\delta_{CP}$ and the two possible hierarchies.
 		\includegraphics[width=\textwidth]{event_rate_pi.pdf}
 	\end{subfigure}
 	}
-	\caption{Predicted event rate at DUNE as a function of neutrino energy, for
-	two values of $\delta_{CP}$ and the two hierarchies.}
+	\caption{Predicted event rate spectra at DUNE as a function of neutrino energy, for
+	two values of $\delta_{CP}$ and the two hierarchies. For $\delta_{CP}=0$, the
+	area under the curve (integrated event rate) is $N^\text{N}_\text{int}=861$ for the
+	blue line and
+	$N^\text{I}_\text{int}=495$ for the red line. For
+	$\delta_{CP}=\pi/2$, the integrals are given by eq.~\ref{eq:int_event_rate}.}
 \label{fig:event_rate}
 \end{figure}
 
 \subsection{Energy reconstruction}
+In order to produce a more realistic model, we can introduce by hand
+uncertainties on the energy reconstruction of neutrino events in the detector.
+The method is very straightforward: for each event in each energy bin $i$, we
+pick the reconstructed energy from a normal distribution around the true energy
+$E_i$. The event is then reassigned to the bin corresponding to the
+reconstructed energy.
+\begin{figure}
+	\centering
+	\makebox[\textwidth][c]{
+	\begin{subfigure}{0.6\textwidth}
+	\includegraphics[width=\textwidth]{reconstructed_-.pdf}
+	\end{subfigure}
+	\begin{subfigure}{0.6\textwidth}
+		\includegraphics[width=\textwidth]{reconstructed_+.pdf}
+	\end{subfigure}
+	}
+	\caption{Predicted event rate spectra at DUNE after energy reconstruction.
+	The statistical uncertainty on the energy of each event is picked to be
+	$\sigma_E = \SI{0.5}{\GeV}$.}
+\label{fig:event_rate_reconstructed}
+\end{figure}
+
+Figure~\ref{fig:event_rate_reconstructed} shows examples of reconstructed event
+rate spectra for $\delta_{CP}=-\pi/2$ and $\delta_{CP}=\pi/2$. We observe that
+this simplistic energy reconstruction flattens out the event distribution, but
+also slightly shifts the oscillation maxima towards the high energies, hence
+introducing a systematic error in the event rate.
+
+\subsection{Sensitivity to the mass hierarchy and CP violation}
+With our event rate spectra under NH, IH, and any $\delta_{CP}$, we can finally
+estimate the sensitivity of DUNE using the methods of
+section~\ref{sec:statistics}. 
+\begin{figure}
+	\centering
+	\makebox[\textwidth][c]{
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{sens_mh_nh.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{sens_mh_ih.pdf}
+\end{subfigure}}
+\caption{Minimum sensitivity of DUNE to the neutrino mass hierarchy as a
+	function of $\delta_{CP}$ and the true hierarchy, for an exposure of
+	150 kt$\cdot$MW$\cdot$year.}
+	\label{fig:sens_mh}
+\end{figure}
+
+Figure~\ref{fig:sens_mh} shows the mass hierarchy sensitivity of DUNE as
+defined in equation~\ref{eq:mean_dc2_mh_d}. 
+Qualitatively, we can see that if
+the mass hierarchy is normally ordered, DUNE will more efficiently determine it
+if $\delta_{CP}$ lies around $-\pi/2$. On the other hand, if it is inverted, a $\delta_{CP}$
+around $\pi/2$ will be more favourable. Under an inverted hierarchy, the
+average sensitivity is lower than for NH, which can be explained by the overall smaller
+number of events expected to be observed under IH. However,
+$\overline{\Delta\chi^2}$ for the mass hierarchy is greater than 5 for all
+values of $\delta_{CP}$ and both possible hierarchies, indicating that the
+predicted potential for DUNE to determine the true mass hierarchy is
+overwhelmingly good.
+\begin{figure}
+	\centering
+	\makebox[\textwidth][c]{
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{sens_cp_nh.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{sens_cp_ih.pdf}
+\end{subfigure}}
+\caption{Sensitivity of DUNE to CP violation through neutrino oscillations, for an
+	exposure of 150 kt$\cdot$MW$\cdot$year.}
+\label{fig:sens_cp}
+\end{figure}
+
+Figure~\ref{fig:sens_cp} shows the sensitivity of DUNE to CP violation, as
+defined in eq.~\ref{eq:dc2_cpv}.
 
 
 

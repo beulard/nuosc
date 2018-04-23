@@ -228,7 +228,6 @@ void spectrum::reconstruct(spectrum* os, int smooth) {
 	double s_f[N_bins];
 	memset(s_f, 0, N_bins * sizeof(double));
 
-	Printf("%d", N_rec);
 	
 	for (int n=0; n<N_rec; ++n) {
 		// Temporary reconstructed spectrum
@@ -247,7 +246,7 @@ void spectrum::reconstruct(spectrum* os, int smooth) {
 				double E_rec = -1.;
 				while (E_rec > E + 2. || E_rec < 0.1 * E || E_rec < 0.7 || E_rec > 7.9) {
 					//E_rec = ra.Gaus(E, 0.1 * E);
-					E_rec = ra.Gaus(E, 0.2);
+					E_rec = ra.Gaus(E, 0.5);
 				}
 				//E_rec = E;
 				

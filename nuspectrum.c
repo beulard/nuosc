@@ -112,11 +112,14 @@ void nuspectrum(int theta=0) {
 
 void do_dc2(const initial_spectrum* is, double L) {
 	// Number of times we will evaluate the sensitivity to compose the final plot
-	const int N_rec = 10;
+	const int N_rec = 1;
 	// Number of d_cp samples
-	const int N = 21;
+	const int N = 31;
 	// Values of d_cp
 	double d_cp[N];
+
+	// "Debug" variable: do we reconstruct spectra?
+	const bool reconstruct = true;
 
 	// Delta chi squared for the mass hierarchy assuming true normal hierarchy
 	double dc2_mh_n[N][N_rec] = {0};
@@ -159,11 +162,11 @@ void do_dc2(const initial_spectrum* is, double L) {
 	// We normalize nhi0s to the IH event rates because it is oscillated under IH
 	nhi0s.normalize(nhi0_int, IH);
 
-	Printf("%f", nh0s.get_integral());
-	nh0s.reconstruct(2000);
-	Printf("%f", nh0s.get_integral());
-	//nhpis.reconstruct(100);
+	if (reconstruct) { 
+	nh0s.reconstruct(500);
+	nhpis.reconstruct(500);
 	//nhi0s.reconstruct(100);
+	}
 
 
 	parameters ih0, ihpi;
@@ -190,9 +193,11 @@ void do_dc2(const initial_spectrum* is, double L) {
 	double ihn0_int = ihn0s.get_integral();
 	ihn0s.normalize(ihn0_int, NH);
 
-	//ih0s.reconstruct(100);
-	//ihpis.reconstruct(100);
+	if (reconstruct) {
+	ih0s.reconstruct(500);
+	ihpis.reconstruct(500);
 	//ihn0s.reconstruct(100);
+	}
 
 
 	// N * 2 set of parameters
@@ -280,8 +285,10 @@ void do_dc2(const initial_spectrum* is, double L) {
 				osc_ihs[i][j].normalize(nh0_int, NH);
 			}
 
-			//osc_nhs[i][j].reconstruct(50);
-			//osc_ihs[i][j].reconstruct(50);
+			if (reconstruct) {
+			osc_nhs[i][j].reconstruct(500);
+			osc_ihs[i][j].reconstruct(500);
+			}
 
 			
 
@@ -348,6 +355,11 @@ void do_dc2(const initial_spectrum* is, double L) {
 								 mean_dc2(osc_nhs[i][0].e,
 									 	  osc_nhs[N-1][0].e)));
 
+			//dc2_cp_n[i][n] = sqrt(min(mean_dc2(osc_nhs[i][0].e,
+			//							  osc_nhs[N/2][0].e),
+			//	   	 	         mean_dc2(osc_nhs[i][0].e,
+			//							  osc_nhs[N-1][0].e)));
+
 			dc2_cp_i[i][n] = sqrt(min(min(mean_dc2(//ihs[n*N*2 + i*2 + 0].e, 
 											   osc_ihs[i][0].e,
 									      //ih0s.e),
@@ -358,6 +370,15 @@ void do_dc2(const initial_spectrum* is, double L) {
 										  osc_ihs[0][0].e)),
 							    	mean_dc2(osc_ihs[i][0].e,
 											 osc_ihs[N-1][0].e)));
+
+			//dc2_cp_i[i][n] = sqrt(min(mean_dc2(//ihs[n*N*2 + i*2 + 0].e, 
+			//								   osc_ihs[i][0].e,
+			//						      //ih0s.e),
+			//							  osc_ihs[N/2][0].e),
+			//				     mean_dc2(//ihs[n*N*2 + i*2 + 0].e, 
+			//						      osc_ihs[i][0].e,
+			//					   	      //ihpis.e)));
+			//							  osc_ihs[N-1][0].e)));
 		}
 
 	}
@@ -403,13 +424,15 @@ void do_dc2(const initial_spectrum* is, double L) {
 	//ccc->SetLogy();
 	TH1* hnh = new TH1F("NH", "", Nbins, 0.6, 8.);
 	TH1* hih = new TH1F("IH", "", Nbins, 0.6, 8.);
-	int index = (int)((.5 / 2. + .5) * N);
+	int index = (int)((+.5 / 2. + .5) * N);
 	Printf("d_cp = %f", d_cp[index]);
+	Printf("d_cp(N/2) = %f", d_cp[N/2]);
+	Printf("d_cp(N-1) = %f", d_cp[N-1]);
 
 	//Printf("%f", d_cp[index] / pi);
 	for (int i=0; i<Nbins; ++i) {
 		hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, osc_nhs[index][0].e[i]);
-		//hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ih0s.e[i]);
+		//hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, nh0s.e[i]);
 		hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, osc_ihs[index][0].e[i]);
 		//hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ih0s.events[E_SIGNAL][i]);
 	}
@@ -455,55 +478,76 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 		ydih[i] = dc2_cp_ih[i];
 	}
 
+	//srand(time(NULL));
+	//int r = rand();
+	//char title1[64];
+	//char title2[64];
+	//snprintf(title1, 64, "sens_mh %d", r);
+	//snprintf(title2, 64, "sens_cp %d", r);
 
-	TCanvas* c4 = new TCanvas("c4", "", 1000, 400);
-	c4->SetFillColor(ci[CI_BACKGROUND]);
-	c4->Divide(2, 1);
+	//TCanvas* c4 = new TCanvas(title1, "", 1000, 400);
+	//c4->SetFillColor(ci[CI_BACKGROUND]);
+	//c4->Divide(2, 1);
 	
-	TPad* p = (TPad*)c4->GetPad(1);
-	p->cd();
+	//TPad* p = (TPad*)c4->GetPad(1);
+	//p->cd();
+	TCanvas* c4 = new TCanvas();
 	TGraph* gdc2_mnh = new TGraph(N, x, ymnh);
-	TGraph* gdc2_mnh_e = new TGraphErrors(N, x, ymnh, NULL, sd_mh_n);
-	gdc2_mnh_e->SetFillColor(ci[CI_NH]);
-	gdc2_mnh_e->Draw("a3");
-	gdc2_mnh->Draw("same");
-	gdc2_mnh_e->SetTitle("True normal hierarchy");
-	gdc2_mnh_e->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
-	gdc2_mnh_e->GetXaxis()->SetTitle("#delta_{CP} / #pi");
-	gdc2_mnh_e->GetXaxis()->SetLimits(-1., 1.);
-	gdc2_mnh_e->SetMinimum(0);
+	//TGraph* gdc2_mnh_e = new TGraphErrors(N, x, ymnh, NULL, sd_mh_n);
+
+	gdc2_mnh->GetXaxis()->SetTitleSize(0.046);
+	gdc2_mnh->GetXaxis()->SetLabelSize(0.041);
+	gdc2_mnh->GetYaxis()->SetTitleSize(0.045);
+	gdc2_mnh->GetYaxis()->SetLabelSize(0.041);
+
+	gdc2_mnh->SetFillColor(ci[CI_NH]);
+	//gdc2_mnh_e->Draw("a3");
+	gdc2_mnh->SetTitle("True normal hierarchy");
+	gdc2_mnh->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
+	gdc2_mnh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	gdc2_mnh->GetXaxis()->SetLimits(-1., 1.);
+	gdc2_mnh->SetMinimum(0);
 	//gdc2_mnh->SetLineColor(4);
 	gdc2_mnh->SetLineColor(ci[CI_NH]);
 	gdc2_mnh->SetMarkerColor(4);
 	gdc2_mnh->SetLineWidth(3);
+	gdc2_mnh->Draw();
 
+	TCanvas* c5 = new TCanvas();
 	TGraph* gdc2_mih = new TGraph(N, x, ymih);
-	TGraph* gdc2_mih_e = new TGraphErrors(N, x, ymih, NULL, sd_mh_i);
-	gdc2_mih_e->SetTitle("True inverted hierarchy");
-	c4->SetTitle("MH sensitivity");
-	gdc2_mih_e->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
-	gdc2_mih_e->GetXaxis()->SetTitle("#delta_{CP} / #pi");
+	//TGraph* gdc2_mih_e = new TGraphErrors(N, x, ymih, NULL, sd_mh_i);
+
+	gdc2_mih->GetXaxis()->SetTitleSize(0.046);
+	gdc2_mih->GetXaxis()->SetLabelSize(0.041);
+	gdc2_mih->GetYaxis()->SetTitleSize(0.049);
+	gdc2_mih->GetYaxis()->SetLabelSize(0.041);
+
+	gdc2_mih->SetTitle("True inverted hierarchy");
+	//c4->SetTitle("MH sensitivity");
+	gdc2_mih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
+	gdc2_mih->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	//gdc2_mih->SetLineColor(kRed+1);
 	gdc2_mih->SetLineColor(ci[CI_IH]);
 	gdc2_mih->SetMarkerColor(2);
-	gdc2_mih_e->SetFillColor(ci[CI_IH]);
+	gdc2_mih->SetFillColor(ci[CI_IH]);
 	//gdc2_mnh_e->SetMaximum(25);
 	//gdc2_mih_e->SetMaximum(25);
 	gdc2_mih->SetLineWidth(3);
- 	p = (TPad*)c4->GetPad(2);	
-	p->cd();
-	gdc2_mih_e->GetXaxis()->SetLimits(-1., 1.);
-	gdc2_mih_e->SetMinimum(0);
+ 	//p = (TPad*)c4->GetPad(2);	
+	//p->cd();
+	gdc2_mih->GetXaxis()->SetLimits(-1., 1.);
+	gdc2_mih->SetMinimum(0);
 	//gdc2_mih->SetMaximum(25);
-	gdc2_mih_e->Draw("a3");
-	gdc2_mih->Draw("same");
+	//gdc2_mih_e->Draw("a3");
+	gdc2_mih->Draw();
 	
 
 	// Draw delta_CP mean delta chi squared
-	TCanvas* c5 = new TCanvas("c5", "", 1000, 400);
-	c5->SetFillColor(ci[CI_BACKGROUND]);
-	c5->Divide(2, 1);
-	c5->cd(1);
+	//TCanvas* c5 = new TCanvas(title2, "", 1000, 400);
+	//c5->SetFillColor(ci[CI_BACKGROUND]);
+	//c5->Divide(2, 1);
+	//c5->cd(1);
+	TCanvas* c6 = new TCanvas();
 	TGraph* gdc2_cp = new TGraph(N, x, ydnh);
 	//gdc2_cp->Draw();
 	gdc2_cp->Draw();
@@ -517,7 +561,14 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 	gdc2_cp->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_cp->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	
-	c5->cd(2);
+	gdc2_cp->GetXaxis()->SetTitleSize(0.046);
+	gdc2_cp->GetXaxis()->SetLabelSize(0.041);
+	gdc2_cp->GetYaxis()->SetTitleSize(0.049);
+	gdc2_cp->GetYaxis()->SetLabelSize(0.041);
+	gdc2_cp->SetMaximum(9.);
+	
+	//c5->cd(2);
+	TCanvas* c7 = new TCanvas();
 	TGraph* gdc2_cp_ih = new TGraph(N, x, ydih);
 	//gdc2_cp->Draw();
 	gdc2_cp_ih->Draw("");
@@ -531,6 +582,12 @@ void plot_dc2(double* d_cp, double* dc2_mh_n, double* sd_mh_n, double* dc2_mh_i,
 	gdc2_cp_ih->SetLineWidth(3);
 	gdc2_cp_ih->SetMarkerColor(ci[CI_IH]);
 	gdc2_cp_ih->GetXaxis()->SetLimits(-1, 1);
+
+	gdc2_cp_ih->SetMaximum(9.);
+	gdc2_cp_ih->GetXaxis()->SetTitleSize(0.046);
+	gdc2_cp_ih->GetXaxis()->SetLabelSize(0.041);
+	gdc2_cp_ih->GetYaxis()->SetTitleSize(0.049);
+	gdc2_cp_ih->GetYaxis()->SetLabelSize(0.041);
 }
 
 // Calculates MH mean delta chi squared and standard deviation given a hierarchy and theta_23
@@ -602,8 +659,8 @@ void calculate_mh_sens(const initial_spectrum* is, double L, h_type H, double** 
 			osc_ihs[i].normalize(nh0_int, NH);
 		}
 			
-		osc_nhs[i].reconstruct(300);
-		osc_ihs[i].reconstruct(300);
+		//osc_nhs[i].reconstruct(300);
+		//osc_ihs[i].reconstruct(300);
 
 	}
 	
