@@ -1,4 +1,4 @@
-#include "spectrum.h"
+#include "spectrum_hyperk.h"
 
 void plot_dc2(int N, double* d_cp, double* dc2_mh_n, double* dc2_mh_i, 
 					 double* dc2_cp_n, double* dc2_cp_i);
@@ -19,6 +19,7 @@ double mean_dc2(const double* test, const double* tru, int N) {
 void hyperk() {
 
 	// HyperK Baseline
+	//const double L = 1600;
 	const double L = 295;
 
 	initial_spectrum is;

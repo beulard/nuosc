@@ -114,7 +114,7 @@ void do_dc2(const initial_spectrum* is, double L) {
 	// Number of times we will evaluate the sensitivity to compose the final plot
 	const int N_rec = 1;
 	// Number of d_cp samples
-	const int N = 31;
+	const int N = 91;
 	// Values of d_cp
 	double d_cp[N];
 
@@ -163,8 +163,8 @@ void do_dc2(const initial_spectrum* is, double L) {
 	nhi0s.normalize(nhi0_int, IH);
 
 	if (reconstruct) { 
-	nh0s.reconstruct(500);
-	nhpis.reconstruct(500);
+	nh0s.reconstruct(1500);
+	nhpis.reconstruct(1500);
 	//nhi0s.reconstruct(100);
 	}
 
@@ -194,8 +194,8 @@ void do_dc2(const initial_spectrum* is, double L) {
 	ihn0s.normalize(ihn0_int, NH);
 
 	if (reconstruct) {
-	ih0s.reconstruct(500);
-	ihpis.reconstruct(500);
+	ih0s.reconstruct(1500);
+	ihpis.reconstruct(1500);
 	//ihn0s.reconstruct(100);
 	}
 
@@ -286,8 +286,8 @@ void do_dc2(const initial_spectrum* is, double L) {
 			}
 
 			if (reconstruct) {
-			osc_nhs[i][j].reconstruct(500);
-			osc_ihs[i][j].reconstruct(500);
+			osc_nhs[i][j].reconstruct(1500);
+			osc_ihs[i][j].reconstruct(1500);
 			}
 
 			
@@ -327,14 +327,13 @@ void do_dc2(const initial_spectrum* is, double L) {
 				double dc2_n = mean_dc2(//nhs[n*N*2 + j*2 + 1].events[E_SIGNAL], 
 										osc_ihs[j][0].e,
 										//nhs[n*N*2 + i*2 + 0].e);
-										osc_nhs[i][0].e,
-										sd_nh_t23[i]);
+										osc_nhs[i][0].e);
 
 				// Vice versa
 				double dc2_i = mean_dc2(//ihs[n*N*2 + j*2 + 1].e, 
 										osc_nhs[j][0].e,
 										//ihs[n*N*2 + i*2 + 0].e);
-										osc_ihs[i][0].e, sd_ih_t23[i]);
+										osc_ihs[i][0].e);
 
 				
 

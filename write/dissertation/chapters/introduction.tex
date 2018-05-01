@@ -1,6 +1,66 @@
 % This chapter gives reader the background knowledge they will need in order to understand the following chapters. This should not include descriptions of the work you have done, but it should provide the motivation for why you did it.  Some reports will have two chapters of background material (e.g. one on general background from books, and one providing a review of journal articles you have read).
 \label{ch:introduction}
-This chapter introduces the report and tells the reader what they should expect
-to see in the next chapters. We should introduce the contents of the
-following two chapters in a qualitative way and maybe give some context and
-motivation for the research.
+This dissertation is a report of the steps that were taken in order to predict the
+sensitivity of a future neutrino experiment to the neutrino mass hierarchy and
+to CP violation.
+The work that was done heavily relies on the quantum mechanical description of
+neutrino oscillations and the implementation thereof in a self-contained C++
+framework.
+
+For this reason, we start chapter~\ref{ch:osc} by introducing the neutrino and the
+concept of neutrino oscillations with its associated formalism. From the
+starting point that neutrino flavour eigenstates are different from neutrino
+mass eigenstates, we derive the probability of a neutrino changing flavour
+after travelling through empty space. 
+
+In our model of a neutrino experiment, we use the assumption that three
+neutrino flavours exist and that a neutrino produced in a particular flavour
+can oscillate to the other two and back. Hence we introduce the mixing matrix
+for three flavours, known as the PMNS matrix, and discuss the presence in this
+matrix of the imaginary phase $\me^{\mi\delta_{CP}}$ which could be responsible for CP
+violation in the lepton sector.
+
+Because the neutrino experiments under consideration are long-baseline
+underground experiments, it is necessary to treat the flavour oscillations not
+in vacuum but in matter. We show a derivation of the corrections that must be
+applied in the case where only two neutrinos oscillate and discuss how one can
+extend to the three neutrino case.
+
+In order to provide motivation for our work, we discuss the current state of
+neutrino oscillations, namely which parameters are known and which parameters
+require higher precision experiments in order to be measured.
+
+
+While chapter~\ref{ch:osc} covers the fundamental principles at work, some elements of
+statistics also need to be discussed. Evaluating the sensitivity of an
+experiment requires the formal definition of a relevant test statistic, which
+then has to be evaluated from our model of the experiment. In order to make the
+results meaningful, we must also discuss the interpretation of such a test
+statistic in the context of an experiment which has yet to be performed.
+The statistics are discussed in the first part of chapter~\ref{ch:methods}.
+
+We then present the oscillation probabilities resulting from our
+implementation of the formalism of chapter~\ref{ch:osc} and try to outline some
+relevant features. 
+
+The whole purpose of such a model is to apply it to a real neutrino experiment
+and study the potential outcomes and discoveries that it could bring.
+We chose the Deep Underground Neutrino Experiment (DUNE) as our main
+application. Because it is already a very mature project, a multitude of
+extremely detailed resources are available, such as the four-volume conceptual
+design report\cite{cdr-all} (CDR). Using information and results from the CDR
+lets us cirumvent the in-depth modelling of a neutrino beam and detector, and
+focus on the oscillations instead. This is discussed in detail in the second
+half of chapter~\ref{ch:methods}.
+
+Finally, we combine all the information of chapter~\ref{ch:methods} into our
+predictions of the sensitivity of DUNE to CP violation and to the neutrino mass
+hierarchy.
+As a short extra example, we produce similar results for the older, shorter-baseline
+T2K experiment and use that as a reference to compare to DUNE.
+
+
+%This chapter introduces the report and tells the reader what they should expect
+%to see in the next chapters. We should introduce the contents of the
+%following two chapters in a qualitative way and maybe give some context and
+%motivation for the research.
