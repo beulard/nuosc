@@ -8,8 +8,8 @@ double mean_dc2(const double* test, const double* tru, int N) {
 	double r=0;
 
 	for (int i=0; i<N; ++i) {
-		if (i>4)
-		r += pow(test[i] - tru[i], 2) / test[i];
+		//if (i>4)
+			r += pow(test[i] - tru[i], 2) / test[i];
 	}
 
 	return r;
@@ -33,16 +33,19 @@ void hyperk() {
 
 	
 	// Number of d_cp samples
-	const int N = 151;
+	const int N = 91;
 	// Values of d_cp
 	double d_cp[N];
 
+
+	const int N_rec = 40;
+
 	// Delta chi squared for the mass hierarchy assuming true normal hierarchy
-	double dc2_mh_n[N] = {0};
-	double dc2_mh_i[N] = {0};
+	double dc2_mh_n[N_rec][N] = {0};
+	double dc2_mh_i[N_rec][N] = {0};
 	// Delta chi squared for delta_CP
-	double dc2_cp_n[N] = {0};
-	double dc2_cp_i[N] = {0};
+	double dc2_cp_n[N_rec][N] = {0};
+	double dc2_cp_i[N_rec][N] = {0};
 
 	// Parameter combinations for normalization
 	parameters nh0, nhpi;
@@ -57,8 +60,8 @@ void hyperk() {
 	double E1 = 0.1;
 	double E2 = 1.2;
 	int N_bins = round((E2 - E1) / 0.05);
-	Printf("%f", (E2 - E1) / 0.05);
-	Printf("%d", N_bins);
+	//Printf("%f", (E2 - E1) / 0.05);
+	//Printf("%d", N_bins);
 
 	// Oscillate these spectra with specific parameters
 	nh0s.oscillate(&is, L, E1, E2, N_bins);
@@ -67,7 +70,6 @@ void hyperk() {
 	// Predicted event rate, from HyperK design report p.181
 	const double e_nh = 2300;
 	double nh0_int = nh0s.get_integral();
-	Printf("%f", nh0_int);
 	//Printf("%f", e_nh);
 
 	// Integral for d_cp = 0 that we use to normalize spectra under NH assumption
@@ -96,7 +98,7 @@ void hyperk() {
 	double int_ih = 0;
 
 	for (int i=0; i<samples; ++i) {
-		// The energy range of interest is [0.1, 1.3] GeV for HyperK
+		// The energy range of interest is [0.1, 1.2] GeV for HyperK
 		double delta_E = (E2 - E1) / samples;
 		x[i] = i * delta_E + E1;
 
@@ -111,11 +113,19 @@ void hyperk() {
 	ih0s.normalize(ih0_int, e_ih);
 	ihpis.normalize(ih0_int, e_ih);
 
+	//nh0s.reconstruct(900);
+	//nhpis.reconstruct(900);
+	//ih0s.reconstruct(900);
+	//ihpis.reconstruct(900);
+
 
 	parameters nh[N], ih[N];
 
-	spectrum osc_nhs[N];
-	spectrum osc_ihs[N];
+	spectrum osc_nhs[N_rec][N];
+	spectrum osc_ihs[N_rec][N];
+
+	spectrum osc_nhs_norec[N];
+	spectrum osc_ihs_norec[N];
 
 	for (int i=0; i<N; ++i) {
 		Printf("%d/%d", i+1, N);
@@ -124,13 +134,34 @@ void hyperk() {
 		nh[i].populate(NH, d_cp[i]);
 		ih[i].populate(IH, d_cp[i]);
 
-		osc_nhs[i].p = &nh[i];
-		osc_ihs[i].p = &ih[i];
-		osc_nhs[i].oscillate(&is, L, E1, E2, N_bins);
-		osc_ihs[i].oscillate(&is, L, E1, E2, N_bins);
+		osc_nhs_norec[i].p = &nh[i];
+		osc_ihs_norec[i].p = &ih[i];
+		osc_nhs_norec[i].oscillate(&is, L, E1, E2, N_bins);
+		osc_ihs_norec[i].oscillate(&is, L, E1, E2, N_bins);
 
-		osc_nhs[i].normalize(nh0_int, e_nh);
-		osc_ihs[i].normalize(ih0_int, e_ih);
+		osc_nhs_norec[i].normalize(nh0_int, e_nh);
+		osc_ihs_norec[i].normalize(ih0_int, e_ih);
+
+	}
+
+	for (int rec=0; rec<N_rec; ++rec) {
+
+		Printf("rec %d", rec);
+
+	for (int i=0; i<N; ++i) {
+
+		osc_nhs[rec][i].e = new double[N_bins];
+		osc_ihs[rec][i].e = new double[N_bins];
+
+		osc_nhs[rec][i].p = &nh[i];
+		osc_ihs[rec][i].p = &ih[i];
+		//osc_nhs[rec][i].oscillate(&is, L, E1, E2, N_bins);
+		//osc_ihs[rec][i].oscillate(&is, L, E1, E2, N_bins);
+		//osc_nhs[rec][i].normalize(nh0_int, e_nh);
+		//osc_ihs[rec][i].normalize(ih0_int, e_ih);
+
+		osc_nhs_norec[i].reconstruct(&osc_nhs[rec][i], 200);
+		osc_ihs_norec[i].reconstruct(&osc_ihs[rec][i], 200);
 	}
 
 	// Calculate delta chi squared
@@ -146,12 +177,12 @@ void hyperk() {
 
 			// When we assume normal hierarchy, the NH spectrum is fixed in i and we
 			// search the IH with j
-			double dc2_n = mean_dc2(osc_ihs[j].e,
-									osc_nhs[i].e, N_bins);
+			double dc2_n = mean_dc2(osc_ihs[rec][j].e,
+									osc_nhs[rec][i].e, N_bins);
 
 			// Vice versa
-			double dc2_i = mean_dc2(osc_nhs[j].e,
-									osc_ihs[i].e, N_bins);
+			double dc2_i = mean_dc2(osc_nhs[rec][j].e,
+									osc_ihs[rec][i].e, N_bins);
 
 			
 
@@ -160,20 +191,45 @@ void hyperk() {
 
 		}
 
-		dc2_mh_n[i] = sqrt(min_dc2_n);
-		dc2_mh_i[i] = sqrt(min_dc2_i);
+		dc2_mh_n[rec][i] = sqrt(min_dc2_n);
+		dc2_mh_i[rec][i] = sqrt(min_dc2_i);
 
 		// For the CP sensitivity we want the j=0 elements (the ones with
 		// the correct hierarchy)
-		dc2_cp_n[i] = sqrt(min(mean_dc2(osc_nhs[i].e,
-										osc_nhs[N/2].e, N_bins),
-							   mean_dc2(osc_nhs[i].e,
-								   	    osc_nhs[0].e, N_bins)));
+		dc2_cp_n[rec][i] = sqrt(min(min(mean_dc2(osc_nhs[rec][i].e,
+										osc_nhs[rec][N/2].e, N_bins),
+							   mean_dc2(osc_nhs[rec][i].e,
+								   	    osc_nhs[rec][0].e, N_bins)),
+								mean_dc2(osc_nhs[rec][i].e,
+										 osc_nhs[rec][N-1].e, N_bins)));
 
-		dc2_cp_i[i] = sqrt(min(mean_dc2(osc_ihs[i].e,
-										osc_ihs[N/2].e, N_bins),
-							   mean_dc2(osc_ihs[i].e,
-								   		osc_ihs[0].e, N_bins)));
+		dc2_cp_i[rec][i] = sqrt(min(min(mean_dc2(osc_ihs[rec][i].e,
+										osc_ihs[rec][N/2].e, N_bins),
+							   mean_dc2(osc_ihs[rec][i].e,
+								   		osc_ihs[rec][0].e, N_bins)),
+							   mean_dc2(osc_ihs[rec][i].e,
+								   	 	osc_ihs[rec][N-1].e, N_bins)));
+	}
+	}
+
+
+	double dc2_mh_n_f[N] = {0};
+	double dc2_mh_i_f[N] = {0};
+	double dc2_cp_n_f[N] = {0};
+	double dc2_cp_i_f[N] = {0};
+
+	// Perform average
+	for (int i=0; i<N; ++i) {
+
+		for (int rec=0; rec<N_rec; ++rec) {
+			
+			dc2_mh_n_f[i] += dc2_mh_n[rec][i] / N_rec;
+			dc2_mh_i_f[i] += dc2_mh_i[rec][i] / N_rec;
+			dc2_cp_n_f[i] += dc2_cp_n[rec][i] / N_rec;
+			dc2_cp_i_f[i] += dc2_cp_i[rec][i] / N_rec;
+
+		}
+
 	}
 
 	// To plot a test spectrum
@@ -182,19 +238,21 @@ void hyperk() {
 	//ccc->SetLogy();
 	TH1* hnh = new TH1F("hnh", "", N_bins, E1, E2);
 	TH1* hih = new TH1F("hih", "", N_bins, E1, E2);
-	int index = (int)((-0. / 2. + .5) * N);
+	int index = (int)round((0.5 / 2. + .5) * (float)N);
+
+	Printf("d_cp: %f", d_cp[index]);
 
 	//Printf("%f", d_cp[index] / pi);
 	for (int i=0; i<N_bins; ++i) {
 		//hnh->Fill(0.1 + (1.3 - 0.1) * (float)i / 25 + 1e-3, osc_nhs[index].e[i]);
-		hnh->Fill(E1 + (E2 - E1) * (float)i / N_bins + 1e-3, nh0s.e[i]);
+		hnh->Fill(E1 + (E2 - E1) * (float)i / N_bins + 1e-3, osc_nhs_norec[index].e[i]);
 		//hnh->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ih0s.events[E_SIGNAL][i]);
-		hih->Fill(E1 + (E2 - E1) * (float)i / N_bins + 1e-3, osc_ihs[index].e[i]);
+		hih->Fill(E1 + (E2 - E1) * (float)i / N_bins + 1e-3, osc_nhs[1][index].e[i]);
 		//hih->Fill(0.6 + (8. - 0.6) * (float)i / Nbins + 1e-3, ih0s.events[E_SIGNAL][i]);
 	}
 
 	hnh->Draw("hist");
-	//hnh->SetMaximum(110);
+	hnh->SetMaximum(410);
 	hih->Draw("hist same");
 	hnh->SetLineWidth(2);
 	hih->SetLineWidth(2);
@@ -203,7 +261,7 @@ void hyperk() {
 
 
 
-	plot_dc2(N, d_cp, dc2_mh_n, dc2_mh_i, dc2_cp_n, dc2_cp_i);
+	plot_dc2(N, d_cp, dc2_mh_n_f, dc2_mh_i_f, dc2_cp_n_f, dc2_cp_i_f);
 	
 }
 
@@ -225,12 +283,13 @@ void plot_dc2(int N, double* d_cp, double* dc2_mh_n, double* dc2_mh_i,
 	}
 
 
-	TCanvas* c4 = new TCanvas("c4", "", 1000, 400);
-	c4->SetFillColor(ci[CI_BACKGROUND]);
-	c4->Divide(2, 1);
+	//TCanvas* c4 = new TCanvas("c4", "", 1000, 400);
+	//c4->SetFillColor(ci[CI_BACKGROUND]);
+	//c4->Divide(2, 1);
+	TCanvas* c4 = new TCanvas();
 	
-	TPad* p = (TPad*)c4->GetPad(1);
-	p->cd();
+	//TPad* p = (TPad*)c4->GetPad(1);
+	//p->cd();
 	TGraph* gdc2_mnh = new TGraph(N, x, ymnh);
 	//TGraph* gdc2_mnh_e = new TGraphErrors(N, x, ymnh, NULL, sd_mh_n);
 	//gdc2_mnh_e->SetFillColor(ci[CI_NH]);
@@ -241,13 +300,27 @@ void plot_dc2(int N, double* d_cp, double* dc2_mh_n, double* dc2_mh_i,
 	gdc2_mnh->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_mnh->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mnh->SetMinimum(0);
+	gdc2_mnh->SetMaximum(5);
+
+	gdc2_mnh->GetXaxis()->SetTitleSize(0.046);
+	gdc2_mnh->GetXaxis()->SetLabelSize(0.041);
+	gdc2_mnh->GetYaxis()->SetTitleSize(0.045);
+	gdc2_mnh->GetYaxis()->SetLabelSize(0.041);
+
 	//gdc2_mnh->SetLineColor(4);
 	gdc2_mnh->SetLineColor(ci[CI_NH]);
 	gdc2_mnh->SetMarkerColor(4);
 	gdc2_mnh->SetLineWidth(3);
 
+	TCanvas* c5 = new TCanvas();
+
 	TGraph* gdc2_mih = new TGraph(N, x, ymih);
 	//TGraph* gdc2_mih_e = new TGraphErrors(N, x, ymih, NULL, sd_mh_i);
+	gdc2_mih->GetXaxis()->SetTitleSize(0.046);
+	gdc2_mih->GetXaxis()->SetLabelSize(0.041);
+	gdc2_mih->GetYaxis()->SetTitleSize(0.049);
+	gdc2_mih->GetYaxis()->SetLabelSize(0.041);
+
 	gdc2_mih->SetTitle("True inverted hierarchy");
 	c4->SetTitle("MH sensitivity");
 	gdc2_mih->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
@@ -259,22 +332,28 @@ void plot_dc2(int N, double* d_cp, double* dc2_mh_n, double* dc2_mh_i,
 	//gdc2_mnh_e->SetMaximum(25);
 	//gdc2_mih_e->SetMaximum(25);
 	gdc2_mih->SetLineWidth(3);
- 	p = (TPad*)c4->GetPad(2);	
-	p->cd();
+ 	//p = (TPad*)c4->GetPad(2);	
+	//p->cd();
 	gdc2_mih->GetXaxis()->SetLimits(-1., 1.);
 	gdc2_mih->SetMinimum(0);
-	//gdc2_mih->SetMaximum(25);
+	gdc2_mih->SetMaximum(5);
 	//gdc2_mih_e->Draw("a3");
 	gdc2_mih->Draw();
 	
 
 	// Draw delta_CP mean delta chi squared
-	TCanvas* c5 = new TCanvas("c5", "", 1000, 400);
-	c5->SetFillColor(ci[CI_BACKGROUND]);
-	c5->Divide(2, 1);
-	c5->cd(1);
+	//TCanvas* c5 = new TCanvas("c5", "", 1000, 400);
+	//c5->SetFillColor(ci[CI_BACKGROUND]);
+	//c5->Divide(2, 1);
+	//c5->cd(1);
+	TCanvas* c6 = new TCanvas();
 	TGraph* gdc2_cp = new TGraph(N, x, ydnh);
 	//gdc2_cp->Draw();
+	gdc2_cp->GetXaxis()->SetTitleSize(0.046);
+	gdc2_cp->GetXaxis()->SetLabelSize(0.041);
+	gdc2_cp->GetYaxis()->SetTitleSize(0.049);
+	gdc2_cp->GetYaxis()->SetLabelSize(0.041);
+
 	gdc2_cp->Draw();
 	gdc2_cp->SetTitle("True normal hierarchy");
 	//gdc2_cp->SetMaximum(10);
@@ -286,9 +365,14 @@ void plot_dc2(int N, double* d_cp, double* dc2_mh_n, double* dc2_mh_i,
 	gdc2_cp->GetXaxis()->SetTitle("#delta_{CP} / #pi");
 	gdc2_cp->GetYaxis()->SetTitle("#sqrt{#bar{#Delta #chi^{2}}}");
 	
-	c5->cd(2);
+	//c5->cd(2);
+	TCanvas* c7 = new TCanvas();
 	TGraph* gdc2_cp_ih = new TGraph(N, x, ydih);
 	//gdc2_cp->Draw();
+	gdc2_cp_ih->GetXaxis()->SetTitleSize(0.046);
+	gdc2_cp_ih->GetXaxis()->SetLabelSize(0.041);
+	gdc2_cp_ih->GetYaxis()->SetTitleSize(0.049);
+	gdc2_cp_ih->GetYaxis()->SetLabelSize(0.041);
 	gdc2_cp_ih->Draw("");
 	gdc2_cp_ih->SetTitle("True inverted hierarchy");
 	gdc2_cp_ih->GetXaxis()->SetTitle("#delta_{CP} / #pi");

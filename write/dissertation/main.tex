@@ -63,7 +63,14 @@
 %%Adds to do notes and lists http://tug.ctan.org/macros/latex/contrib/todonotes/todonotes.pdf
 \usepackage[colorinlistoftodos]{todonotes}
 %%Uncomment below for internal hyperlinks
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\definecolor{nh}{RGB}{50, 142, 237}
+
+\hypersetup{
+	colorlinks = true,
+	allcolors = nh,
+}
 %Floating figures and tables
 \usepackage{float}
 %%Drawing Package

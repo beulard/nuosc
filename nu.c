@@ -19,7 +19,7 @@ double plot_P_ihd(double* x, double* par) {
 }
 
 double plot_P_nh(double* x, double* par) {
-	double p = P(f_m, f_e, x[0], 1300, &nh[(int)par[0]], (bool)par[1]);
+	double p = P_me(f_m, f_e, x[0], 1300, &nh[(int)par[0]], (bool)par[1]);
 	// Fix plots overflowing out of their frame/axes
 	//if (p > 0.2)
 		//p = 0.2;

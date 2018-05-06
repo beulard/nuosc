@@ -9,35 +9,47 @@ neutrinos.
 
 
 \section{History of the neutrino}
-The neutrino particle first appeared in 1934 in Fermi's theory of the $\beta$-decay
-process\cite{fermi}, where a neutron would decay into a proton and emit an electron and a
-light, neutral particle. This extra particle was required as a way to explain the
-continuous energy spectrum of the electron. A number of subsequent experiments
-were designed to map out the properties of the neutrino and its
-interactions\cite{zuber}. As of today, the neutrino is still not fully
-understood, and neutrino physics has become one of the leading branches of
-experimental particle physics along with collider physics. 
+The neutrino particle was first postulated by Wolfgang Pauli in 1930 to explain
+the continuous energy distribution of the electron in beta decays, in his
+famous letter to the Physics Institute of Zürich\cite{pauli}. 
+
+Its existence was confirmed in 1956 by Cowan and Reines\cite{cowan} through the
+observation of anti-neutrinos from a nuclear reactor being captured by protons
+in a water tank.
+A number of subsequent experiments were designed to map out the properties of
+the neutrino and its interactions\cite{zuber}. As of today, the neutrino is
+still not fully understood, and neutrino physics has become one of the leading
+branches of experimental particle physics along with collider physics. 
 
 The existence of distinct flavours of neutrinos was first investigated by
-Bruno Pontecorvo in 1959\cite{pontecorvo}. He found that different neutrino flavours
-interacted with different leptons, therefore establishing the three neutrinos
-known today as $\nu_e$, $\nu_\mu$ and $\nu_\tau$, and hinting at the
-possibility of flavour oscillations, which he later theorized.
+Bruno Pontecorvo\cite{pontecorvo} in 1959. He proposed that a weak interaction
+involving charged leptons ($e$, $\mu$) discriminates between neutrino flavours,
+hence a process such as $\nu_\mu + n \rightarrow e^- + p$ is forbidden.
+This was confirmed in 1962 by Danby et al.\cite{danby} at the Brookhaven
+National Laboratory, where they showed that electron-neutrinos and
+muon-neutrinos were in fact distinct particles.
+This was also a first hint at the possibility of neutrino flavour oscillations,
+which Pontecorvo\cite{pontecorvo-osc} started theorizing in 1967.
+In 2000, the DONUT experiment\cite{donut} reported the observation of
+tau-neutrino interactions, hence further corroborating the theory of the
+three neutrino flavours.
+
 As will be discussed later, the fact that a neutrino can change its flavour by
 propagating through empty space is direct evidence that neutrinos are massive
 particles, unlike what is initially described by the Standard Model.
-The 2015 Nobel Prize was awarded to the SuperKamiokande and SNO collaborations
-for the discovery of neutrino oscillations in 1999 and 2001\footnote{In fact,
-SNO observed oscillations in matter, known as the MSW effect\cite{smirnov},
-while SuperK observed oscillations in the vacuum.}, respectively.
-Although neutrino oscillations have been observed, some of the physical parameters that
-describe this process have remained difficult to probe because of the lack of
-accuracy in the measurements of past experiments. 
-The Deep Underground Neutrino Experiment (DUNE) in the United States and the
-upgrade to SuperKamiokande, HyperKamiokande (HyperK) in Japan, are examples of
-future experiments that aim to determine these parameters and start the era of
-precision measurements in neutrino physics.
+The 2015 Nobel Prize was awarded to the Super-K and Sudbury Neutrino
+Observatory (SNO) collaborations for the discovery of neutrino oscillations in
+1999 and 2001\footnote{In fact, SNO observed oscillations in matter, known as
+the MSW effect\cite{smirnov}, while Super-K observed oscillations in
+vacuum.}, respectively.
 
+Although neutrino oscillations have been observed, some of the physical parameters that
+govern this process remain difficult to probe because of the elusiveness of
+neutrinos: being only involved in weak processes, they require extremely
+voluminous detectors in order to get the slightest signal.
+The Deep Underground Neutrino Experiment (DUNE) in the United States and the
+upgrade to Super-Kamiokande, Hyper-Kamiokande in Japan, are examples of
+future experiments that aim to determine these parameters.
 
 In the Standard Model, there are twelve elementary fermions: six quarks and six
 leptons (plus their respective antiparticles). The leptons consist of three
@@ -58,8 +70,8 @@ interaction, which makes them impossible to observe directly. Their existence
 and their properties can only be inferred from their interactions with other
 particles.
 Experimentally, only left-handed neutrinos and right-handed
-antineutrinos are observed. In the Standard Model, this curious property would
-prevent the neutrinos from acquiring a mass through interactions with the
+anti-neutrinos are observed. In the Standard Model, this curious property
+prevents the neutrinos from acquiring a mass through interactions with the
 Higgs field in the same way that charged leptons do\cite{schwichtenberg}. Hence
 the Standard Model on its own cannot accurately describe neutrinos, and
 extensions such as the seesaw mechanism or extra dimensions are needed. This
@@ -72,27 +84,30 @@ We will now introduce the mathematical tools that we use to describe neutrino
 oscillations. 
 
 It is now known experimentally that 
-the neutrino flavours ($\nu_e, \nu_\mu, \nu_\tau$) can mix when propagating through
-space\cite{superk}. This process is intrinsically linked to the quark generation
+the neutrino flavours ($\nu_e, \nu_\mu, \nu_\tau$) mix when propagating through
+space\cite{superk}. This process is structurally similar to the quark generation
 mixing between down, strange and bottom quarks\cite{pdg_ckm}
-and is direct evidence that for all these particles,
-the weak eigenstates\footnote{Weak eigenstate: state which interacts with the W, Z bosons.} are not in one-to-one correspondence with the mass
+and is direct evidence that for neutrinos and quarks, the weak
+eigenstates\footnote{Weak eigenstate: state which interacts with the W, Z
+bosons.} are not in one-to-one correspondence with the mass
 eigenstates\footnote{Mass eigenstate: state which has definite mass and
 propagates through space as a wave.}.
 
-In the Standard Model (SM), the W bosons mediate the interactions between up-type and
-down-type quarks, and between charged leptons and neutrinos. The interaction
-terms in the Lagrangian can be expressed either in the weak eigenbasis or the
-mass eigenbasis\cite{langacker}. For down-type quarks and neutrinos, these
-bases are not identical but are related by the Cabibbo-Kobayashi-Maskawa (CKM) matrix
-and the Pontecorvo-Maki-Nakagawa-Sakata (PMNS) matrix\cite{zuber}, respectively.
-This allows neutrinos and down-type quarks to change their flavour (or generation)
-as they travel in space.
+In the Standard Model, the W bosons mediate the interactions between up-type and
+down-type quarks, and between charged leptons and neutrinos. 
+When describing these particles, it is useful to express them either in the
+weak eigenbasis for interactions or in the mass eigenbasis for
+free-propagation.
+For down-type quarks and neutrinos, these bases are not identical: their
+relationship is conventionally represented by the Cabibbo-Kobayashi-Maskawa
+(CKM) matrix and the Pontecorvo-Maki-Nakagawa-Sakata (PMNS) matrix,
+respectively.  This allows down-type quarks to interact with up-type quarks of
+a different generation, or, as we shall see, it allows neutrinos to change their
+flavour composition as they propagate in empty space.
 
 
 \subsection{Neutrino oscillation formalism} 
-The following derivations are heavily inspired by chapter 8 of
-Kai Zuber's textbook on neutrino physics\cite{zuber}.
+The following derivations are heavily inspired by chapter 8 of~\cite{zuber}.
 Let us consider a general system where there exist $n$ neutrino flavours. 
 We mentioned the two eigenbases of interest: the weak (flavour)
 eigenstates $\ket{\nu_{\alpha}}$ where $\alpha$ is a lepton flavour,
@@ -127,7 +142,10 @@ following time dependence:
 		&= \sum_{i, \gamma} U_{\alpha i} U^*_{\gamma i} \me^{\mi p x}
 				\me^{-\mi E_i t} \ket{\nu_\gamma}\quad\text{(using eq.~\ref{eq:bases2})}.
 \end{align*}
-Thus the transition amplitude to a flavour $\beta$ is 
+Note that we are working in natural units where $c=\hbar=1$ for clarity. When
+implementing this formalism in code, the units must be restored using
+the usual conversion factors in order to get accurate numerical results.
+The transition amplitude to a flavour $\beta$ is thus 
 \begin{align}
 	A_{\alpha \rightarrow \beta}(x, t) = \bra{\nu_\beta}\ket{\nu_\alpha(x, t)} \nonumber
 			= \sum_i U^*_{\beta i} U_{\alpha i} \me^{\mi p x}
@@ -135,7 +153,7 @@ Thus the transition amplitude to a flavour $\beta$ is
 \end{align}
 By assuming that all neutrinos have small masses, and thus are highly
 relativistic, we are able to perform a binomial approximation on their
-energy\footnote{We are working in natural units where $c=\hbar=1$.}: 
+energy: 
 \begin{equation} E_i = \sqrt{m_i^2 + p^2} \simeq p + \frac{m_i^2}{2 p} \simeq E +
 \frac{m_i^2}{2E},\label{eq:binomial}\end{equation}
 where we call $E \approx p$ the neutrino energy at the source\footnote{As
@@ -171,7 +189,7 @@ $\ket{\nu_\beta}$. This effectively describes the probability that after
 travelling a distance $L$, the neutrino wavefunction will collapse into a
 $\beta$ flavoured neutrino if it interacts in our detector.
 In the following sections, we apply this formalism to two-neutrino and
-three-neutrino systems and show plots of the oscillation probability.
+three-neutrino systems. 
 
 
 
@@ -194,10 +212,10 @@ in two dimensions, one being rotated by an angle $\theta$ with respect to the
 other.
 
 We use the $\mu$ and $\tau$ flavours here in reference to the
-atmospheric neutrino experiment at SuperK\cite{superk}: for neutrinos produced
-by cosmic rays in the atmosphere, it is a good approximation to consider a
-two-neutrino oscillation between the $\mu$ and $\tau$ flavours, and to neglect
-the $\nu_\mu \rightarrow \nu_e$ channel. 
+atmospheric neutrino experiment at Super-Kamiokande\cite{superk} (Super-K): for
+neutrinos produced by cosmic rays in the atmosphere, it is a good approximation
+to consider a two-neutrino oscillation between the $\mu$ and $\tau$ flavours,
+and to neglect the $\nu_\mu \rightarrow \nu_e$ channel. 
 This simple mixing matrix can be substituted in eq.~\ref{eq:nuprob} to obtain a
 more concrete oscillation probability:
 \begin{align}
@@ -206,10 +224,13 @@ more concrete oscillation probability:
 	\frac{\Delta m_{12}^2 L}{2 E}) + \exp(-\mi \frac{\Delta m_{21}^2 L}{2
 	E})\bigg]\nonumber\\
 	&= \cos^2\theta \sin^2\theta\enskip \bigg[2 - 2\cos\frac{\Delta m_{21}^2 L}{2
-	E}\bigg]\quad\text{(since $\Delta m_{12}^2 = -\Delta m_{21}^2$)}\nonumber\\
+	E}\bigg]\nonumber\\
 	&= \sin^2(2\theta)\sin^2\bigg(\frac{\Delta m^2}{4}
-	\frac{L}{E}\bigg).\label{eq:twonu}
+	\frac{L}{E}\bigg),\label{eq:twonu}
 \end{align}
+where in the first step we have used the fact that $\Delta m_{12}^2 = m_1^2 -
+m_2^2=-(m_2^2 - m_1^2) = -\Delta m_{21}^2$ to bring the exponentials into
+cosine form.
 Note that there are only two mass eigenstates here, hence we define $\Delta m^2
 \equiv \Delta m_{21}^2$.
 

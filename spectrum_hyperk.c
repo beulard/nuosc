@@ -210,17 +210,9 @@ void spectrum::reconstruct(spectrum* os, int smooth) {
 	// Random number generator
 	static int seed = 0;
 	TRandom ra(seed);
-	seed++;
+	seed+=1;
 
 
-	// TODO instead of smoothing a spectrum
-	// repeat the sensitivity plot for every reconstructed spectrum
-	// and take the mean as the center and evaluate the standard deviation
-	// and plot that as a band around the mean
-	//
-	// TODO try to plot sensitivity for 'extreme' values for the mixing
-	// angle (which? check out CDR) and plot a band around the sensitivity
-	// at the best fit
 
 	int N_rec = smooth;
 
@@ -239,26 +231,26 @@ void spectrum::reconstruct(spectrum* os, int smooth) {
 		// distribution
 		for (int i=0; i<N_bins; ++i) {
 			// True value of the energy (center of each bin)
-			double E = 0.2 * (3 + i) + 0.1;
+			double E = 0.05 * (2 + i) + 0.025;
 
 			for (int j=0; j<(int)ceil(e[i]); ++j) {
 				// Can play around with the sigma on the gaussian for different results
 				double E_rec = -1.;
-				while (E_rec > E + 2. || E_rec < 0.1 * E || E_rec < 0.7 || E_rec > 7.9) {
+				while (/*E_rec < 0.1 * E ||*/ E_rec < 0.1 || E_rec > 1.19) {
 					//E_rec = ra.Gaus(E, 0.1 * E);
-					E_rec = ra.Gaus(E, 0.5);
+					E_rec = ra.Gaus(E, 0.10);
 				}
 				//E_rec = E;
 				
 
 				// Find the bin corresponding to the reconstructed energy
-				int bin = (int)round((E_rec - 0.7) / 7.4 * N_bins + 1e-3);
+				int bin = (int)round((E_rec - 0.125) / 1.1 * N_bins + 1e-3);
 
 				// This means overflow and should be caught
 				if (bin < 0)
-					Printf("%d", bin);
+					Printf("underflow %d", bin);
 				if (bin > N_bins - 1)
-					Printf("%d", bin);
+					Printf("overflow %d", bin);
 
 		
 				// The value of each event is 1, except for the last one which might be

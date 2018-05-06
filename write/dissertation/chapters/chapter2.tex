@@ -171,7 +171,7 @@ n^\text{I}_i)^2}{n^\text{N}_i}}\\
 = 2\sqrt{\overline{\Delta\chi^2}}.$$
 Hence, the sensitivity we evaluate from our model is actually the mean value of
 the $\Delta\chi^2$ statistic, whose purpose is to distinguish between the two
-hierarchies. Quantitatively, as shown by Blennow\cite{blennow}, the square root of
+hierarchies. Quantitatively, as shown by Blennow et al.\cite{blennow}, the square root of
 $\overline{\Delta\chi^2}$ in fact corresponds to the confidence level at which the
 experiment will be able to reject the inverted hierarchy with a 50\% chance of
 type~II error\footnote{Type II error: accepting a hypothesis although it is
@@ -359,7 +359,7 @@ The DUNE experiment is thus a perfect candidate to try our simple model and see 
 we can reproduce results from the literature, namely predictions on the
 potential outcomes of the experiment.
 
-\subsection{Event rate at the detector}
+\subsection{Event rate at the detector}\label{sec:event}
 In order to predict an event rate $N$ in a general detector, we usually need three
 elements: the luminosity of the beam $L$, the interaction cross section $\sigma$, and the
 efficiency of the detector $\eps$:
@@ -498,14 +498,12 @@ sensitivity to the mass hierarchy and $\delta_{CP}$.
 The CDR uses the \textsc{Genie}\cite{GENIE} neutrino event generator and a
 parametrized detector response, to process the neutrino flux and
 obtain an event rate through Monte Carlo simulations. This complex modelling
-allows them to ``classify the types of neutrino interactions, including
-backgrounds and misidentified interactions''\cite{LBNE}. 
-Hence they are able to predict that the total number
-of CC events from $\nu_e$ appearance between 0.5 and \SI{8}{\GeV} during an exposure of 150
-kt$\cdot$MW$\cdot$year will be $N^\text{N}_\text{int}=861$ if the true hierarchy is normal,
-and $N^\text{I}_\text{int}=495$ if it is inverted. Although both results assume that
-$\delta_{CP}=0$, we will be able to calculate the event rates for all values of
-$\delta_{CP}$ using our model.
+allows them to predict that the total number of CC events from $\nu_e$
+appearance between 0.5 and \SI{8}{\GeV} during an exposure of 150
+kt$\cdot$MW$\cdot$year will be $N^\text{N}_\text{int}=861$ if the true
+hierarchy is normal, and $N^\text{I}_\text{int}=495$ if it is inverted.
+Although both results assume that $\delta_{CP}=0$, we will be able to calculate
+the event rates for all values of $\delta_{CP}$ using our model.
 
 As can be seen on any of the graphs of figure~\ref{fig:dune_prob}, the area under the first
 appearance peak is different for different values of $\delta_{CP}$. This
@@ -652,7 +650,8 @@ for example~\cite{ballett, martin-albo, laguna-lbno, masud}). We predict a great
 significance on CP violation discovery if $\delta_{CP}$ lies in the upper half circle
 $[0, \pi]$ for both mass hierarchies. The fraction of values of $\delta_{CP}$
 for which the significance is greater than $5\sigma$ is relatively small,
-indicating that a longer exposure is required to obtain meaningful results.
+indicating that a longer exposure or complementary results from a different
+experiment are required to reduce the probability of error.
 The DUNE experiment is expected not only to run in neutrino mode, where mainly
 neutrinos are produced at the LBNF, but also in anti-neutrino mode. This
 is expected to increase the sensitivity to CP violation by a significant amount
@@ -660,6 +659,108 @@ but was not taken into account in our model. In this sense, our estimate of
 $\overline{\Delta\chi^2}$ is very conservative and should be regarded as so.
 
 
+\section{Hyper-K sensitivity}
+In order to have a point of reference to compare DUNE to, we applied the
+exact same procedure to a second future experiment. The Hyper-K detector
+is the planned upgrade to the SuperK detector in Japan. Luckily for us, the
+Hyper-K design report\cite{hyperk} contains much the same information as the
+DUNE CDR, allowing us to reach the same results with minimal changes to
+the codebase. 
+
+While Hyper-K is also sensitive to atmospheric neutrinos, our
+model was originally designed for the purpose of modelling accelerator-based
+neutrinos only. Hence we consider only the neutrino events which arise from the
+J-PARC beam, without taking into account atmospheric events, or even
+mis-identified beam events. The J-PARC accelerator is located \SI{295}{\km}
+away from the Hyper-K detector, which is a much shorter baseline than the
+LBNF-DUNE baseline of \SI{1300}{\km}.
+
+In the design report, the performance of Hyper-K is estimated through models of
+the beamline and Cherenkov detector. The expected number of $\nu_e$ appearance
+events after a 10-year runtime, assuming NH and $\delta_{CP}=0$, is 2300.
+As discussed in section~\ref{sec:event}, this is sufficient to extrapolate the
+expected number of events under both hierarchies and any $\delta_{CP}$.
+Note that the sensitivity plots we present for DUNE and Hyper-K should be
+compared while keeping in mind that their respective exposures are not
+necessarily equivalent. While we quote an absolute exposure of ten years for
+Hyper-K, the quoted exposure 150 kt$\cdot$MW$\cdot$year for DUNE is relative to
+the final beam power and the detector's final fiducial mass.
+
+\begin{figure}
+	\centering
+	\makebox[\textwidth][c]{
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hk_sens_mh_nh.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hk_sens_mh_ih.pdf}
+\end{subfigure}}
+\caption{Sensitivity of Hyper-K to the mass hierarchy for an exposure to the J-PARC
+	beam of 10 years, as a function of $\delta_{CP}$ and the mass hierarchy.}
+\label{fig:hk_sens_mh}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\makebox[\textwidth][c]{
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hk_sens_cp_nh.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.6\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hk_sens_cp_ih.pdf}
+\end{subfigure}}
+\caption{Sensitivity of Hyper-K to CP violation for an exposure to the J-PARC
+	beam of 10 years, as a function of $\delta_{CP}$ and the mass hierarchy.}
+\label{fig:hk_sens_cp}
+\end{figure}
+
+We show the sensitivity of Hyper-K to the mass hierarchy and to CP violation in
+figures~\ref{fig:hk_sens_mh} and~\ref{fig:hk_sens_cp}, respectively.
+Although the total number of events we record for Hyper-K is almost three times
+as many as for DUNE, the latter is overwhelmingly more sensitive to the mass
+hierarchy. This is explained by the fact that at a baseline of \SI{295}{\km},
+the effects of matter on the oscillations are small, and the dependence of the
+oscillation probability on the mass hierarchy is therefore weak. 
+
+The mass hierarchy determination significance, for Hyper-K, is smaller than
+$3\sigma$ for all values of $\delta_{CP}$ if IH is true. It is smaller than
+$5\sigma$ for all values of $\delta_{CP}$ if NH is true, and only greater than
+$3\sigma$ for about 30\% of the possible $\delta_{CP}$ values.
+Keep in mind that since we are not taking into account the atmospheric
+neutrino events, we are only showing here a partial sensitivity. 
+Furthermore, plans are being discussed\cite{t2hkk} to build a second Hyper-K detector in
+the path of the J-PARC beam in Korea, at a baseline 1300-1600\si{\km}.
+With a baseline similar to DUNE, this upgrade is expected to increase the mass
+hierarchy sensitivity of Hyper-K to a $6\sigma$ significance even for the least
+favourable $\delta_{CP}$ values.
+
+On the other hand, we predict that Hyper-K will be extremely sensitive to CP
+violation, ruling out CP conservation with a significance $>5\sigma$ for almost
+every value of $\delta_{CP}$ different from $0$ and $\pi$.
+
+To summarize our results, it is clear that the next generation of experiments
+is being designed specifically to solve the remaining issues in the theory of
+neutrino oscillations. Using a simple model of neutrino oscillations and
+preliminary results from the designing groups, we are able to show
+quantitatively how sensitive we expect DUNE and Hyper-K to be to two of the
+as-yet-unknown oscillation parameters, namely the neutrino mass hierarchy and
+the CP-violating phase $\delta_{CP}$.
+
+We predict that DUNE, with an exposure of 150 kt$\cdot$MW$\cdot$year, will
+reject one of the hierarchies with a significance greater than $5\sigma$ under
+any combination of mass hierarchy and $\delta_{CP}$. DUNE's sensitivity to CP
+violation is fairly low, exceeding a $5\sigma$ significance for only about 10\% 
+of possible $\delta_{CP}$ values, for either hierarchy.
+
+We predict that Hyper-K, after a 10-year exposure to the J-PARC beam, is
+much less sensitive to the mass hierarchy than DUNE, with a maximum
+significance around $3\sigma$. However its CP violation sensitivity appears
+exceedingly high, being better than $5\sigma$ for 75\% of the possible
+$\delta_{CP}$ values under either hierarchy.
 
 
 
