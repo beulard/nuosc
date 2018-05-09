@@ -8,27 +8,47 @@
 %\end{center}
 
 This dissertation is a report of the work that was done from September 2017 to
-April 2018.
+April 2018, as part of an MPhys final year project.
 
-All the graphs shown in this report are results of our neutrino oscillation
-model. ((not true: the flux plot is stolen from cdr!))
-The model was built using C++. It effectively implements all
-the formalism we describe in chapter~\ref{ch:introduction}, and uses technical
-information from future experiments in order to determine their sensitivity. 
-We used CERN's ROOT framework\cite{ROOT} for the plots. The code is available
-publicly at \href{url}{https://github.com/beulard/nuosc}.
+Where mathematical derivations are presented that are not a product of our
+original work, we make it known explicitly and provide a reference to the
+original author(s).
 
 
-You do not get extra marks from including a preface, but you will have marks
-deducted if you do not! The purpose of the “preface” is for you to state
-explicitly the extent to which your dissertation relies on the work of others,
-and highlight the portion that you claim to be your own original work.  Without
-this statement, it will be assumed that none of the work is your own, and that
-your report is simply a review of what other people have done. Please discuss
-with your supervisor to ascertain what, if any, of the work you have done is
-not just new to you, but new to the field, i.e. original research. If there are
-any aspects of your project are original, however small, and even if achieved
-in collaboration with others, make sure this is made very clear in the preface
-and abstract. 
-a.	Additional note to those who have carried out project work before starting the Final Year Project: It is quite common for students to have started working with their final year project supervisor prior to their final year, e.g. on a Mathematical Physics project, as a Research Placement student, or as a JRA/SURA student. It is absolutely fine for your final year project to be a continuation of work that was carried out earlier. However, you have to be very clear in the preface what is done before September 2016. It might be necessary to put some material produced before then, e.g. derivations from a Mathematical Physics project, into an appendix.
-b.	An example preface is as follows: “Chapter 1 is review material (all references are given in Section 7). The data in section 2.1 were provided by my supervisor.  The analysis in section 3.2 was carried out using codes that were adapted from those developed by PhD Student Santa Claus. I wrote the codes used to carry out the analysis in Chapter 4 from scratch. The results presented in 5.1 are, the best of the knowledge of my supervisor and I, original and are currently being prepared for publication in a refereed journal. The derivation included in Appendix B was carried out by myself before the final year project time period.” 
+All graphs shown in this report are results of our neutrino oscillation
+model, with the exception of figure~\ref{fig:nuflux} which is a reproduction
+from the DUNE Conceptual Design Report\cite{cdr}. The ROOT framework\cite{ROOT}
+is used to produce the plots.
+The model is a C++ implementation of the formalism of chapter~\ref{ch:osc} and
+the statistics of section~\ref{sec:statistics}. For
+reference, it is available publicly at
+\href{url}{https://github.com/beulard/nuosc}.
+In order to evaluate experimental sensitivities, the code requires predicted
+integrated event rates to be provided as inputs. In the case of DUNE and Hyper-K,
+these are estimated from models of the beamline and detector, and are
+presented in their respective design reports\cite{cdr, hyperk}.
+
+Our results are unique but not original, as similar results can be found ---
+and are often referenced throughout the text --- in the literature.
+
+
+%You do not get extra marks from including a preface, but you will have marks
+%deducted if you do not! The purpose of the “preface” is for you to state
+%explicitly the extent to which your dissertation relies on the work of others,
+%and highlight the portion that you claim to be your own original work.  Without
+%this statement, it will be assumed that none of the work is your own, and that
+%your report is simply a review of what other people have done. Please discuss
+%with your supervisor to ascertain what, if any, of the work you have done is
+%not just new to you, but new to the field, i.e. original research. If there are
+%any aspects of your project are original, however small, and even if achieved
+%in collaboration with others, make sure this is made very clear in the preface
+%and abstract. 
+%b.	An example preface is as follows: “Chapter 1 is review material (all
+%references are given in Section 7). The data in section 2.1 were provided by my
+%supervisor.  The analysis in section 3.2 was carried out using codes that were
+%adapted from those developed by PhD Student Santa Claus. I wrote the codes used
+%to carry out the analysis in Chapter 4 from scratch. The results presented in
+%5.1 are, the best of the knowledge of my supervisor and I, original and are
+%currently being prepared for publication in a refereed journal. The derivation
+%included in Appendix B was carried out by myself before the final year project
+%time period.” 

@@ -1,12 +1,12 @@
 \label{ch:methods}
-In this chapter, we discuss our model of neutrino
-oscillations and present the resulting plots. We give a review of the DUNE experiment
-and detail how neutrino event rates can be predicted via a combination of our
-model and previous results. Finally, we evaluate the sensitivity of the DUNE
-experiment to the neutrino mass hierarchy and CP violation.
-We start by introducing the statistical methods used in the field of
-neutrino physics to evaluate the sensitivity of neutrino experiments to the
-underlying oscillation parameters. 
+In this chapter, we will discuss the statistics of experimental sensitivity,
+our implementation of neutrino oscillations and how it fits into models of
+long-baseline neutrino experiments.
+We will concisely present examples of oscillation probability plots
+produced by our oscillation model, followed by a detailed section on the
+modelling of the DUNE experiment. At the end of the chapter, we will show our
+predictions for the sensitivity of both DUNE and Hyper-K to the mass hierarchy
+and to CP violation. 
 
 \section{Statistical analysis}\label{sec:statistics}
 In this section, we will introduce qualitatively and quantitatively the definition of
@@ -215,7 +215,7 @@ DUNE model.
 
 
 
-\subsection{Sensitivity to CP violation}
+\subsection{Sensitivity to CP violation}\label{sec:sens_cpv}
 In addition to the sensitivity to the mass hierarchy, we can estimate the
 sensitivity to CP violation as a function of $\delta_{CP}$ using a similar
 statistic as eq.~\ref{eq:mean_dc2_mh_d}. The sensitivity to CP violation
@@ -261,7 +261,7 @@ Figure~\ref{fig:twonu_plots} shows the oscillation
 probability of a neutrino initially produced as a $\nu_\mu$. 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.6\textwidth]{twonu.pdf}
+	\includegraphics[width=0.6\textwidth]{twonu_test.pdf}
 	\captionsetup{width=0.9\textwidth}
 	\caption{Oscillation probability vs. $L/E$ for two neutrino flavours. The
 	amplitude is governed by $\theta$ while the frequency is proportional to
@@ -298,7 +298,7 @@ probability function of eq.~\ref{eq:nuprob}.
 \end{figure}
 Figure~\ref{fig:threenu_plots} shows the oscillation probability for a neutrino
 starting as a $\nu_e$ as a function of $L/E$. All parameters except
-$\delta_{CP}$ are best-fit values listed by the PDG\cite{pdg} under the
+$\delta_{CP}$ are best-fit values listed by the PDG under the
 assumption that the true mass hierarchy is normally ordered.
 Table~\ref{tab:threenu_params} shows these values.
 
@@ -659,17 +659,17 @@ but was not taken into account in our model. In this sense, our estimate of
 $\overline{\Delta\chi^2}$ is very conservative and should be regarded as so.
 
 
-\section{Hyper-K sensitivity}
+\section{Hyper-K sensitivity}\label{sec:hyperk}
 In order to have a point of reference to compare DUNE to, we applied the
 exact same procedure to a second future experiment. The Hyper-K detector
-is the planned upgrade to the SuperK detector in Japan. Luckily for us, the
+is the planned upgrade to the SuperK detector in Japan. Fortunately for us, the
 Hyper-K design report\cite{hyperk} contains much the same information as the
 DUNE CDR, allowing us to reach the same results with minimal changes to
 the codebase. 
 
 While Hyper-K is also sensitive to atmospheric neutrinos, our
 model was originally designed for the purpose of modelling accelerator-based
-neutrinos only. Hence we consider only the neutrino events which arise from the
+neutrinos only. Hence we consider only those neutrino events which arise from the
 J-PARC beam, without taking into account atmospheric events, or even
 mis-identified beam events. The J-PARC accelerator is located \SI{295}{\km}
 away from the Hyper-K detector, which is a much shorter baseline than the
@@ -733,34 +733,20 @@ $3\sigma$ for about 30\% of the possible $\delta_{CP}$ values.
 Keep in mind that since we are not taking into account the atmospheric
 neutrino events, we are only showing here a partial sensitivity. 
 Furthermore, plans are being discussed\cite{t2hkk} to build a second Hyper-K detector in
-the path of the J-PARC beam in Korea, at a baseline 1300-1600\si{\km}.
+the path of the J-PARC beam in Korea, at a baseline 1000-1300\si{\km}.
 With a baseline similar to DUNE, this upgrade is expected to increase the mass
 hierarchy sensitivity of Hyper-K to a $6\sigma$ significance even for the least
 favourable $\delta_{CP}$ values.
 
-On the other hand, we predict that Hyper-K will be extremely sensitive to CP
+On the other hand, we predict that \emph{Hyper-K will be extremely sensitive to CP
 violation, ruling out CP conservation with a significance $>5\sigma$ for almost
-every value of $\delta_{CP}$ different from $0$ and $\pi$.
+every value of $\delta_{CP}$ different from $0$ and $\pi$.}
 
-To summarize our results, it is clear that the next generation of experiments
-is being designed specifically to solve the remaining issues in the theory of
-neutrino oscillations. Using a simple model of neutrino oscillations and
-preliminary results from the designing groups, we are able to show
-quantitatively how sensitive we expect DUNE and Hyper-K to be to two of the
-as-yet-unknown oscillation parameters, namely the neutrino mass hierarchy and
-the CP-violating phase $\delta_{CP}$.
+In the next and final chapter, we will summarize and interpret our results and
+conclude by touching on the shortcomings of this project and the many ways in
+which it could be expanded through future work.
 
-We predict that DUNE, with an exposure of 150 kt$\cdot$MW$\cdot$year, will
-reject one of the hierarchies with a significance greater than $5\sigma$ under
-any combination of mass hierarchy and $\delta_{CP}$. DUNE's sensitivity to CP
-violation is fairly low, exceeding a $5\sigma$ significance for only about 10\% 
-of possible $\delta_{CP}$ values, for either hierarchy.
 
-We predict that Hyper-K, after a 10-year exposure to the J-PARC beam, is
-much less sensitive to the mass hierarchy than DUNE, with a maximum
-significance around $3\sigma$. However its CP violation sensitivity appears
-exceedingly high, being better than $5\sigma$ for 75\% of the possible
-$\delta_{CP}$ values under either hierarchy.
 
 
 

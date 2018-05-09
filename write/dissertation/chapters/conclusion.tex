@@ -1,20 +1,84 @@
 \label{ch:conclusion}
-Mention how we didn't take the antineutrino mode into account, which
-theoretically increases sensitivity, especially CPV (?).  
+\section{Summary}
+It is clear that the next generation of experiments
+is being designed specifically to solve the remaining issues in the theory of
+neutrino oscillations. Using a simple model of neutrino oscillations and
+preliminary results from the designing groups, we are able to show
+quantitatively how sensitive we expect DUNE and Hyper-K to be to two of the
+as-yet-unknown oscillation parameters, namely the neutrino mass hierarchy and
+the CP-violating phase $\delta_{CP}$.
 
-We could have evaluated sensitivity as a function of exposure to see evolution
-of significance over time.
+From figure~\ref{fig:sens_mh}, we predict that DUNE, with an exposure of 150
+kt$\cdot$MW$\cdot$year, will reject one of the hierarchies with a significance
+greater than $5\sigma$ under any combination of mass hierarchy and
+$\delta_{CP}$. DUNE's sensitivity to CP violation (fig.~\ref{fig:sens_cp}) is
+fairly low, exceeding a $5\sigma$ significance for only about 10\% of possible
+$\delta_{CP}$ values, for either hierarchy.
 
-We could have done this for more future experiments, eg T2HKK and PINGU-icecube.
+We predict that Hyper-K, after a 10-year exposure to the J-PARC beam, is
+much less sensitive to the mass hierarchy than DUNE, with a maximum
+significance around $3\sigma$ (fig.~\ref{fig:hk_sens_mh}). However its CP violation
+sensitivity (fig.~\ref{fig:hk_sens_cp}) appears exceedingly high, being better than
+$5\sigma$ for 75\% of the possible $\delta_{CP}$ values under either hierarchy.
 
-We could have digged deeper in the statistics and evaluated ourselves through
-MC the distribution of $dc2$ for MH and CPV.
+Evidently, the most beneficial outcome for neutrino physics would result from
+combining the two experiments, with DUNE rejecting one of the hierarchies and
+Hyper-K confirming or disproving CP violation. In reality, many more neutrino
+experiments are currently running or being designed, and the bigger picture is
+full of interesting details that are beyond the scope of this report, such as
+parameter degeneracies, the existence of sterile neutrinos or non-standard
+neutrino interations (see~\cite{raut}).
 
-Could have simulated Hyper-K Korea upgrade to show increase in sensitivities.
+Thus what we present here is merely a minimal and incomplete picture, but it is
+hopefully a worthwhile attempt at providing insight into the future of neutrino
+oscillation experiments.
 
 
-All reports should include a conclusions chapter. This can be short. This can collate conclusions of previous chapters (these can be direct copies, rather than reworded, but ask your supervisor to check that this is OK in your specific context).
+\section{Shortcomings and future work}
+There are many ways in which this project is incomplete, some of which stand
+out more than others. 
+One of them is that our model only considers the appearance events resulting
+from the ``neutrino'' mode of the respective accelerator. Both the LBNF and J-PARC
+beams are designed to be able to run in ``neutrino'' or ``anti-neutrino'' mode,
+i.e.~it is possible to reverse the focusing magnetic field such that
+anti-neutrinos are predominantly present in the beam. Both DUNE and Hyper-K are planned
+to collect data under both polarities.
+In addition to increasing the overall sensitivity (since more data is
+collected), this has the effect of breaking the $\theta_{23}$ degeneracy, as
+discussed in section~\ref{sec:state}, resulting in an extra dimension in
+parameter space and, if modelled properly, a greater and more accurate insight
+into the potential outcomes of the experiment.
 
-Some conclusions chapters will include a section describing future work. 
+Secondly, as pointed out in section~\ref{sec:sens_cpv}, we do not explicitely
+evaluate the distribution of the CP violation test statistic
+$\Delta\chi^2_{CPV}$, which impedes our ability to interpret CP violation
+sensitivity results. A more thorough study would include explicit determination
+of the distributions of both the mass hierarchy test statistic $\Delta\chi^2$
+of equation~\ref{eq:dc2} as well as $\Delta\chi^2_{CPV}$, through Monte Carlo
+simulations of the experiment.
 
-Take the opportunity to reflect on your experience. If you were able to go back in time 9 months, what advice would you give yourself?
+Thirdly, our results are given only for a fixed value of the exposure of the detector to
+the beam. A straightforward extension to the code would allow us to determine
+the sensitivity \emph{as a function of exposure}. From this information, a
+value of the ``critical exposure'' could be extracted.  We could define
+this value, for example, as the exposure for which the mass hierarchy
+rejection significance is greater than $5\sigma$ for all values of
+$\delta_{CP}$. Coincidentally, for DUNE, this critical exposure seems to be
+quite close to 150 kt$\cdot$MW$\cdot$year (see figure~\ref{fig:sens_mh}).
+
+In section~\ref{sec:hyperk}, we quickly mentioned the construction of a second
+Hyper-K detector in Korea. Again, with minor additions to the code, the
+increase in sensitivity of the Hyper-K experiment could have been evaluated, 
+leading to more relevant results.
+
+Finally, and although it would require significantly more work to make
+the code flexible enough, the model could be expanded to atmospheric neutrinos,
+in order to more realistically model Hyper-K, and to allow the incorporation of
+experiments such as IceCube collaboration's PINGU and ICAL.
+
+
+%%All reports should include a conclusions chapter. This can be short. This can collate conclusions of previous chapters (these can be direct copies, rather than reworded, but ask your supervisor to check that this is OK in your specific context).
+%%
+%%Some conclusions chapters will include a section describing future work. 
+%%
+%%Take the opportunity to reflect on your experience. If you were able to go back in time 9 months, what advice would you give yourself?
