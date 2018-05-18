@@ -16,20 +16,28 @@ fairly low, exceeding a $5\sigma$ significance for only about 10\% of possible
 $\delta_{CP}$ values, for either hierarchy.
 
 We predict that Hyper-K, after a 10-year exposure to the J-PARC beam, is
-much less sensitive to the mass hierarchy than DUNE, with a maximum
-significance around $3\sigma$ (fig.~\ref{fig:hk_sens_mh}). However its CP violation
-sensitivity (fig.~\ref{fig:hk_sens_cp}) appears exceedingly high, being better than
-$5\sigma$ for 75\% of the possible $\delta_{CP}$ values under either hierarchy.
+much less sensitive to the mass hierarchy than DUNE despite recording more
+events. Its maximum mass hierarchy rejection significance is around $3\sigma$
+(fig.~\ref{fig:hk_sens_mh}). This poor sensitivity is due to the relatively
+short baseline (295 km). Because matter effects are weak at this baseline, the
+differences in the oscillation probability due to the mass hierarchy are small.
+The sensitivity of Hyper-K to CP violation (fig.~\ref{fig:hk_sens_cp}) appears
+exceedingly high, being better than $5\sigma$ for 75\% of the possible
+$\delta_{CP}$ values under either hierarchy. Such a high sensitivity can be
+seen as the result of suitable design choices for the beam and detector,
+which maximizes the expected event rate over the given exposure as well as the
+accuracy of the energy reconstruction process.
+
 
 Evidently, the most beneficial outcome for neutrino physics would result from
 combining the two experiments, with DUNE rejecting one of the hierarchies and
 Hyper-K confirming or disproving CP violation. In reality, many more neutrino
-experiments are currently running or being designed, and the bigger picture is
+experiments are currently running and being designed, and the bigger picture is
 full of interesting details that are beyond the scope of this report, such as
 parameter degeneracies, the existence of sterile neutrinos or non-standard
 neutrino interations (see~\cite{raut}).
 
-Thus what we present here is merely a minimal and incomplete picture, but it is
+Thus what we present here is merely a simplistic and incomplete picture, but it is
 hopefully a worthwhile attempt at providing insight into the future of neutrino
 oscillation experiments.
 
@@ -38,16 +46,29 @@ oscillation experiments.
 There are many ways in which this project is incomplete, some of which stand
 out more than others. 
 One of them is that our model only considers the appearance events resulting
-from the ``neutrino'' mode of the respective accelerator. Both the LBNF and J-PARC
-beams are designed to be able to run in ``neutrino'' or ``anti-neutrino'' mode,
+from the neutrino mode of the respective accelerator. Both the LBNF and J-PARC
+beams are designed to be able to run in neutrino or anti-neutrino mode,
 i.e.~it is possible to reverse the focusing magnetic field such that
-anti-neutrinos are predominantly present in the beam. Both DUNE and Hyper-K are planned
-to collect data under both polarities.
-In addition to increasing the overall sensitivity (since more data is
-collected), this has the effect of breaking the $\theta_{23}$ degeneracy, as
-discussed in section~\ref{sec:state}, resulting in an extra dimension in
-parameter space and, if modelled properly, a greater and more accurate insight
-into the potential outcomes of the experiment.
+anti-neutrinos are predominantly present in the beam. Both DUNE and Hyper-K are
+planned to collect data under both polarities.  In addition to increasing the
+overall sensitivity (since more data is collected), this has the effect of
+breaking the $\theta_{23}$ octant degeneracy, as discussed in section~\ref{sec:state}.
+
+Incidentally, there is also a parameter degeneracy in the combination of mass
+hierarchy and $\theta_{23}$ octant that cannot be resolved unless measurements
+in anti-neutrino mode are made as well\cite{raut}. If we denote by LO the case
+where $\theta_{23}$ lies in the lower octant and by HO the case where it lies
+in the higher octant, the degeneracy occurs between the combinations (NH, LO)
+and (IH, HO). That is, these two combinations of parameters result in the same
+oscillation probability.
+In theory, this would prevent DUNE from determining the true mass hierarchy if
+it only made measurements in neutrino mode, as long as the octant of
+$\theta_{23}$ was undetermined. To avoid this problem in our model, and for
+simplicity, $\theta_{23}$ was assumed to lie in the lower octant.
+A better model would consider both polarity modes and add the $\theta_{23}$
+parameter to the analysis, resulting in an extra dimension in parameter space
+and a greater and more accurate insight into the
+potential outcomes of the experiment.
 
 Secondly, as pointed out in section~\ref{sec:sens_cpv}, we do not explicitely
 evaluate the distribution of the CP violation test statistic
@@ -63,8 +84,9 @@ the sensitivity \emph{as a function of exposure}. From this information, a
 value of the ``critical exposure'' could be extracted.  We could define
 this value, for example, as the exposure for which the mass hierarchy
 rejection significance is greater than $5\sigma$ for all values of
-$\delta_{CP}$. Coincidentally, for DUNE, this critical exposure seems to be
-quite close to 150 kt$\cdot$MW$\cdot$year (see figure~\ref{fig:sens_mh}).
+$\delta_{CP}$. Coincidentally, for DUNE, our results seem to indicate that this
+critical exposure is quite close to 150 kt$\cdot$MW$\cdot$year (see
+figure~\ref{fig:sens_mh}).
 
 In section~\ref{sec:hyperk}, we quickly mentioned the construction of a second
 Hyper-K detector in Korea. Again, with minor additions to the code, the
@@ -74,7 +96,7 @@ leading to more relevant results.
 Finally, and although it would require significantly more work to make
 the code flexible enough, the model could be expanded to atmospheric neutrinos,
 in order to more realistically model Hyper-K, and to allow the incorporation of
-experiments such as IceCube collaboration's PINGU and ICAL.
+experiments such as IceCube collaboration's PINGU, ICAL, and others.
 
 
 %%All reports should include a conclusions chapter. This can be short. This can collate conclusions of previous chapters (these can be direct copies, rather than reworded, but ask your supervisor to check that this is OK in your specific context).

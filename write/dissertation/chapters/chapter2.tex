@@ -64,7 +64,7 @@ $\chi^2$ statistic:
 where $n_i(\theta)$ are the values predicted by the model using a set of parameters
 $\theta$, and $\sigma_i$ is the uncertainty associated with the measurement $y_i$.
 This statistic can be minimized in parameter-space to yield the best-fit
-$\theta$, i.e. the set of parameters that seems to most accurately describe nature:
+$\theta$, i.e. the set of parameters that seems to most accurately describe Nature:
 \begin{equation}\chi^2_\text{min} = \min_\theta \sum_i \frac{(y_i -
 n_i(\theta))^2}{\sigma^2_i}.\label{eq:c2_min}\end{equation}
 If $n$ measurements were made and $\theta$ contains $p$ parameters, this
@@ -72,15 +72,17 @@ minimum $\chi^2$ will be distributed according to a $\chi^2$ distribution with
 $n-p$ degrees of freedom, allowing us to determine a confidence level for
 rejecting the null hypothesis.
 
-When trying to determine the mass hierarchy, we need a test statistic that can
-distinguish between the two hypotheses. We define
+When trying to determine the mass hierarchy from data, one might want to use a
+test statistic which is more appropriate to this specific purpose. In order to
+more easily discriminate between the two possible hypotheses, namely NH and IH,
+we define
 \begin{equation}\Delta \chi^2 = \min_{\theta \in \text{IH}} \chi^2(\theta) - \min_{\theta \in
 \text{NH}} \chi^2(\theta),\label{eq:dc2}\end{equation}
-where $\theta$ are parameters constrained to a particular mass hierarchy in the
-minimization. The sign of this statistic indicates which hierarchy seems to
-best fit our data. Its distribution, which in general is not a $\chi^2$
-distribution, gives us the confidence level at which we can reject one of the
-hierarchies.
+where $\theta$ are oscillation parameters constrained to a particular mass
+hierarchy in the minimization. The sign of this statistic indicates which
+hierarchy seems to best fit our data. Its distribution, which in general is not
+a $\chi^2$ distribution, gives us the confidence level at which we can reject
+one of the hierarchies.
 
 In the context of future experiments, we cannot evaluate $\chi^2$ since no
 measurements have been made. A standard procedure\cite{blennow} to evaluate
@@ -142,8 +144,8 @@ according to a Gaussian with variance $\sigma^2_i=y_i$ (Poisson variable).
 Our model will yield predicted event counts that will depend on
 the true mass hierarchy.  We denote by $n^\text{N}_i$ the predicted count under normal
 hierarchy and by $n^\text{I}_i$ the predicted count under inverted hierarchy.
-Let us assume that the true hierarchy --- the one picked by nature --- is normally
-ordered. Then, assuming our model accurately describes nature,  we can write
+Let us assume that the true hierarchy --- the one picked by Nature --- is normally
+ordered. Then, assuming our model accurately describes Nature,  we can write
 our experimental event counts as $y_i = n^\text{N}_i + \sigma_i g_i$, where
 $g_i$ is a random variable from a Gaussian distribution centered at zero and
 with variance 1.
@@ -158,8 +160,8 @@ The $\Delta \chi^2$ statistic of equation~\ref{eq:dc2} can then be written as
 	\frac{2(n^\text{N}_i -
 	n^\text{I}_i)}{n^\text{N}_i} g_i,\label{eq:dc2_mh}
 \end{align}
-where in the last step we have used that $\sigma_i = \sqrt{y_i} \approx \sqrt{n^\text{N}_i}$
-when our event count is large.
+where in the last step we have used the fact that $\sigma_i = \sqrt{y_i}
+\approx \sqrt{n^\text{N}_i}$ when our event count is large.
 In this form, we can see that $\Delta \chi^2$ is a Gaussian-distributed
 variable where the mean is the first term of eq.~\ref{eq:dc2_mh}:
 \begin{equation}
@@ -174,8 +176,9 @@ the $\Delta\chi^2$ statistic, whose purpose is to distinguish between the two
 hierarchies. Quantitatively, as shown by Blennow et al.\cite{blennow}, the square root of
 $\overline{\Delta\chi^2}$ in fact corresponds to the confidence level at which the
 experiment will be able to reject the inverted hierarchy with a 50\% chance of
-type~II error\footnote{Type II error: accepting a hypothesis although it is
-false.}. 
+type~II error, i.e.~a 50\% chance to accept NH as the true hierarchy although
+it is not.
+
 
 We recognize in eq.~\ref{eq:mean_dc2_mh} the sensitivity of
 eq.~\ref{eq:sens_mh} without the parameters $\theta$.  However, for neutrino
@@ -239,7 +242,7 @@ at the end of this chapter.
 
 In the case of the sensitivity to CP violation, the $\overline{\Delta\chi^2}$
 we have defined in~\ref{eq:dc2_cpv} does not, in general, correspond to the mean
-value of the $\Delta\chi^2$ statistic. In order to make such a claim, one would
+value of a $\Delta\chi^2$ statistic. In order to make such a claim, one would
 have to determine the distribution of $\Delta\chi^2$ through Monte Carlo
 techniques. Surprisingly, to the extent of our research, and unlike the case of
 the mass hierarchy sensitivity, this has not been done in the literature.  It
@@ -250,7 +253,7 @@ here, although it would have required a significant time investment to
 refurbish the code for such a purpose.
 
 
-\section{Neutrino oscillations model}
+\section{Neutrino oscillation model}
 By implementing the concepts introduced in the previous chapter, we are able to
 model the oscillation of neutrinos through a vacuum or through matter.
 
@@ -269,9 +272,10 @@ probability of a neutrino initially produced as a $\nu_\mu$.
 	appearance of $\nu_\tau$ is almost 100\% at the half period.}
 	\label{fig:twonu_plots}
 \end{figure}
-For this plot, we picked the parameters $\Delta m^2$ and $\theta$ (shown in
-figure) from global fits of past experiments, reported by the Particle Data
-Group (PDG)\cite{pdg}.
+For this plot, we picked the parameters $\Delta m^2$ and $\theta$ as the
+best-fit atmospheric parameters $\Delta m^2_{32}$ and $\theta_{23}$ listed in
+table~\ref{tab:threenu_params}.
+
 
 The next step is to implement three-neutrino oscillations. This involves
 implementing the complex PMNS matrix of eq.~\ref{eq:PMNS} and the more general
@@ -297,27 +301,12 @@ probability function of eq.~\ref{eq:nuprob}.
 \label{fig:threenu_plots}
 \end{figure}
 Figure~\ref{fig:threenu_plots} shows the oscillation probability for a neutrino
-starting as a $\nu_e$ as a function of $L/E$. All parameters except
-$\delta_{CP}$ are best-fit values listed by the PDG under the
-assumption that the true mass hierarchy is normally ordered.
-Table~\ref{tab:threenu_params} shows these values.
+starting as a $\nu_e$ as a function of $L/E$. In all the plots
+from figure~\ref{fig:threenu_plots} on, all oscillation parameters are the
+best-fit values listed in table~\ref{tab:threenu_params} and the hierarchy and
+$\delta_{CP}$ are specified.
 
 
-\begin{wraptable}{r}[2cm]{0.36\textwidth}
-	\captionsetup{justification=centering}
-	\centering
-\begin{tabular}{ | c | c | }
-	\hline
-	Parameter & Value\\\hline
-	$\Delta m^2_{21}$ & \SI{7.37e-5}{\eV^{-2}}\\
-	$|\Delta m^2_{31}|$ & \SI{2.56e-3}{\eV^{-2}}\\
-	$\theta_{12}$		  & 0.576\\
-	$\theta_{23}$			& 0.710\\
-	$\theta_{13}$ 		& 0.147\\\hline
-\end{tabular}
-	\caption{Parameter values used in our neutrino oscillations model.}
-	\label{tab:threenu_params}
-\end{wraptable}
 
 The difference between the two plots in figure~\ref{fig:threenu_plots} clearly
 shows that given all other parameters, it is possible to determine the true
@@ -334,14 +323,14 @@ equation~\ref{eq:matter_potential} is proportional to the electron density in
 the medium.
 
 
-\section{Modelling an accelerator-based long baseline experiment}
+\section{Model of an accelerator-based long baseline experiment}
 
 \subsection{The DUNE experiment}
-The Deep Underground Neutrino Experiment (DUNE) is a future long-baseline
-experiment designed to --- among other goals --- determine the CP violating phase
+The Deep Underground Neutrino Experiment\cite{cdr} (DUNE) is a future long-baseline
+experiment designed --- among other goals --- to determine the CP violating phase
 $\delta_{CP}$, the neutrino mass hierarchy (the sign of $\Delta m^2_{31}$) and
 the octant of $\theta_{23}$ (whether it is greater or less than 
-$\pi/4$)\cite{cdr}. 
+$\pi/4$). 
 It will make use of Fermilab's Long-Baseline Neutrino Facility (LBNF) in Batavia,
 Illinois for the production of a high-intensity neutrino beam aimed at the
 Sanford Underground Research Facility, \SI{1300}{\km} away, where the DUNE
@@ -349,15 +338,15 @@ detectors will be built.
 Four liquid argon time-projection chambers (LArTPC) of fiducial mass
 \SI{10}{\kt} each will serve as detectors, with the ability to reconstruct the
 trajectories and kinematic quantities of interacting neutrinos.
+
 DUNE will primarily observe the oscillations from $\nu_\mu$ to $\nu_e$ in the
 LBNF beam. This appearance channel alone is expected to provide enough data to
 reach the objectives mentioned above, as we will show later.
 The neutrino beam will travel through the Earth's crust for \SI{1300}{\km},
 hence matter effects must be taken into account.
-
-The DUNE experiment is thus a perfect candidate to try our simple model and see if
-we can reproduce results from the literature, namely predictions on the
-potential outcomes of the experiment.
+The DUNE experiment is thus a perfect candidate to try our simple model and see
+if we can reproduce results from the literature, namely predictions on the
+sensitivity of the experiment.
 
 \subsection{Event rate at the detector}\label{sec:event}
 In order to predict an event rate $N$ in a general detector, we usually need three
@@ -447,12 +436,12 @@ In general, the first (rightmost) peak\footnote{It is the ``first peak''
 because the probability falls to zero at higher energies. Note that the curves
 in figure~\ref{fig:threenu_plots} had $L/E$ on the x-axis, while those in
 figure~\ref{fig:dune_prob} are plotted against $E$. Hence the region covered by
-the latter corresponds to the leftmost part of the former.} in the oscillation
+the latter corresponds to the ``mirrored'' leftmost part of the former.} in the oscillation
 probability will provide the best signal, since it is wider than all other
 peaks on the energy axis, and thus easier to resolve.
 The first oscillation peak for the DUNE baseline $L=\SI{1300}{\km}$ occurs between 1 and
 \SI{10}{\GeV}, and thus it is the
-energy range of choice for the DUNE experiment\cite{cdr}. 
+energy range of choice for the DUNE experiment. 
 
 It is interesting to observe that matter effects enhance the amplitude of
 oscillations for the NH, and reduce it for the IH. The mass hierarchy only
@@ -460,7 +449,7 @@ influences the sign of one of the mass-squared differences, thus in a vacuum it
 only affects the frequency of oscillations, as is shown on
 figures~\ref{fig:vacNH} and~\ref{fig:vacIH}: the peak amplitudes are left
 unchanged under a change of hierarchy. In vacuum, we can only change the
-amplitude by changing the mixing angles. We see on figures~\ref{fig:matNH}
+amplitude by changing the mixing angles. We see in figures~\ref{fig:matNH}
 and~\ref{fig:matIH} that matter effects mix the parameters --- as is manifest
 already for two neutrinos in equation~\ref{eq:deltam2m} --- in such a way that the
 mass hierarchy can impact the amplitude as well. This feature is crucial to
@@ -505,7 +494,7 @@ hierarchy is normal, and $N^\text{I}_\text{int}=495$ if it is inverted.
 Although both results assume that $\delta_{CP}=0$, we will be able to calculate
 the event rates for all values of $\delta_{CP}$ using our model.
 
-As can be seen on any of the graphs of figure~\ref{fig:dune_prob}, the area under the first
+As can be seen in any of the graphs of figure~\ref{fig:dune_prob}, the area under the first
 appearance peak is different for different values of $\delta_{CP}$. This
 indicates that the integrated event rate depends on $\delta_{CP}$.
 The integrated event rate for any $\delta_{CP}$ is given by
@@ -606,20 +595,45 @@ defined in equation~\ref{eq:mean_dc2_mh_d}. It is useful now to recall the
 interpretation of sensitivity for the mass hierarchy, as shown
 in~\cite{blennow}: the square root of $\overline{\Delta\chi^2}$ corresponds to
 the confidence level at which the experiment will be able to reject the false
-hierarchy with a 50\% chance of type II error.
+hierarchy with a 50\% chance of type~II error.
 
 Qualitatively, we can see that if
-the mass hierarchy is normally ordered, DUNE will more efficiently determine it
-if $\delta_{CP}$ lies around $-\pi/2$. On the other hand, if it is inverted, a $\delta_{CP}$
-around $\pi/2$ will be more favourable. Under an inverted hierarchy, the
-average sensitivity is lower than for NH, which can be explained by the overall smaller
-number of events expected to be observed under IH. 
+the mass hierarchy is normally ordered, DUNE will more efficiently reject IH
+if $\delta_{CP}$ lies around $-\pi/2$. On the other hand, if IH is the true
+hierarchy, a $\delta_{CP}$ around $\pi/2$ will be more favourable. Under an
+inverted hierarchy, the average sensitivity is lower than for NH, which can be
+explained by the overall smaller number of events expected to be observed under
+IH. 
 
-However, for both
-hierarchies, $\sqrt{|\overline{\Delta\chi^2}|}$ is greater than 5 for all
-values of $\delta_{CP}$, hence we predict that \emph{DUNE will reject the false
-hierarchy with a significance $>5\sigma$ whatever the true combination of parameters
-turns out to be.}
+However, for both hierarchies, $\sqrt{|\overline{\Delta\chi^2}|}$ is greater
+than 5 for all values of $\delta_{CP}$, hence we predict that \emph{DUNE will
+reject the false hierarchy with a significance $>5\sigma$ whatever the true
+combination of parameters turns out to be.}
+Comparing our results with the predictions published in the CDR, it is clear
+that we are slightly overestimating the sensitivity of DUNE to the mass hierarchy.
+In our model, we are only considering an exposure of 150~kt$\cdot$MW$\cdot$year
+in the ``neutrino'' mode of the LBNF accelerator, whereby positive pions are
+focused down the decay tunnel and the resulting flux is composed mostly of
+neutrinos. The DUNE experiment will also take data from the ``anti-neutrino''
+mode, where the polarity of the focusing field is reversed in the LBNF
+accelerator. In the CDR, predicted sensitivities are given for an exposure of
+150~kt$\cdot$MW$\cdot$year in neutrino mode plus 150~kt$\cdot$MW$\cdot$year in
+anti-neutrino mode, whereas we only consider the former. Despite this, our
+results and theirs are similar in terms of the significance in rejecting the
+false hierarchy, hence our previous conclusion that we are overestimating
+DUNE's sensitivity.
+
+This discrepancy illustrates the fact that different methods were used to
+compute event rates, to simulate energy reconstruction, and possibly to
+estimate statistical uncertainties on the event rates. On this latter point, it
+can be noted that we have used throughout this work the approximation that
+event rates are Poisson variables with uncertainty given by their square root.
+In general, this is appropriate only when the event rates are large, which is
+not the case in all regions of the spectra (see
+figure~\ref{fig:event_rate_reconstructed}). However, making such an
+approximation was necessary in order to keep the model as simple as possible,
+and the resulting predictions appear to be in the range of what is acceptable
+in this context.
 
 \begin{figure}
 	\centering
@@ -645,18 +659,19 @@ a position to make as strong a statement as we did for sensitivity to the mass h
 However, we follow the conventions used in the literature and refer to
 $\sqrt{\overline{\Delta\chi^2}}=3$ and $\sqrt{\overline{\Delta\chi^2}}=5$ as
 the $3\sigma$ and $5\sigma$ significance on the discovery of CP violation,
-respectively (see
-for example~\cite{ballett, martin-albo, laguna-lbno, masud}). We predict a greater
-significance on CP violation discovery if $\delta_{CP}$ lies in the upper half circle
-$[0, \pi]$ for both mass hierarchies. The fraction of values of $\delta_{CP}$
-for which the significance is greater than $5\sigma$ is relatively small,
-indicating that a longer exposure or complementary results from a different
-experiment are required to reduce the probability of error.
-The DUNE experiment is expected not only to run in neutrino mode, where mainly
-neutrinos are produced at the LBNF, but also in anti-neutrino mode. This
-is expected to increase the sensitivity to CP violation by a significant amount
-but was not taken into account in our model. In this sense, our estimate of
-$\overline{\Delta\chi^2}$ is very conservative and should be regarded as so.
+respectively (see for example~\cite{ballett, martin-albo, laguna-lbno, masud}). 
+
+We predict a greater significance on CP violation discovery if $\delta_{CP}$
+lies in the upper half circle $[0, \pi]$ for both mass hierarchies. The
+fraction of values of $\delta_{CP}$ for which the significance is greater than
+$5\sigma$ is relatively small, indicating that a longer exposure or
+complementary results from a different experiment are required to reduce the
+probability of error.
+
+Again, our results are similar to those presented in the CDR, despite
+considering only the neutrino mode exposure. Hence it appears that our simple
+model is overestimating the sensitivity of DUNE to both the mass hierarchy and
+CP violation.
 
 
 \section{Hyper-K sensitivity}\label{sec:hyperk}
@@ -670,15 +685,15 @@ the codebase.
 While Hyper-K is also sensitive to atmospheric neutrinos, our
 model was originally designed for the purpose of modelling accelerator-based
 neutrinos only. Hence we consider only those neutrino events which arise from the
-J-PARC beam, without taking into account atmospheric events, or even
+J-PARC beam, without taking into account atmospheric events, or
 mis-identified beam events. The J-PARC accelerator is located \SI{295}{\km}
 away from the Hyper-K detector, which is a much shorter baseline than the
 LBNF-DUNE baseline of \SI{1300}{\km}.
 
 In the design report, the performance of Hyper-K is estimated through models of
-the beamline and Cherenkov detector. The expected number of $\nu_e$ appearance
+the beamline and the Cherenkov detector. The expected number of $\nu_e$ appearance
 events after a 10-year runtime, assuming NH and $\delta_{CP}=0$, is 2300.
-As discussed in section~\ref{sec:event}, this is sufficient to extrapolate the
+As discussed in section~\ref{sec:event}, this information is sufficient to extrapolate the
 expected number of events under both hierarchies and any $\delta_{CP}$.
 Note that the sensitivity plots we present for DUNE and Hyper-K should be
 compared while keeping in mind that their respective exposures are not
@@ -738,9 +753,14 @@ With a baseline similar to DUNE, this upgrade is expected to increase the mass
 hierarchy sensitivity of Hyper-K to a $6\sigma$ significance even for the least
 favourable $\delta_{CP}$ values.
 
-On the other hand, we predict that \emph{Hyper-K will be extremely sensitive to CP
-violation, ruling out CP conservation with a significance $>5\sigma$ for almost
-every value of $\delta_{CP}$ different from $0$ and $\pi$.}
+On the other hand, in figure~\ref{fig:hk_sens_cp}, we predict that
+\emph{Hyper-K will be extremely sensitive to CP violation, ruling out CP
+conservation with a significance $>5\sigma$ for 75\% of possible values of
+$\delta_{CP}$.}
+Comparing with the Hyper-K design report, our model seems to slightly overestimate the
+sensitivity, just as for DUNE. Hyper-K is more sensitive than
+DUNE to CP violation under their respective exposures, indicating a potential
+complementarity between the two future experiments.
 
 In the next and final chapter, we will summarize and interpret our results and
 conclude by touching on the shortcomings of this project and the many ways in

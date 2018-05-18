@@ -5,7 +5,7 @@ oscillations in a vacuum, for the commonly considered cases of two and three
 neutrino flavours. We will derive the oscillation probability for
 neutrinos in matter with a constant density, in the simpler case of two
 neutrinos. In the last section, the current state of neutrino oscillations will
-be reviewed in order to provide motivation for the following chapter.
+be reviewed in order to provide context and motivation for the next chapter.
 
 
 \section{History of the neutrino}
@@ -86,12 +86,11 @@ oscillations.
 It is now known experimentally that 
 the neutrino flavours ($\nu_e, \nu_\mu, \nu_\tau$) mix when propagating through
 space\cite{superk}. This process is structurally similar to the quark generation
-mixing between down, strange and bottom quarks\cite{pdg_ckm}
-and is direct evidence that for neutrinos and quarks, the weak
-eigenstates\footnote{Weak eigenstate: state which interacts with the W, Z
-bosons.} are not in one-to-one correspondence with the mass
-eigenstates\footnote{Mass eigenstate: state which has definite mass and
-propagates through space as a wave.}.
+mixing between down, strange and bottom quarks and is direct evidence that for
+neutrinos and quarks, the weak eigenstates\footnote{Weak eigenstate: state
+which interacts with the W, Z bosons.} are not in one-to-one correspondence
+with the mass eigenstates\footnote{Mass eigenstate: state which has definite
+mass and propagates through space as a wave.}.
 
 In the Standard Model, the W bosons mediate the interactions between up-type and
 down-type quarks, and between charged leptons and neutrinos. 
@@ -114,7 +113,7 @@ eigenstates $\ket{\nu_{\alpha}}$ where $\alpha$ is a lepton flavour,
 $\alpha=l_1, l_2, ..., l_n$, and the mass eigenstates $\ket{\nu_i}$, $i=1, 2,
 ..., n$. 
 Flavour eigenstates interact with matter through the weak interaction, and
-hence are the states we observe in nature. Eigenstates are orthogonal within
+hence are the states we observe in Nature. Eigenstates are orthogonal within
 each basis:
 $$
 \bra{\nu_\alpha}\ket{\nu_\beta} = \delta_{\alpha \beta}, \quad
@@ -178,7 +177,7 @@ The transition probability is then
 	&= \sum_i \sum_j U_{\alpha i} U^*_{\beta i} U^*_{\alpha j} U_{\beta j}
 	\exp(-\mi \frac{\Delta m_{ij}^2}{2} \frac{L}{E}),
 \end{align}
-where $\Delta m^2_{ij} = m^2_i - m^2_j$ is the mass squared difference between
+where $\Delta m^2_{ij} = m^2_i - m^2_j$ is the mass-squared difference between
 two mass eigenstates.
 The analysis is similar when considering anti-neutrinos except that $U$ must be
 replaced by $U^*$ everywhere and vice-versa.
@@ -255,7 +254,7 @@ $$P_{\nu_\mu \rightarrow \nu_\mu}(L, E) = 1 - P_{\nu_\mu \rightarrow
 When we consider three eigenstates, the number of parameters is increased to
 four\cite{langacker}:
 three mixing angles $\theta_{12}, \theta_{13}$ and $\theta_{23}$, and an
-imaginary phase $\delta_{CP}$. This so called CP-violating phase gives rise to
+imaginary phase $\me^{\mi \delta_{CP}}$. This so called CP-violating phase gives rise to
 a difference between oscillation probabilities of neutrinos and anti-neutrinos,
 hence it allows violation of the charge-parity (CP) symmetry. 
 The mixing matrix can be written in a suggestive way as
@@ -410,7 +409,7 @@ oscillations:
 2\theta \\ \sin 2\theta & \cos 2\theta - A},\label{eq:flavourmatter1}\end{equation}
 where $A = 2 E V_e / \Delta m^2$.
 This form of the Hamiltonian implies that the mass eigenstates in the vacuum
-are not mass eigenstates in matter. Indeed, if we go back the the mass
+are not mass eigenstates in matter. Indeed, if we go back to the mass
 eigenbasis, we see that the Hamiltonian is no longer diagonal:
 \begin{align*}
 	\hat{H}^m_\text{mass} &= U^\dagger \hat{H}^m_\text{flavour} U\\
@@ -484,7 +483,7 @@ underground through the Earth --- require us to take matter effects into
 account in order to produce a realistic model. The DUNE experiment will be
 performed entirely underground with a baseline of 1300km, enough to have a
 significant effect on the oscillation probability from muon neutrinos to
-electron neutrinos. 
+electron neutrinos, as we will demonstrate in the next chapter. 
 
 
 \subsection{The state of neutrino oscillations}\label{sec:state}
@@ -493,34 +492,100 @@ fact that they are not compatible with the Standard Model, the phenomenology of
 oscillations is not yet complete. While three of the parameters are now known
 with uncertainties of a few percent, the remaining three are expected to
 be fully constrained only by the current and next generation of experiments.
-Initially, solar neutrino experiments were responsible for the determination of
-$\theta_{12}$ and $\Delta m^2_{21}$, while $\theta_{23}$ and $|\Delta m^2_{32}|$
-were measured by atmospheric neutrino experiments\cite{gonzalez-garcia}. 
+%Initially, solar neutrino experiments were responsible for the determination of
+%$\theta_{12}$ and $\Delta m^2_{21}$, while $\theta_{23}$ and $|\Delta m^2_{32}|$
+%were measured by atmospheric neutrino experiments\cite{gonzalez-garcia}. 
 
-While the absolute value of $\Delta m^2_{32}$ is known with high precision, its
-sign is still unknown. This problem of whether the third mass eigenstate is
-heavier or lighter than the other two is called the neutrino mass hierarchy ---
-or mass ordering --- problem. It is likely to be resolved by the next
-generation of long baseline neutrino experiments, as we will show in our results. 
-Throughout this report, we will denote by ``normal hierarchy'' (NH) the case
-where the third mass eigenstate is heavier than the other two ($m_3 > m_2 >
-m_1$, and $\Delta m^2_{32}$ is a positive value), and by ``inverted hierarchy''
-(IH) the case where it is lighter ($\Delta m^2_{32}$ negative).
+\subsubsection{Known parameters}
+The solar mixing angle $\theta_{12}$ and the solar mass squared difference
+$\Delta m^2_{21}$ were the very first parameters to be probed, since already in
+1968 Davis et al.\cite{davis} reported a discrepancy between the expected
+and observed neutrino fluxes from the sun. In 2001, the SNO
+collaboration\cite{sno} reported direct evidence that the solar neutrino flux
+consisted only partly of electron-neutrinos by comparing their results to those
+of Super-K\cite{superk-solar}.
+The solar neutrino problem was solved in 2002 by the KamLAND
+experiment\cite{kamland}. By observing the disappearance of $\overline{\nu}_e$
+produced in several nuclear reactors, they were able to exclude all solutions to the
+solar neutrino problem except for the ``Large Mixing Angle'' solution, whereby
+the solar parameters were estimated to be $\Delta m^2_{21} \approx
+7.5\times10^{-5}$ eV$^2$ and $\theta_{12} \approx 0.59$.
+
+\begin{wraptable}{r}[2cm]{0.36\textwidth}
+	\captionsetup{justification=centering}
+	\centering
+\begin{tabular}{ | c | c | }
+	\hline
+	Parameter & Value\\\hline
+	$\Delta m^2_{21}$ & \SI{7.37e-5}{\eV^{-2}}\\
+	$|\Delta m^2_{32}|$ & \SI{2.56e-3}{\eV^{-2}}\\
+	$\theta_{12}$		  & 0.576\\
+	$\theta_{23}$			& 0.710\\
+	$\theta_{13}$ 		& 0.147\\\hline
+\end{tabular}
+	\caption{Best-fit oscillation parameters from a global fit of past
+	experiments.}
+	\label{tab:threenu_params}
+\end{wraptable}
+In 1998, the Super-K collaboration\cite{superk} provided the first overwhelming evidence for
+the flavour oscillations of neutrinos through the observation of $\nu_\mu$
+disappearance in the flux of neutrinos produced by cosmic rays in the
+atmosphere. The results were consistent with values for the atmospheric
+parameters of $|\Delta m^2_{32}| \approx 10^{-3}$~eV$^2$ and $\sin^2
+2\theta_{23} > 0.82$. These results were later improved upon by the
+MINOS\cite{minos}, NOvA\cite{nova} and T2K\cite{t2k} accelerator-based experiments.
+
+The third mixing angle, $\theta_{13}$, couples atmospheric and solar
+mixings in the PMNS matrix (see eq.~\ref{eq:PMNS}). In addition, it is evident
+in the PMNS parametrization that a value of $\theta_{13} = 0$ would make the
+observation of CP violation in the lepton sector impossible. Hence this
+parameter plays a central role in the phenomenology of neutrino oscillations.
+Determining whether or not it is zero was one of the challenges of the past
+decade for neutrino physics. In 2011, T2K\cite{t2k-13} rejected $\theta_{13}=0$
+with a $2.5\sigma$ significance. In 2012, the Daya Bay\cite{dayabay},
+RENO\cite{reno} and Double Chooz\cite{chooz} reactor experiments reported their
+first results from $\overline{\nu}_e$ disappearance measurements: they
+established a small but non-zero $\theta_{13}$ with $\sin^2 2\theta_{13}
+\approx 0.1$, thus confirming the possibility of observing CP violation in
+subsequent neutrino oscillation experiments.
+
+Table~\ref{tab:threenu_params} lists the current best-fit values for
+the oscillation parameters, obtained from global fits of past experiments,
+and reported by the Particle Data Group\cite{pdg}.
+
+
+\subsubsection{Unknown parameters}
+While the absolute value of $\Delta m^2_{32}$ is known with high precision,
+previous experiments have not been sensitive to its sign.  The problem of
+whether the third mass eigenstate is heavier or lighter than the other two is
+called the neutrino mass hierarchy --- or mass ordering --- problem. It is
+likely to be resolved by the next generation of long baseline neutrino
+experiments, as we will show in our results.  Throughout this report, we will
+denote by ``normal hierarchy'' (NH) the case where the third mass eigenstate is
+heavier than the other two ($m^2_3 > m^2_2 > m^2_1$, and $\Delta m^2_{32}$ is a
+positive value), and by ``inverted hierarchy'' (IH) the case where it is
+lighter ($m^2_2 > m^2_1 > m^2_3$, $\Delta m^2_{32}$ negative).
 
 The second unknown is the octant of $\theta_{23}$. This parameter is known to
 lie around \SI{45}{\degree}, in either the first or second octant of the unit
-circle. However experiments in the past have typically only been
+circle. However, experiments in the past have typically only been
 sensitive to $\sin^2{2 \theta_{23}}$, resulting in two possible degenerate
 values for $\theta_{23}$ that could fit the same data\footnote{Since
-$\sin(2(\pi/4+x)) = \sin(2(\pi/4-x))$ for any $x$.}\cite{novat23}.
-In order to break this degeneracy, a possible solution is to design an
-experiment with \emph{more} matter effects~\cite{raut}, e.g. a long baseline
-underground experiment. DUNE will be such an experiment, as well as
-T2HKK, a proposal to build a second detector in Korea for the J-PARC neutrino
-beam in Tokai, Japan, with a baseline of 1000\textasciitilde1300 km\cite{t2hkk}.
+$\sin(2(\pi/4+x)) = \sin(2(\pi/4-x))$ for any $x$.}.
+In order to break this degeneracy, a possible solution in accelerator-based
+experiments is to reverse the polarity of the pion-focusing field, hence
+making the beam contain anti-neutrinos rather than neutrinos. Counting
+$\nu_e$ appearance events under both polarities breaks the $\sin^2 2\theta_{23}$
+degeneracy\cite{raut}, enabling the measurement of the octant of $\theta_{23}$.
+
+%design an
+%experiment with \emph{more} matter effects\cite{raut}, e.g. a long baseline
+%underground experiment. DUNE will be such an experiment, as well as
+%T2HKK, a proposal to build a second detector in Korea for the J-PARC neutrino
+%beam in Tokai, Japan, with a baseline of 1000\textasciitilde1300 km\cite{t2hkk}.
 
 The last unknown is the CP violating phase $\delta_{CP}$. Unlike the other
-parameters, there is so far no constraints on its value.
+parameters, there are so far few constraints on its value.
 Because of its relationship to CP violation in the lepton sector, this
 parameter has a cosmological relevance since it could explain in part the
 overwhelming presence of matter over antimatter in the universe. Similarly to
@@ -528,7 +593,7 @@ the other two parameters, it is expected that the next generation of neutrino
 experiments will determine $\delta_{CP}$.
 
 Although we use the standard three-neutrino framework throughout this report,
-it is relevant to mention that it may not be entirely correct. The existence of
+it is relevant to mention that it may not be entirely accurate. The existence of
 sterile neutrinos --- neutrinos which do not interact via the weak interaction,
 but do mix with the others via oscillations --- has not been ruled out by
 oscillation experiments. The evidence for the existence of such particles would
