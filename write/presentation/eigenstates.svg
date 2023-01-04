@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="50.917141mm"
+   height="24.361mm"
+   viewBox="0 0 192.44274 92.073072"
+   version="1.1"
+   id="SVGRoot"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="eigenstates.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="78.46431"
+     inkscape:cy="-51.007346"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="924"
+     inkscape:window-height="1009"
+     inkscape:window-x="24"
+     inkscape:window-y="47"
+     inkscape:window-maximized="0"
+     units="mm"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <sodipodi:guide
+       position="127.38191,-16.562757"
+       orientation="0,800"
+       id="guide6481"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="-5.5541688,-155.15568"
+       orientation="-600,0"
+       id="guide6483"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="669.99504,176.14374"
+       orientation="0,-800"
+       id="guide6485"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="-130.00496,176.14374"
+       orientation="600,0"
+       id="guide6487"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs5148" />
+  <metadata
+     id="metadata5151">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1"
+     transform="translate(-130.00496,-84.070666)">
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#dcdcdc;stroke-width:2.27149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect5707"
+       width="165.87923"
+       height="19.812273"
+       x="155.43272"
+       y="101.35894" />
+    <rect
+       style="opacity:1;fill:#ef548a;fill-opacity:1;stroke:#f2709e;stroke-width:2.2961216;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect5709"
+       width="116.00172"
+       height="15.24473"
+       x="157.70395"
+       y="103.63777" />
+    <rect
+       style="opacity:1;fill:#328eed;fill-opacity:1;stroke:#4598ed;stroke-width:2.29999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect5709-8"
+       width="43.893677"
+       height="16.089811"
+       x="275.5813"
+       y="103.21441" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="200.25"
+       y="93.5"
+       id="text5743"><tspan
+         sodipodi:role="line"
+         id="tspan5741"
+         x="200.25"
+         y="93.5">ν</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="209.25"
+       y="97.5"
+       id="text5747"><tspan
+         sodipodi:role="line"
+         id="tspan5745"
+         x="209.25"
+         y="97.5">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="288.40839"
+       y="93.714668"
+       id="text5743-1"><tspan
+         sodipodi:role="line"
+         id="tspan5741-7"
+         x="288.40839"
+         y="93.714668">ν</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="297.40839"
+       y="97.714684"
+       id="text5747-5"><tspan
+         sodipodi:role="line"
+         id="tspan5745-7"
+         x="297.40839"
+         y="97.714684">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="130.40839"
+       y="115.21467"
+       id="text5743-6"><tspan
+         sodipodi:role="line"
+         id="tspan5741-9"
+         x="130.40839"
+         y="115.21467">ν</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="139.40839"
+       y="119.21467"
+       id="text5747-8"><tspan
+         sodipodi:role="line"
+         id="tspan5745-1"
+         x="139.40839"
+         y="119.21467">e</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#dcdcdc;stroke-width:2.27149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect5707-3"
+       width="165.87923"
+       height="19.812273"
+       x="155.43272"
+       y="134.25269" />
+    <rect
+       style="opacity:1;fill:#ef548a;fill-opacity:1;stroke:#f2709e;stroke-width:2.29999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect5709-3"
+       width="43.966465"
+       height="16.116131"
+       x="157.27858"
+       y="136.09393" />
+    <rect
+       style="opacity:1;fill:#328eed;fill-opacity:1;stroke:#4598ed;stroke-width:2.2987628;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect5709-8-3"
+       width="115.86545"
+       height="15.297789"
+       x="203.04524"
+       y="136.48901" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="169.5"
+       y="172.14374"
+       id="text5743-7"><tspan
+         sodipodi:role="line"
+         id="tspan5741-98"
+         x="169.5"
+         y="172.14374">ν</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="178.5"
+       y="176.14374"
+       id="text5747-6"><tspan
+         sodipodi:role="line"
+         id="tspan5745-70"
+         x="178.5"
+         y="176.14374">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="262.599"
+       y="170.44904"
+       id="text5743-1-4"><tspan
+         sodipodi:role="line"
+         id="tspan5741-7-8"
+         x="262.599"
+         y="170.44904">ν</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="271.599"
+       y="174.44905"
+       id="text5747-5-4"><tspan
+         sodipodi:role="line"
+         id="tspan5745-7-8"
+         x="271.599"
+         y="174.44905">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="130.4084"
+       y="148.10843"
+       id="text5743-6-1"><tspan
+         sodipodi:role="line"
+         id="tspan5741-9-6"
+         x="130.4084"
+         y="148.10843">ν</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="139.40839"
+       y="152.10843"
+       id="text5747-8-8"><tspan
+         sodipodi:role="line"
+         id="tspan5745-1-5"
+         x="139.40839"
+         y="152.10843">µ</tspan></text>
+  </g>
+</svg>
